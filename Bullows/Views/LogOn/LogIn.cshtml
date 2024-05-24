@@ -1,0 +1,126 @@
+﻿@model Bullows.Model.LoginModel
+@{
+    ViewData["Title"] = "LogIn";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Bullows-Login</title>
+    <style>
+        .login-container {
+            margin-top: 100px;
+            width: 300px;
+        }
+
+        .login-form {
+            background-color: #f7f7f7;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #888888;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            margin-left: 20px;
+        }
+
+        .form-control {
+            border-radius: 7px;
+        }
+
+        .btn-login {
+            width: 100%;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4 login-container">
+                <div class="login-form">
+                    <img style="margin-top:4%;margin-left: 20px;" src="~/img/logo.png" alt="" width="200" height="50">
+                    <br /><br />
+                    <label class="text-left" style="color:red;font-size:large;margin-left: 20px;">Login</label>
+                    <br /><br />
+                    <div class="form-group">
+                        <lable style="color:black">User Name</lable>
+                        @Html.TextBoxFor(c => c.LoginId, new { @class = "form-control",@id="txtLoginId" })
+                        @Html.ValidationMessageFor(m => m.LoginId)
+                    </div>
+                    <div class="form-group">
+                        <lable style="color:black">Password</lable>
+                        @Html.TextBoxFor(c => c.Password, new { @class = "form-control",@id="txtPassword",@type="password" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                    <div style="text-align:right;">
+                        <a href="#" class="forgot-password" style="padding-top:-10%">Forgot Password?</a>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-login shadow rounded" id="btnLogin" style="background-color:dimgray">
+                            Login
+                        </button>
+                        <div id="divError" class="ErrorMessage" style="color:red; font-size: 12px; ">@Html.Raw(Model == null ? "" : Model.Message)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+        $("#btnLogin").click(function () {
+            var error = "";
+            $('#divError').html('');
+            if ($('#txtLoginId').val() == "") {
+                error = "<li>User name is required.</li>";
+            }
+            if ($('#txtPassword').val() == "") {
+                error += "<li>Password is required.</li>";
+            }
+            if (error != "") {
+                $('.ErrorMessage').html(error);
+                return false;
+            }
+            else {
+                var Index = {};
+                Index.LoginId = $("#txtLoginId").val();
+                Index.Password = $("#txtPassword").val();
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Index", "LogOn")',
+                    data: {
+                        LoginId: Index.LoginId,
+                        Password: Index.Password
+                    },
+                    success: function (Result) {
+                        // alert("Hi..");
+                        if (Result.result == false) {
+                            $("#txtLoginId").val('');
+                            $("#txtPassword").val('');
+                            $("#divError").text(Index.message);
+                            $("#divError").show();
+                        }
+                        if (Result.result == true) {
+                            $("#txtLoginId").val('');
+                            $("#txtPassword").val('');
+                            document.location = '/Home/Index';
+                        }
+                    },
+                    error: function (xhr, status) {
+                        alert(status);
+                    },
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

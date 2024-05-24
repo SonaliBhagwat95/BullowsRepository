@@ -1,0 +1,107 @@
+﻿@model Bullows.Model.ProjectModel
+@using System.Collections.Generic  
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Project";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+   
+}
+<style>
+    td a img {
+        margin-right: 5px;
+    }
+
+    td {
+        padding-right: 0;
+    }
+</style>
+
+@* <link href="~/css/webgrid.css" rel="stylesheet" />
+ *@
+<div class="row" id="divProj">
+    <form asp-action="SaveProject" asp-controller="Project" method="post" data-ajax="true" data-ajax-update="divProj">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            @Html.HiddenFor(c=>c.ProjectID)
+            <div class="col-md-2">
+                <label>Project Code</label>
+                @Html.ValidationMessageFor(c => c.ProjectCode, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(c => c.ProjectCode, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12"></div>
+            <div class="col-md-3">
+                <label>Project Name</label>
+                @Html.ValidationMessageFor(c => c.ProjectCode, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(c => c.ProjectName, new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                <label>Customer Name</label>
+                @Html.ValidationMessageFor(c => c.CustomerName, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.TextBoxFor(c => c.CustomerName, new { @class = "form-control" })
+            </div>
+            <div class=" col-sm-8 col-md-8 col-lg-8"></div>
+            <br />
+            <div class="col-md-12 mt-3">
+                <button type="submit" class="btn btn-success rounded-pill" style="width:100px">Save</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="container" style="margin-top:10px">
+       
+        <div class="table-responsive" style="width:80% ;max-height:400px;overflow-y:scroll;" >
+            <table class="table">
+                <thead class="webgrid-header" style="background-color:grey">
+                    <tr>
+                        <th>Sr.No.</th>
+                        <th id="tableId" style="display:none;">ProjectID</th>
+                        <th>Project Code</th>
+                        <th>Project Name</th>
+                        <th>Customer Name</th>
+                        <th>Action</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.GridData == null)
+                    {
+                        <tr><td colspan="9">No data available</td></tr>
+                    }
+                    else
+                    {
+                        int i = 0;
+                        @foreach ( var item in ViewBag.GridData)
+                        {
+                            i++;
+                            <tr>
+                                <td>@i</td>
+                                <td style="display:none;">@item.ProjectID</td>
+                                <td>@item.ProjectCode</td>
+                                <td>@item.ProjectName</td>
+                                <td>@item.CustomerName</td>
+                                <td>
+                                    <a href="@Url.Action("Project", "Project", new { id = item.ProjectID })">
+                                        <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
+                                    </a>
+                               @*  </td>
+                                <td> *@
+                                    <a href="@Url.Action("Delete", "Project", new { id = item.ProjectID })">
+                                        <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

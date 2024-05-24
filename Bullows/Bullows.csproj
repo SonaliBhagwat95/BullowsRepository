@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\img\delete.png" />
+    <Content Remove="wwwroot\img\pencil.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\img\delete.png" />
+    <None Include="wwwroot\img\pencil.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bullows.Business\Bullows.Business.csproj" />
+    <ProjectReference Include="..\Bullows.Database\Bullows.Database.csproj" />
+    <ProjectReference Include="..\Bullows.Model\Bullows.Model.csproj" />
+    <ProjectReference Include="..\Bullows.Repositories\Bullows.Repositories.csproj" />
+    <ProjectReference Include="..\Bullows.Utilities\Bullows.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\BullowsDrawing\" />
+  </ItemGroup>
+
+</Project>

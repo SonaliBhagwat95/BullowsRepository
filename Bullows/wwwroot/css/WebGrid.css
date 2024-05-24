@@ -1,0 +1,48 @@
+
+.webgrid-table{
+                font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+                font-size: 1.2em;
+                width: 100%;
+                display: table;
+                border-collapse: separate;
+                /*border: solid 1px black;*/
+                background-color: white;
+            }
+
+                .webgrid-table td, th {
+                    /*border: 1px solid black;*/
+                    padding: 3px 7px 2px;
+                }
+
+            .webgrid-header {
+                background-color: #38b4e8;
+                color: black;
+                padding-bottom: 4px;
+                padding-top: 5px;
+                text-align: left;
+            }
+
+                .webgrid-header a {
+                    color:black
+                }
+
+            .webgrid-footer {
+            }
+
+            .webgrid-row-style {
+                padding: 3px 7px 2px;
+            }
+
+            .webgrid-alternating-row {
+                background-color: lightblue;
+                padding: 3px 7px 2px;
+            }
+#tableId.hide2 tr > *:nth-child(2) {
+    display: none;
+}
+
+.webgrid-table td:nth-child(2),th:nth-child(2) {
+    display: none
+}
+        .webgrid-hide {display:none;}
+           

@@ -1,0 +1,206 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Boxicons CSS -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <title>@ViewBag.Title - Bullows</title>
+    <link rel="stylesheet" href="~/css/sidebar/style.css"/>
+	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	@*<link href="~/css/fontawesome/font-awesome.min.css" rel="stylesheet" />*@    
+</head>
+<body class="body-full-height" style="margin-top: 1px; background-image: linear-gradient(to right, #2B3F4B 16.7%,#EEEEEE 10%,#EEEEEE 80%)">
+    <!-- navbar -->
+    <nav class="navbar">
+        <div>
+            @*<i class="bx bx-menu" id="sidebarOpen"></i>*@
+            <img src="~/img/logo.png" alt="" style="width:100%;height:35px;border-radius:unset">@*<h4 style="color:red">Bullows</h4>*@
+        </div>
+
+        @*<div class="navbar_content" style="margin-left:-6%;">
+            <a href="@Url.Action("Index", "Home")" title="Home Page">
+                <img alt=" " src="~/img/home.jpg" style="width:25px;height:25px">
+            </a>
+        </div>*@
+        <div class="search_bar" style="height:unset;">
+            @* <label>Project Code: Proj_001</label> *@
+        </div>
+
+        @*<div class="logo_item" style="margin-left:-55%">
+        <input type="text" placeholder="Search" />
+            <img src="~/img/home.jpg" style="height:25px;width:25px" alt=""/>
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active" style="margin-left:-10%">
+                    <a class="nav-link content-font" style="color:black;font-size:small;" href="~/Home/Index">Home</a>
+            </li>
+            </ul>
+        </div>*@
+       
+        <div class="navbar_content" style="column-gap:unset">
+            @*<i class="bi bi-grid"></i>
+            <i class='bx bx-sun' id="darkLight"></i>
+            <i class='bx bx-bell'></i>           
+            <img src="images/profile.jpg" alt="" class="profile" />   *@    
+            <span class="xn-text" style="color:black;margin-left:-10%"> @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+            <a href="@Url.Action("LogIn", "LogOn")" title="Log Out">
+                <img alt=" " src="~/img/logout.jpg" style="width:25px;height:25px">
+            </a>
+        </div>
+        @*<form class="form-inline my-2 my-lg-0">
+            <span class="xn-text" style="color:black;margin-left:-25%"> Dhananjay Hulge</span>
+                <a href="@Url.Action("Index", "LogOn")" title="Log Out">
+                <img alt=" " src="~/img/logout.jpg" style="width:30px;height:30px">
+                </a>
+        </form>*@
+    </nav>
+    @*<div class="container-fluid">*@
+<div class="row">
+            <!-- sidebar -->
+            <div class="col-md-2">
+                <nav class="sidebar">
+                    <div class="menu_content">
+                        <ul class="menu_items">
+                       @*  <li class="item">
+                            <div class="nav_link submenu_item">
+                                <span href="~/Enquiry/Enquiry">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <a class="nav-link content-font" href="~/Enquiry/Enquiry" style="color:black;font-size:small;padding-left:-1%">Enquiry</a>
+                            </div>
+                        </li> *@
+                        @* <li class="item">
+                            <div class="nav_link submenu_item">
+                                <span href="~/ Customer/Customer">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <a class="nav-link content-font" href="~/Customer/Customer" style="color:black;font-size:small;padding-left:-1%">CustomerMaster</a>
+                            </div>
+                        </li> *@
+                        @* <li class="item">
+                            <div class="nav_link submenu_item">
+                                <span href="~/Project/Project">
+                                    <i class="bx bx-grid-alt"></i></span>
+                                <a class="nav-link content-font" href="~/Project/Project" style="color:black;font-size:small;padding-left:-1%">Project</a>
+                            </div>
+                        </li> *@
+
+                        @* <li class="item">
+                            <div class="nav_link submenu_item">
+                                <i class="bx bx-grid-alt"></i>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/PaintBooth/PaintBooth"> PaintBooth Design</a>
+                            </div>
+                        </li> *@
+
+
+                        <li class="item">
+                            <div class="nav_link submenu_item">
+                                <i class="bx bx-grid-alt"></i>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/PanelInput/PanelInput"> PanelInput Design</a>
+                            </div>
+                        </li>
+                        @*  <li class="item">
+                            <div class="nav_link submenu_item">
+                                <i class="bx bx-grid-alt"></i>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/PanelInput/PanelInput">Project Approval</a>
+                            </div>
+                        </li> *@
+
+                            @*<div class="menu_title menu_dahsboard"></div>*@
+                            @*<li class="item">
+                                <div href="#" class="nav_link submenu_item">
+                                    <span class="navlink_icon">
+                                        <i class="bx bx-grid-alt"></i>
+                                    </span>
+                                    <span class="navlink">Design</span>
+                                    <i class="bx bx-chevron-right arrow-left"></i>
+                                </div>
+
+                                <ul class="menu_items submenu">
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                </ul>
+                            </li>*@
+
+                            @*<li class="item">
+                            <div class="nav_link submenu_item">
+                                <span class="navlink_icon" href="~/Project/Project">
+                                        <i class="bx bx-grid-alt"></i>
+                                    </span>
+                                <span class="navlink" href="~/Project/Project">Proposal Approval</span>
+                                    <i class="bx bx-chevron-right arrow-left"></i>
+                                </div>
+
+                               <ul class="menu_items submenu">
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                    <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                </ul>
+                            </li>*@
+                        </ul>
+
+                       
+                        <!-- Sidebar Open / Close -->
+                        <div class="bottom_content">
+                            <div class="bottom expand_sidebar">
+                                @* <span> Expand</span>
+                            <i class='bx bx-log-in'></i> *@
+                            </div>
+                            @* <div class="bottom collapse_sidebar">
+                                <span> Collapse</span>
+                                <i class='bx bx-log-out'></i>
+                            </div> *@
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        <div class="container">
+            <div class="col-md-10" style="width:100%">
+                @*<main role="main" class="pb-3">*@
+                <div class="panel-body" style="margin:2% 0 0 22%">
+                    <div class="panel-heading-style" style="color:blue">
+                        @ViewBag.headerText
+
+                    </div>
+                    <br />
+                    @RenderBody()
+                    <div style="color:green;padding-right:10%">@ViewBag.SuccessText</div>
+                    <div style="color:red;margin-left:2%;font-size:14px"> @ViewBag.ErrorText </div>
+                </div>
+                @*</main>*@
+            </div>
+        </div>
+ </div>
+    <!-- JavaScript -->
+   @*  <script src="~css/sidebar/script.js"></script> *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+   
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+@*<style>
+    .fa {
+        display: inline-block;
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .fa-power-off:before {
+        content: "\f011"
+    }
+</style>*@

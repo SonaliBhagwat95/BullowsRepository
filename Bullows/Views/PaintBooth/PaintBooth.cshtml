@@ -1,0 +1,211 @@
+﻿@model Bullows.Model.PaintBoothModel
+@{
+    ViewData["Title"] = "PaintBooth";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
+<style>
+    .smaller-font, .smaller-font input {
+        font-size: smaller;
+    }
+
+    .smaller-height {
+        height: 30px;
+    }
+</style>
+<div class="divPaintBooth" style="margin-left:20px;">
+    <form asp-action="SavePaintBoothDetails" asp-controller="PaintBooth" method="post" data-ajax="true" data-ajax-update="divPaintBooth">
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-12 col-md-12 col-sm-12" id="DivWithImg">
+                
+            <div class="row">
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-md-3">
+                                <label class="smaller-font">Enquiry Code</label>
+                                @Html.TextBoxFor(c=>c.SalesNO, new { @id = "txtEnquiryCode", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+                    </div>
+
+                <div class="col-md-2">
+                                <button type="button" id="searchbtn" class="btn btn-primary rounded-pill" style="width:100px">Search</button>
+                </div>
+                   
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                            <div class="col-md-3">
+                                <label class="smaller-font">Depth</label>
+                                @Html.TextBoxFor(c =>c.Depth,new{@id="txtlenght",@class="form-control smaller-font smaller-height",style= "width:120px;"})
+                            </div>
+
+                            <div class="col-md-3">
+                                <label class="smaller-font">Width</label>
+                                @Html.TextBoxFor(c => c.Width, new { @id = "txtwidth", @class = "form-control  smaller-font smaller-height", style = "width:120px;" })
+                            </div>
+                            <div class="col-md-3">
+                                <label class="smaller-font">Height</label>
+                                @Html.TextBoxFor(c => c.Height, new { @id = "txtheight", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+                            </div>
+
+                    </div>
+
+                    <br/>
+
+                <div class="row">
+
+                            <div class="col-md-3">
+                                <label class="smaller-font">D1</label>
+                                @Html.TextBoxFor(c=>c.D1,new{@id="txtD1",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                            </div>
+                        <div class="col-md-3">
+                                <label class="smaller-font">D2</label>
+                            @Html.TextBoxFor(c=>c.D2,new{@id="txtD2",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        </div>
+                        <div class="col-md-3">
+                                <label class="smaller-font">D3</label>
+                            @Html.TextBoxFor(c=>c.D3,new{@id="txtD3",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        </div>
+                       
+
+
+                </div>
+                <br/>
+                    <div class="row">
+                        <div class="col-md-3">
+                                <label class="smaller-font">W1</label>
+                            @Html.TextBoxFor(c=>c.W1,new{@id="txtw1",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        </div>
+                        <div class="col-md-3">
+                                <label class="smaller-font">W2</label>
+                            @Html.TextBoxFor(c=>c.W2,new{@id="txtw2",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        </div>
+                        <div class="col-md-3">
+                                <label class="smaller-font">W3</label>
+                            @Html.TextBoxFor(c=>c.W3,new{@id="txtw3",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        </div>
+
+
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                            <div class="col-md-3">
+                                <label class="smaller-font">H1</label>
+                                @Html.TextBoxFor(c=>c.H1,new{@id="txtH1",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                            </div>
+                            <div class="col-md-3">
+                                <label class="smaller-font">H2</label>
+                                @Html.TextBoxFor(c=>c.H2,new{@id="txtH2",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                            </div>
+                    </div>
+                    <br/>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="smaller-font">D</label>
+                                @Html.TextBoxFor(c=>c.D,new{@id="txtD",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                            </div>
+                            <div class="col-md-3">
+                                <label class="smaller-font">W</label>
+                                @Html.TextBoxFor(c=>c.W,new{@id="txtw",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                            </div>
+                           <div class="col-md-3">
+                                <label class="smaller-font">H</label>
+                                @Html.TextBoxFor(c=>c.H,new{@id="txtH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                            </div>
+                           
+
+                        </div>
+
+            </div>
+
+             <div class="col-md-5">
+                <img src="~/img/PaintBooth.png" alt="" style="width:200px;height:400px;">
+             </div>
+            </div>
+            </div>
+            <br/>
+            <div class="row">
+                <button type="submit" id="submitbtn" class="btn btn-success rounded-pill" style="width:100px">Save</button>
+            </div>
+         </div>
+        
+</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Set default values 
+        $('#txtD1').val('1200');
+        $('#txtD2').val('700');
+        $('#txtD3').val('700');
+        $('#txtw1').val('500');
+        $('#txtw2').val('500');
+        $('#txtw3').val('500');
+        calculateD();
+        calculateW();
+        calculateH();
+    });
+    $('#txtD1, #txtD2, #txtlenght').on('input', function () {
+        calculateD();
+    });
+    $('#txtw1', '#txtw2', '#txtw3').on('input', function () {
+        calculateW();
+    });
+    $('#txtH1, #txtH2').on('input', function () {
+        calculateH();
+    });
+    // Function to calculate and update value of D textbox
+    function calculateD() {
+        var D1 = parseFloat($('#txtD1').val()) || 0;
+        var D2 = parseFloat($('#txtD2').val()) || 0;
+        var Depth = parseFloat($('#txtlenght').val()) || 0;
+        var D = D1 + D2 + Depth;
+        $('#txtD').val(D);
+    }
+    function calculateW() {
+        var W1 = parseFloat($('#txtw1').val()) || 0;
+        var W2 = parseFloat($('#txtw2').val()) || 0;
+        var W3 = parseFloat($('#txtw3').val()) || 0;
+        var W = W1 + W2 + W3;
+        $('#txtw').val(W);
+    }
+    function calculateH() {
+        var H1 = parseFloat($('#txtH1').val()) || 0;
+        var H2 = parseFloat($('#txtH2').val()) || 0;
+        var H = H1 + H2;
+        $('#txtH').val(H);
+    }
+
+
+    $('#searchbtn').click(function () {
+        var enquiryCode = $('#txtEnquiryCode').val();
+        $.ajax({
+            url: '/PaintBooth/Search',
+            type: 'POST',
+            dataType: 'json',
+            data: { enquiryCode: enquiryCode },
+            success: function (data) {
+                $('#txtlenght').val(data.length);
+                $('#txtwidth').val(data.width);
+                $('#txtheight').val(data.height);
+                calculateD();
+                calculateW();
+                calculateH();
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+</script>
+
+
+

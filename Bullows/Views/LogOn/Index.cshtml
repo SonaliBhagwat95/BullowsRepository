@@ -1,0 +1,174 @@
+﻿@model Bullows.Model.LoginModel
+@{
+    ViewBag.Title = "LogIn";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+@*<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />*@
+<link rel="stylesheet" href="~/Bullows.styles.css" asp-append-version="true" />
+
+    <!-- Login page css-->
+    <link href="~/css/login/util.css" rel="stylesheet" />
+    <link href="~/css/login/css/main.css" rel="stylesheet" />
+   @* <link rel="stylesheet" href="~/css/login/bootstrap.min.css" />*@
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+ </head>
+ <body>
+
+    @Html.AntiForgeryToken()
+    <div class="container-login100" style="background-color:white">
+        <div class="wrap-login100 p-l-55 p-r-55 p-t-80 p-b-30 back-img">
+            @*<form class="login100-form">*@
+            <div style="margin-top:-23%">
+                <span class="Software-Brand">
+                    PMS
+                </span>
+            </div>
+            <div style="margin-top:2%">
+                <img style="margin-top:4%" src="~/images/ATPL_Logo.png" alt="" width="300" height="100">
+            </div>
+            @*<span class="login100-form-title pp-b-37" style="font:25px SourceSansPro-Bold">*@
+            <span class="login100-form-title p-b-37" style="margin-top:15%">
+                LOG IN
+            </span>
+            <div class="wrap-input100 validate-input m-b-25">
+                <lable style="color:red">User Name</lable>
+                @Html.TextBoxFor(c => c.LoginId, new { @class = "form-control",@id="txtLoginId" })
+                @Html.ValidationMessageFor(m => m.LoginId)
+            </div>
+
+            <div class="wrap-input100 validate-input m-b-25">
+                <lable style="color:red">Password</lable>
+                @Html.TextBoxFor(c => c.Password, new { @class = "form-control",@id="txtPassword",@type="password" })
+                @Html.ValidationMessageFor(m => m.Password)
+                <a data-toggle="modal" data-target="#forgotPassword" style="color:cornflowerblue;display:none" class="active">forgot password</a>
+            </div>
+
+            <div class="container-login100-form-btn">
+                <button class="login100-form-btn" data-loading-text="Logging-In..." id="btnLogin">Log in</button>
+                <div id="divError" class="ErrorMessage" style="color:red; font-size: 12px; ">@Html.Raw(Model == null ? "" : Model.Message)</div>
+            </div>
+            @*</form>*@
+        </div>
+    </div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+
+    <!-- Modal -->
+    @*<link href="~/Content/css/webcss.css" rel="stylesheet" />*@
+    <div class="modal fade" id="forgotPassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            @*@if (@HttpContextAccessor.HttpContext.Session.GetString("UserRoleId") == "1")//Administrator
+            {*@
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Reset Pssword</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="wrap-input100 validate-input m-b-25">
+                            @Html.TextBox("FirstLastName", "", new { @class = "form-control", @placeholder = "Enter first & last name", @id = "txtFirstLastName" })
+                        </div>
+                        <div class="wrap-input100 validate-input m-b-25">
+                            @Html.TextBox("Password", "", new { @class = "form-control", @placeholder = "Enter password to reset", @type = "password", @id = "txtPwd" })
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btncancle-style" data-dismiss="modal">Close</button>
+                        @*<button type="button" class="btnsv-style" onclick="@Url.Action("ResetPassword","LogOn")" id="btnResetPwd">Save</button>*@
+                        <input type="button" value="Save" class="btnsv-style" id="btnResetPwd" />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1"></div>
+                        <label id="resetPwd" style="color:green"></label>
+                    </div>
+                </div>
+            @*}
+            else
+            {
+                <div class="row">
+                    <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1"></div>
+                    <label>Please, contact administrator to reset password</label>
+                </div>
+            }*@
+        </div>
+    </div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#LoginId').focus()
+
+            $("#btnResetPwd").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/LogOn/ResetPassword",
+                    data: { "name": $("#txtFirstLastName").val(), "pwd": $("#txtPwd").val()},
+                    success: function (response) {
+                            $("#resetPwd").text('Password changed successfully');
+                    },
+                    //failure: function (response) {
+                    //    alert(response.responseText);
+                    //},
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+
+        $("#btnLogin").click(function () {
+        var error = "";
+        $('#divError').html('');
+        if ($('#txtLoginId').val() == "") {
+            error = "<li>User name is required.</li>";
+        }
+        if ($('#txtPassword').val() == "") {
+            error += "<li>Password is required.</li>";
+        }
+        if (error != "") {
+            $('.ErrorMessage').html(error);
+            return false;
+        }
+        else {
+            var Index = {};
+            Index.LoginId = $("#txtLoginId").val();
+            Index.Password = $("#txtPassword").val();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Index", "LogOn")',
+                data: {
+                    LoginId: Index.LoginId,
+                    Password: Index.Password
+                },
+                    success: function (Result) {
+                        if (Result.result == false) {
+                        $("#txtLoginId").val('');
+                        $("#txtPassword").val('');
+                        $("#divError").text(Index.message);
+                        $("#divError").show();
+                    }
+                        if (Result.result == true) {
+                        $("#txtLoginId").val('');
+                        $("#txtPassword").val('');
+                        document.location = '/Home/Index';
+                    }
+                }
+
+            });
+        }
+    });
+
+    </script>
+
+</body>
+</html>

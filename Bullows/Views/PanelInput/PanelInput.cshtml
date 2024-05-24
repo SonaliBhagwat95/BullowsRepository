@@ -1,0 +1,335 @@
+﻿@model Bullows.Model.PanelInputModel
+@{
+    ViewData["Title"] = "PanelInput";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+            // WebGrid grid = null;
+
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+    .smaller-font, .smaller-font input {
+        font-size: smaller;
+    }
+    .smaller-height {
+        height: 30px;
+    }
+</style>
+
+    <div>
+    @if (!string.IsNullOrEmpty(ViewBag.Result))
+    {
+        <span>@ViewBag.Result</span>
+    }
+    
+    </div>
+<div class="divPanel">
+    <form asp-action="SavePanelInput" asp-controller="PanelInput" method="post" data-ajax="true" data-ajax-update="divPanel">
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="cl-md-12 col-lg-12 col-sm-12" id="div9boxwithimag" >
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            @Html.HiddenFor(c=>c.PanelInputID)
+                            @Html.HiddenFor(c=>c.ProjectID)
+                            <div class="col-md-4">
+                                <label for="projectDropdown" class="smaller-font">Project:</label>
+                                <select id="projectDropdown" name="selectedProjectID" class="form-control smaller-font smaller-height" style="width:130px">
+                                    <option value="">-- Select--</option>
+                                    @foreach (var project in ViewBag.Projects)
+                                    {
+                                        <option value="@project.ProjectID">@project.ProjectName</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="smaller-font">Panel Width</label>
+                                @Html.ValidationMessageFor(c => c.PanelWidth, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(c => c.PanelWidth, new { @class = "form-control smaller-font smaller-height", @id = "txtPanelWidth", style = "width: 130px;", placeholder = " Panel Width" })
+                            </div>
+                            <div class="col-md-4">
+                                <label class="smaller-font">Panel Height</label>
+                                @Html.ValidationMessageFor(c => c.PanelHeight, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(c => c.PanelHeight, new { @class = "form-control smaller-font smaller-height", @id = "txtPanelHeight", style = "width: 130px;", placeholder = " Panel Height" })
+                            </div>
+                        </div>
+                        <br />
+
+                        @* <div class="row cl-md-12 col-lg-12 col-sm-12">*@
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="smaller-font">Sheet Thickness</label>
+                                @Html.ValidationMessageFor(c => c.SheetThickness, "", new { @class = "text-danger" })
+                                @Html.DropDownListFor(c => c.SheetThickness, new List<SelectListItem>{ new SelectListItem {Text = "1.2", Value="1.2"}, new SelectListItem {Text = "1.6", Value="1.6"},
+                                new SelectListItem{Text="2.0",Value="2.0"} }, "--Select--",
+                                new { @id = "SheetThickness", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                            </div>
+                            <div class="col-md-4">
+                                <label class="smaller-font">StandardBend-1</label>
+                                @Html.ValidationMessageFor(c => c.StandardBend1, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(c => c.StandardBend1, new { @class = "form-control smaller-font smaller-height", @id = "txtPanelHeight", style = "width: 130px;", placeholder = "15" })
+
+                            </div>
+                            <div class="col-md-4">
+                                <label class="smaller-font">StandardBend-2</label>
+                                @Html.ValidationMessageFor(c => c.StandardBend2, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(c => c.StandardBend2, new { @class = "form-control smaller-font smaller-height", @id = "txtPanelHeight", style = "width: 130px;", placeholder = "38" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <label class="smaller-font">Pitch Distance</label>
+                                @Html.ValidationMessageFor(c => c.PitchDistance, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(c => c.PitchDistance, new {@class = "form-control smaller-font smaller-height", @id = "txtPanelWidth", style = "width: 130px;", placeholder = " Distance" })
+                            </div>
+                            <div class="col-md-4">
+                                <label class="smaller-font">Slot Dimentions</label>
+                                @Html.ValidationMessageFor(c => c.SlotDimentions, "", new { @class = "text-danger" })
+                                @Html.DropDownListFor(c => c.SlotDimentions, new List<SelectListItem>{ new SelectListItem {Text = "12-10", Value="1"},
+                                new SelectListItem{Text="10-18",Value="2"},new SelectListItem{Text="12-16",Value="3"} }, "--Select--",
+                                new { @id = "SlotDimentions", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                            </div>
+                            <div class="col-md-4">
+                                <label class="smaller-font">No of Panels</label>
+                                @Html.ValidationMessageFor(c => c.NoofPanels, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(c => c.NoofPanels, new {@class = "form-control smaller-font smaller-height", @id = "txtNoofPanels", style = "width: 130px;", placeholder = "1" })
+                            </div>
+                        </div>
+
+                    </div>
+                   
+                    <div class="col-md-4">
+                        <div class="col-md-6">
+                            <img src="~/img/StandardBend1.jpg" alt="" style="width:300px;height:250px; border-style:dotted;border-width:2px;">
+                        </div>
+                    </div>
+                </div>
+                <br />
+
+            </div>
+
+            <div />
+        </div><br />
+        <div class="row cl-md-12 col-lg-12 col-sm-12">
+            <div class="col-md-2">
+                <label class="smaller-font">Part Name</label><br />
+                <label id="lblPartName"></label>
+                @Html.DropDownListFor(c => c.PartName, new List<SelectListItem>
+                {
+                new SelectListItem { Text = "Tube Light", Value = "1" },
+                new SelectListItem { Text = "Service Door", Value ="2" },
+                new SelectListItem { Text = "Watch Glass", Value = "3" },
+                new SelectListItem { Text = "Duct Cutout", Value = "4" }
+                }, "--Select--", new { @id = "drpPartName", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+            <div class="col-md-2">
+                <label class="smaller-font">
+                    Cutout Height</label>
+                @Html.TextBoxFor(c => c.CutoutLength, new {@id="txtCutoutLength", @class = "form-control smaller-font smaller-height", style = "width: 130px;", placeholder = "1175" })
+            </div>
+            <div class="col-md-2">
+                <label class="smaller-font">Cutout Width</label><br />
+                @Html.TextBoxFor(c => c.CutoutWidth, new {@id="txtCutoutWidth", @class = "form-control smaller-font smaller-height", style = "width: 130px;", placeholder = "275" })
+            </div>
+            <div class="col-md-2">
+                <label class="smaller-font">X Distance</label>
+                @Html.TextBoxFor(c => c.CutoutXDistance, new {@id="txtCutoutXDistance", @class = "form-control smaller-font smaller-height", style = "width: 130px;", placeholder = "400" })
+            </div>
+            <div class="col-md-3">
+                <label class="smaller-font"> Cutout Y Distance</label><br />
+                @Html.TextBoxFor(c => c.CutoutYDistance, new {@id="txtCutoutYDistance", @class = "form-control smaller-font smaller-height", style = "width: 130px;", placeholder = "600" })
+            </div>
+
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                <button type="submit" id="saveButton" class="btn btn-success rounded-pill" style="width:100px">Save</button>
+                @* <a href="#" id="addPartsButton" class="btn btn-primary rounded-pill" data-toggle="modal" data-target="#TubeLightPop">Add Parts</a>*@
+                @*<button type="submit" id="btnDownload" class="btn btn-info rounded-pill" style="width:100px">Download</button>*@
+            </div>
+        </div>
+    </form>
+</div>
+
+ @* <div class="container" style="margin-top:10px;margin-left:-2%">
+    <input type="hidden" asp-for="PanelInputID" />
+
+    <div class="table-responsive" id="gridContainer" style="max-height: 400px; overflow-y:scroll;">
+        <table class="table">
+            <thead class="webgrid-header" style="background-color:gray">
+                <tr>
+                    <th>Sr.No.</th>
+                    <th style="display:none">PanelInputID</th>
+                    <th>Part Name</th>
+                    <th>Part Length</th>
+                    <th>Part Height</th>
+                    <th>Part X Distance</th>
+                    <th>Part Y Distance</th>
+                    <th>Actions</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.GridData == null)
+                {
+                    <tr><td colspan="9">No data available</td></tr>
+                }
+                else
+                {
+                    int i = 0;
+                    @foreach (var item in ViewBag.GridData)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td style="display:none">@item.PanelInputID</td>
+                            <td>@item.PartDescription</td>
+                            <td>@item.TubelightWidth</td>
+                            <td>@item.TubelightHeight</td>
+                            <td>@item.XDistance</td>
+                            <td>@item.YDistance</td>
+                            <td>
+                                <a href="@Url.Action("PanelInput", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
+                                </a>
+                                 </td>
+                        <td> 
+                                <a href="@Url.Action("Delete", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in ViewBag.GridServiceData)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td style="display:none">@item.PanelInputID</td>
+                            <td>@item.PartDescription</td>
+                            <td>@item.ServiceDoorWidth</td>
+                            <td>@item.ServiceDoorHeight</td>
+                            <td>@item.XDistance</td>
+                            <td>@item.YDistance</td>
+                            <td>
+                                <a href="@Url.Action("PanelInput", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
+                                </a>
+                                @* </td>
+                        <td> *@
+                               @*  <a href="@Url.Action("Delete", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in ViewBag.GridWatchData)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td style="display:none">@item.PanelInputID</td>
+                            <td>@item.PartDescription</td>
+                            <td>@item.GlassLength</td>
+                            <td>@item.GlassWidth</td>
+                            <td>@item.XDistance</td>
+                            <td>@item.YDistance</td>
+                            <td>
+                                <a href="@Url.Action("PanelInput", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
+                                </a> *@
+                                @* </td>
+                        <td> *@
+                                @* <a href="@Url.Action("Delete", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in ViewBag.GridDuctData)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td style="display:none">@item.PanelInputID</td>
+                            <td>@item.PartDescription</td>
+                            <td>@item.CutoutLength</td>
+                            <td>@item.CutoutWidth</td>
+                            <td>@item.XDistance</td>
+                            <td>@item.YDistance</td>
+                            <td>
+                                <a href="@Url.Action("PanelInput", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
+                                </a>
+                                 </td>
+                        <td> 
+                                <a href="@Url.Action("Delete", "PanelInput", new { id = item.PanelInputID })">
+                                    <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div> *@
+@* </div>  *@ 
+ 
+
+
+@* <script>
+
+    $(document).ready(function () {
+        
+        // Hide all other fields initially
+        $("#TubeLight").hide();
+        $("#ServiceDoor").hide();
+        $("#WatchGlass").hide();
+        $("#DuctCutouts").hide();
+        $("#Type").hide();
+       
+        $("#drpPartName").change(function () {
+            var selectedPart = $(this).val();
+            $("#Type").show();
+            if (selectedPart == "1") { // Tube Light
+                $("#TubeLight").show();
+                $("#ServiceDoor").hide();
+                $("#WatchGlass").hide();
+                $("#DuctCutouts").hide();
+            } else if (selectedPart == "2") { // Service Door
+                $("#TubeLight").hide();
+                $("#ServiceDoor").show();
+                $("#WatchGlass").hide();
+                $("#DuctCutouts").hide();
+            } else if (selectedPart == "3") { // Watch Glass
+                $("#TubeLight").hide();
+                $("#ServiceDoor").hide();
+                $("#WatchGlass").show();
+                $("#DuctCutouts").hide();
+            } else if (selectedPart == "4") { // Duct cutouts
+                $("#TubeLight").hide();
+                $("#ServiceDoor").hide();
+                $("#WatchGlass").hide();
+                $("#DuctCutouts").show();
+            }
+        });
+        //$("#btnCancel").click(function () {
+        //    $("input[type='text']").each(function () {
+        //        $(this).val('');
+        //    });
+        //    $("select").each(function () {
+        //        $(this).val($(this).find('option:first').val());
+        //    });
+        //});
+    });//end ready function
+</script>
+ *@
