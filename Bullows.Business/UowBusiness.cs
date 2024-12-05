@@ -13,5 +13,11 @@ namespace Bullows.Business
         {
             get { return new PanelInput(); }
         }
+        //public static PaintBoothDesign PaintBoothDesign
+        //{
+        //    get { return new PaintBoothDesign()}
+        //}
+
+      
     }
 }

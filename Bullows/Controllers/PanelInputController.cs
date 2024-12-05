@@ -7,7 +7,7 @@ using Bullows.Database;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Bullows.Business;
 using devDept.Eyeshot;
-
+using System.IO.Compression;
 
 
 namespace Bullows.Controllers
@@ -18,7 +18,7 @@ namespace Bullows.Controllers
         private readonly UnitOfWorks _uow;
         private readonly ISession Session;
         private readonly DataTable TableBoundingBox;
-        private int TubeLightID;
+       
         public PanelInputController(IUnitOfWork uow, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             this._uow = uow as UnitOfWorks;
@@ -53,6 +53,9 @@ namespace Bullows.Controllers
                     SetErrorMessage("Something went wrong while saving PanelInput");
                 PanelID = 0;
             }
+            ViewBag.ActivePage = "PanelInput";
+            ViewBag.SuccessText = "";
+
             return View(new PanelInputModel());
 
         }
@@ -62,57 +65,68 @@ namespace Bullows.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPost]
-        public IActionResult SavePanelInput(PanelInputModel model, int Flag, PanelInputDetail objtbl,int selectedProjectID /*PanelInput objimpdraw*/, DesignDocument model1,PanelCutout tblobj)
+        [HttpPost]   
+       public IActionResult SavePanelInput(PanelInputModel model, int selectedProjectID, DesignDocument model1, PanelInputDetails objtbl)
+    {
+        try
         {
-           
-            try
-            {
-               
-                int flag = 0;
-                flag = SaveFlag;
-                model.ProjectID = selectedProjectID;
-                var Panelinput = UowBusiness.panelInput;
-                Panelinput.PanelWidth = model.PanelWidth;
-                Panelinput.PanelHeight = model.PanelHeight;
-                Panelinput.SheetThickness = model.SheetThickness;
-                Panelinput.StandardBend1 = model.StandardBend1;
-                Panelinput.StandardBend2 = model.StandardBend2;
-                Panelinput.CutoutLength = model.CutoutLength;
-                Panelinput.CutoutWidth = model.CutoutWidth;
-                Panelinput.CutoutXDistance = model.CutoutXDistance;
-                Panelinput.CutoutYDistance = model.CutoutYDistance;
-                Panelinput.PitchDistance = model.PitchDistance;
+            int flag = 0;
+            flag = SaveFlag;
+            model.ProjectID = selectedProjectID;
+            var Panelinput = UowBusiness.panelInput;
+            Panelinput.PanelWidth = model.PanelWidth;
+            Panelinput.PanelHeight = model.PanelHeight;
+            Panelinput.SheetThickness = model.SheetThickness;
+            Panelinput.StandardBend1 = model.StandardBend1;
+            Panelinput.StandardBend2 = model.StandardBend2;
+            Panelinput.CutoutLength = model.CutoutLength;
+            Panelinput.CutoutWidth = model.CutoutWidth;
+            Panelinput.CutoutXDistance = model.CutoutXDistance;
+            Panelinput.CutoutYDistance = model.CutoutYDistance;
+            Panelinput.PitchDistance = model.PitchDistance;
 
-                UowBusiness.panelInput.SweepMethod(model);
-              
+            // Generate the file paths
+            string generatedFilePath = UowBusiness.panelInput.SweepMethod(model);
+            string developmentPath = UowBusiness.panelInput.Development(model);
+                //  string AllViewsPath = UowBusiness.panelInput.detailsdrawing(model1, model);
                 PanelID = _uow.PanelInputRepository.Save(model, flag, objtbl, selectedProjectID);
-                if (PanelID > 0)
-                {
-                    _uow.PanelInputRepository.saveCutoutDetails(model, tblobj);
-                }
-                SaveFlag = 1;
-            }
-            catch(Exception ex)
+                // Create the zip file in memory
+                using (var memoryStream = new MemoryStream())
             {
-               
-                // Enhanced logging
-                ViewBag.Message = $"An error occurred: {ex.Message}";
-                // Log detailed error information to a file or logging system
-                System.IO.File.WriteAllText("C:/path_to_logs/error.log", ex.ToString());
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                    // Add the first file to the zip
+                    archive.CreateEntryFromFile(generatedFilePath, Path.GetFileName(generatedFilePath));
+
+                    // Add the second file to the zip
+                    archive.CreateEntryFromFile(developmentPath, Path.GetFileName(developmentPath));
+                }
+
+                // Reset the memory stream position to the beginning
+                memoryStream.Position = 0;
+
+                // Return the zip file as a downloadable file
+                return File(memoryStream.ToArray(), "application/zip", "PanelDrawings.zip");
             }
-                      
-            return RedirectToAction("PanelInput");
         }
-        
+        catch (Exception ex)
+        {
+            // Handle any errors that may occur
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
         public JsonResult GetPanelInputs(int projectId)
         {
             var panelInputs = _uow.projectRepository.FillPanelInputsDropDown(projectId);
             var panelInputIds = panelInputs.Select(pi => pi.PanelInputID).ToList();
             return Json(panelInputIds);
-        }
-       
+        }      
 
     }
-    
 }
+
+    
+    
+

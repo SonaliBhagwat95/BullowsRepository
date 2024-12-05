@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\BullowsDrawing\**" />
+    <Content Remove="wwwroot\BullowsDrawing\**" />
+    <EmbeddedResource Remove="wwwroot\BullowsDrawing\**" />
+    <None Remove="wwwroot\BullowsDrawing\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\img\delete.png" />
     <Content Remove="wwwroot\img\pencil.jpg" />
   </ItemGroup>
@@ -23,7 +30,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.17" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,10 +44,6 @@
     <ProjectReference Include="..\Bullows.Model\Bullows.Model.csproj" />
     <ProjectReference Include="..\Bullows.Repositories\Bullows.Repositories.csproj" />
     <ProjectReference Include="..\Bullows.Utilities\Bullows.Utilities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\BullowsDrawing\" />
   </ItemGroup>
 
 </Project>

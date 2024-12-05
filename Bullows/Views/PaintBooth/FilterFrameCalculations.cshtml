@@ -1,0 +1,148 @@
+﻿@model Bullows.Model.PaintBoothModel
+@{
+    ViewData["Title"] = "FilterFrameCalculations";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+<style>
+    .smaller-font, .smaller-font input {
+        font-size: smaller;
+    }
+
+    .smaller-height {
+        height: 30px;
+    }
+
+    #loadingImage {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        width: 70px; /* Set your desired width */
+        height: 70px; /* Set your desired height */
+    }
+</style>
+<div class="divPaintBooth" style="margin-left:20px;">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <form asp-action="FilterFrameBox" asp-controller="PaintBooth">
+           @*  <h6>FilterFrame</h6> *@
+            <h6>PaintBooth Dimensions</h6>
+
+        <div class="row">
+            <div class="col-md-2">
+               
+                <label class="smaller-font">Filter Area(sq m)</label>
+                @Html.TextBoxFor(c => c.FilterArea, new { @id = "txtFilterArea", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+            </div>
+                <div class="col-md-2">
+                    <label class="smaller-font">Depth(mm)</label>
+                    @Html.TextBoxFor(c => c.D, new { @id = "txtD", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+                </div>
+            <div class="col-md-2">
+                    <label class="smaller-font">Width(mm)</label>
+                @Html.TextBoxFor(c => c.W, new { @id = "txtw", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+            </div>
+            <div class="col-md-2">
+                    <label class="smaller-font">Height(mm)</label>
+                @Html.TextBoxFor(c => c.H, new { @id = "txtH", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+            </div>
+            @* <div class="col-md-2">
+                <label class="smaller-font">Length(mm)</label>
+                @Html.TextBoxFor(c => c.D, new { @id = "txtD", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+            </div> *@
+            <div class="col-md-2">
+                <label class="smaller-font">No.Of TubeLights/LED</label>
+                @Html.TextBoxFor(c => c.Lights, new { @id = "txtLights", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+            </div>
+        </div>
+            <div class="row" style="padding-top:20px;">
+                <div class="col-md-1">
+                    <button type="submit" id="btnSave" class="btn btn-success rounded-pill" style="width:100px;">Save</button>
+                </div>
+                <div class="col-md-2" style="margin-left:20px;">
+                    <button type="button" id="btndownload" class="btn btn-secondary rounded-pill" style="width:150px;">Development</button>
+                </div>
+               
+            </div>
+
+            <div id="loadingOverlay" style="display: none;">
+                <img id="loadingImage" src="~/img/loading.gif" alt="Loading...">
+            </div>
+            <div id="successMessage" style="display: none; color: green; margin-top: 20px;">
+                File downloaded successfully: <span id="downloadedFileName"></span>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@* <script>
+    document.getElementById("btndownload").addEventListener("click", function () {
+        window.location.href = '@Url.Action("GetPanelDetails", "PaintBooth")';
+    });
+</script> *@
+
+<script>
+    document.getElementById("btndownload").addEventListener("click", function () {
+        // Show the loading overlay
+        document.getElementById("loadingOverlay").style.display = "block";
+
+        // Store the EnquiryCode
+        const EnquiryCode = '@Context.Session.GetString("SalesNo")'; // Get EnquiryCode from the session
+
+        // Trigger the download using AJAX
+        fetch('@Url.Action("GetPanelDetails", "PaintBooth")')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const contentDisposition = response.headers.get('Content-Disposition');
+                const fileNameMatch = contentDisposition.match(/filename="([^"]+)"/);
+                const defaultFileName = fileNameMatch ? fileNameMatch[1] : 'Development.zip'; // Default name if not found
+
+                return response.blob().then(blob => ({ blob, defaultFileName })); // Return both blob and defaultFileName
+            })
+            .then(({ blob, defaultFileName }) => {
+                // Create a link element for the blob download
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+
+                // Set the name of the downloaded file to include EnquiryCode
+                const enquiryFileName = `Development_${EnquiryCode}.zip`;
+                a.download = enquiryFileName; // Set the customized name
+
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url); // Free up memory
+
+                // Show success message with EnquiryCode
+                document.getElementById("downloadedFileName").textContent = enquiryFileName; // Show file name in success message
+                document.getElementById("successMessage").style.display = "block";
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            })
+            .finally(() => {
+                // Hide the loading overlay when done (success or error)
+                document.getElementById("loadingOverlay").style.display = "none";
+            });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        // Initially disable the download button
+        $("#btndownload").prop("disabled", true);
+
+        // Enable the download button when the Save button is clicked
+        $("#btnSave").on("click", function () {
+            $("#btndownload").prop("disabled", false);
+        });
+
+       
+    });
+</script>
+
+ 

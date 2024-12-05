@@ -3,7 +3,9 @@ using Bullows.Model;
 using Bullows.Repositories.Contracts;
 using Bullows.Repositories.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Web.Mvc;
 
 namespace Bullows.Controllers
 {
@@ -16,22 +18,24 @@ namespace Bullows.Controllers
         {
             this._uow = uow as UnitOfWorks;
             this.Session = httpContextAccessor.HttpContext.Session;
-           
+
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Customer(int id,EnquiryModel model)
+        public IActionResult Customer(int id, EnquiryModel model)
         {
-            //if (model.ContactPersons == null)
-            //{
-            //    model.ContactPersons = new List<ContactPersonModel>();
-            //}
-
+           
             ViewBag.GridCustomer = _uow.CustomerMasterRepository.GetAllCustomer();
-            if (id>0)
+            var stateList = new Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList(_uow.CustomerMasterRepository.FillStateDropDown(), "StateId", "State");
+            ViewBag.State = stateList;
+
+          
+            
+
+            if (id > 0)
             {
 
             }
@@ -48,31 +52,36 @@ namespace Bullows.Controllers
                 CID = 0;
 
             }
+            ViewBag.ActivePage = "Customer";
             return View();
         }
-
-        //public IActionResult ContactPerson(EnquiryModel enquiryModel, ContactPersonModel contactPerson)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        enquiryModel.ContactPersons.Add(contactPerson);
-        //        return View(enquiryModel);
-        //    }
-        //    return View(enquiryModel);
-        //}
-
-        public IActionResult SaveCustomerDetails(tblAddContactPerson tbl,EnquiryModel model,CustomerMaster tblobj, int flag)
+        public IActionResult SaveCustomerDetails(tblAddContactPerson tbl, EnquiryModel model, CustomerMaster tblobj, int flag, int selectedStateId,int selectedCityId)
         {
-            
-           
             flag = SaveFlag;
-            CID=_uow.CustomerMasterRepository.SaveAddPerson( tbl,model);
-            CID =_uow.CustomerMasterRepository.saveCustomerDetails(model, tblobj, flag);
-            ViewBag.Grid = _uow.CustomerMasterRepository.GetContacts();
-           
+            model.StateId = selectedStateId;
+            model.CityId = selectedCityId;
+            CID = _uow.CustomerMasterRepository.saveCustomerDetails(model, tblobj, flag);
+            CID = _uow.CustomerMasterRepository.SaveAddPerson(tbl, model);
+            // ViewBag.Grid = _uow.CustomerMasterRepository.GetContacts();
             SaveFlag = 1;
             return RedirectToAction("Customer");
         }
-        
+
+        public IActionResult GetCitiesByState(int stateId)
+        {
+            // Assuming you have a method in your repository that fetches cities based on stateId
+            var cities = _uow.CustomerMasterRepository.GetCitiesByState(stateId);
+
+            var cityList = cities.Select(c => new { value = c.CityId, text = c.Description }).ToList();
+
+            return Json(cityList);
+        }
+        public IActionResult Delete(int id = 0)
+        {
+            CID = _uow.CustomerMasterRepository.Delete(id);
+            CID = 2;
+            return RedirectToAction("Customer");
+           
+        }
     }
 }

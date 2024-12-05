@@ -17,6 +17,7 @@ namespace Bullows.Model
         public string ContactPerson { get; set; }
         public string MobileNo { get; set; }
         public string Designation { get; set; }
+        public string PAN { get; set; }
         public string EmailId { get; set; }
         public int CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

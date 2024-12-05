@@ -40,7 +40,7 @@ namespace Bullows.Controllers
 
         public void SetSuccessMessage(string Message)
         {
-            ViewBag.SuccessText = Message;
+            //ViewBag.SuccessText = Message;
         }
 
         public void SetInformationMessage(string Message)

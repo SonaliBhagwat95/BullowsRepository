@@ -11,13 +11,20 @@
 	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	@*<link href="~/css/fontawesome/font-awesome.min.css" rel="stylesheet" />*@    
+
+    <style>
+        .active {
+            background-color:#8488db;
+            color: white;
+        }
+    </style>
 </head>
 <body class="body-full-height" style="margin-top: 1px; background-image: linear-gradient(to right, #2B3F4B 16.7%,#EEEEEE 10%,#EEEEEE 80%)">
     <!-- navbar -->
-    <nav class="navbar">
+    <nav class="navbar sticky-top">
         <div>
-            @*<i class="bx bx-menu" id="sidebarOpen"></i>*@
-            <img src="~/img/logo.png" alt="" style="width:100%;height:35px;border-radius:unset">@*<h4 style="color:red">Bullows</h4>*@
+          
+            <img src="~/img/logo.png" alt="" style="width:100%;height:35px;border-radius:unset">
         </div>
 
         @*<div class="navbar_content" style="margin-left:-6%;">
@@ -63,52 +70,87 @@
                 <nav class="sidebar">
                     <div class="menu_content">
                         <ul class="menu_items">
-                       @*  <li class="item">
+                       @*  <li class="item"> *@
+                        <li class="item @(ViewBag.ActivePage == "Home" ? "active" : "")">
                             <div class="nav_link submenu_item">
-                                <span href="~/Enquiry/Enquiry">
+                                <span href="~/enquiry/enquiry">
                                     <i class="bx bx-grid-alt"></i>
                                 </span>
-                                <a class="nav-link content-font" href="~/Enquiry/Enquiry" style="color:black;font-size:small;padding-left:-1%">Enquiry</a>
+                                <a class="nav-link content-font" href="~/Home/Dashboard" style="color:black;font-size:small;padding-left:-1%">Home</a>
                             </div>
-                        </li> *@
-                        @* <li class="item">
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "Enquiry" ? "active" : "")">
                             <div class="nav_link submenu_item">
-                                <span href="~/ Customer/Customer">
+                                <span href="~/enquiry/enquiry">
                                     <i class="bx bx-grid-alt"></i>
                                 </span>
-                                <a class="nav-link content-font" href="~/Customer/Customer" style="color:black;font-size:small;padding-left:-1%">CustomerMaster</a>
+                                <a class="nav-link content-font" href="~/enquiry/enquiry" style="color:black;font-size:small;padding-left:-1%">Enquiry</a>
                             </div>
-                        </li> *@
-                        @* <li class="item">
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "PanelSetting" ? "active" : "")">
                             <div class="nav_link submenu_item">
-                                <span href="~/Project/Project">
-                                    <i class="bx bx-grid-alt"></i></span>
-                                <a class="nav-link content-font" href="~/Project/Project" style="color:black;font-size:small;padding-left:-1%">Project</a>
+                                <span href="~/PanelSetting/PanelSetting">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <a class="nav-link content-font" href="~/PanelSetting/PanelSetting" style="color:black;font-size:small;padding-left:-1%">Setting</a>
                             </div>
-                        </li> *@
-
-                        @* <li class="item">
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "PaintBooth" ? "active" : "")">
                             <div class="nav_link submenu_item">
                                 <i class="bx bx-grid-alt"></i>
-                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/PaintBooth/PaintBooth"> PaintBooth Design</a>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/paintbooth/paintbooth"> Paintbooth Design</a>
                             </div>
-                        </li> *@
-
-
-                        <li class="item">
+                        </li>                     
+                        <li class="item @(ViewBag.ActivePage == "Raw Material Costing" ? "active" : "")">
+                            <div class="nav_link submenu_item">
+                                <i class="bx bx-grid-alt"></i>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/Costing/Costing"> Raw Material Costing</a>
+                            </div>
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "ProposalForm" ? "active" : "")">
+                            <div class="nav_link submenu_item">
+                                <span href="~/Costing/ProposalForm">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <a class="nav-link content-font" href="~/Costing/ProposalForm" style="color:black;font-size:small;padding-left:-1%">Proposal Approval</a>
+                            </div>
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "Project" ? "active" : "")">
+                            <div class="nav_link submenu_item">
+                                <span href="~/project/project">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <a class="nav-link content-font" href="~/project/project" style="color:black;font-size:small;padding-left:-1%">Project</a>
+                            </div>
+                        </li>
+                       
+                        <li class="item @(ViewBag.ActivePage == "PanelInput" ? "active" : "")">
                             <div class="nav_link submenu_item">
                                 <i class="bx bx-grid-alt"></i>
                                 <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/PanelInput/PanelInput"> PanelInput Design</a>
                             </div>
                         </li>
-                        @*  <li class="item">
+                        <li class="item @(ViewBag.ActivePage == "BendSection" ? "active" : "")">
                             <div class="nav_link submenu_item">
                                 <i class="bx bx-grid-alt"></i>
-                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/PanelInput/PanelInput">Project Approval</a>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/BendSection/BendSection">Bend Section</a>
                             </div>
-                        </li> *@
-
-                            @*<div class="menu_title menu_dahsboard"></div>*@
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "Customer" ? "active" : "")">
+                            <div class="nav_link submenu_item">
+                                <span href="~/ customer/customer">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <a class="nav-link content-font" href="~/customer/customer" style="color:black;font-size:small;padding-left:-1%">Customer Details</a>
+                            </div>
+                        </li>
+                        <li class="item @(ViewBag.ActivePage == "Material" ? "active" : "")">
+                            <div class="nav_link submenu_item">
+                                <i class="bx bx-grid-alt"></i>
+                                <a class="nav-link content-font" style="color:black;font-size:small;padding-left:-1%" href="~/Costing/Material">Material</a>
+                            </div>
+                        </li>
+                        @*<div class="menu_title menu_dahsboard"></div>*@
                             @*<li class="item">
                                 <div href="#" class="nav_link submenu_item">
                                     <span class="navlink_icon">
@@ -125,6 +167,24 @@
                                     <a href="#" class="nav_link sublink">Nav Sub Link</a>
                                 </ul>
                             </li>*@
+
+
+                       @*  <li class="item">
+                            <div class="nav_link submenu_item">
+                                <span class="navlink_icon" href="~/Project/Project">
+                                    <i class="bx bx-grid-alt"></i>
+                                </span>
+                                <span class="navlink" href="~/Project/Project">Proposal Approval</span>
+                                <i class="bx bx-chevron-right arrow-left"></i>
+                            </div>
+
+                            <ul class="menu_items submenu">
+                                <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                                <a href="#" class="nav_link sublink">Nav Sub Link</a>
+                            </ul>
+                        </li> *@
 
                             @*<li class="item">
                             <div class="nav_link submenu_item">

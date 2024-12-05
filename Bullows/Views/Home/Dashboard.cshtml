@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card-body {
+        flex: 1;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header"> No.Of Enquiries</div>
+                <div class="card-body">
+                    <h5 class="card-title" style="color:blue";>@ViewBag.EnquiryCount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header"> No. Of Paint Booth Design</div>
+                <div class="card-body">
+                    <h5 class="card-title" style="color:blue";>@ViewBag.PaintBoothCount</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">No.Of Projects at costing stage</div>
+                <div class="card-body">
+                    <h5 class="card-title" style="color:blue";>@ViewBag.RowCostingCount</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

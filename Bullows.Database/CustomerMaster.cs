@@ -13,29 +13,29 @@ namespace Bullows.Database
     {
         [Key]
         public int CustomerID { get; set; }
-        [Required(ErrorMessage ="*")]
+        [Required(ErrorMessage = "*")]
         public string CompanyName { get; set; }
         [Required(ErrorMessage = "*")]
         public string CustomerAddress { get; set; }
-        
+
         [Required(ErrorMessage = "*")]
         public string Designation { get; set; }
 
-       
+
         public bool IsDeleted { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
-        [ForeignKey ("StateId")]
+        [ForeignKey("StateId")]
         public int StateId { get; set; }
-        [ForeignKey("DistrictId")]
-        public int DistrictId { get; set; }
+        //[ForeignKey("DistrictId")]
+        //public int DistrictId { get; set; }
         [ForeignKey("CityId")]
         public int CityId { get; set; }
         public int Pin { get; set; }
-        public string PAN { get; set; }
+        //public string PAN { get; set; }
 
 
     }

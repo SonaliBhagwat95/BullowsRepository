@@ -16,3 +16,36 @@ html {
 body {
   margin-bottom: 60px;
 }
+.container {
+    text-align: left;
+    padding: 20px;
+}
+
+.image-gallery {
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+}
+
+.gallery-image {
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Adjust size as needed */
+    object-fit: cover;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    transition: border 0.3s ease;
+}
+
+    .gallery-image:hover {
+        border: 2px solid #333;
+    }
+
+.selected-image {
+    margin-top: 20px;
+}
+
+    .selected-image img {
+        max-width: 500px; /* Adjust size as needed */
+        height: auto;
+        border: 2px solid #ddd;
+    }

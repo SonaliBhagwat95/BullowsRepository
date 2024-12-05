@@ -3,6 +3,7 @@ using System;
 using Bullows.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -17,7 +18,9 @@ namespace Bullows.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.15")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Bullows.Database.ComponentTable", b =>
                 {
@@ -25,63 +28,65 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ComponentID"));
+
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
                     b.Property<string>("Component")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ComponentHandling")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConsumptionPerDay")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Conveyor")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("DFT")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("EffectiveWorking")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("HeightSize")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<string>("Image_Path")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<double>("Length")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<string>("LoadingUnloading")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaterialofConstruction")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("NoOfCoats")
                         .HasColumnType("int");
@@ -93,13 +98,13 @@ namespace Bullows.Database.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("Paint")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("Pitch")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("Powder")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<int>("ProductionRequirement")
                         .HasColumnType("int");
@@ -108,29 +113,29 @@ namespace Bullows.Database.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("Speed")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("SurfaceArea")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("Viscosity")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("WallThickness")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("Weight")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("WidthSize")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<int>("Workingdays")
                         .HasColumnType("int");
 
                     b.HasKey("ComponentID");
 
-                    b.ToTable("ComponentTables");
+                    b.ToTable("ComponentTables", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.CustomerMaster", b =>
@@ -139,42 +144,44 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerID"));
+
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerAddress")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Designation")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DistrictId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ModifiedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PAN")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Pin")
                         .HasColumnType("int");
@@ -184,7 +191,7 @@ namespace Bullows.Database.Migrations
 
                     b.HasKey("CustomerID");
 
-                    b.ToTable("CustomerMasters");
+                    b.ToTable("CustomerMasters", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.EnquiryMaster", b =>
@@ -193,6 +200,8 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnquiryID"));
+
                     b.Property<int>("ComponentID")
                         .HasColumnType("int");
 
@@ -200,89 +209,30 @@ namespace Bullows.Database.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ProposalDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SalesNO")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EnquiryID");
 
-                    b.ToTable("EnquiryMasters");
-                });
-
-            modelBuilder.Entity("Bullows.Database.PaintBooth", b =>
-                {
-                    b.Property<int>("PaintBoothID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("D")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("D1")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("D2")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("D3")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("EnquiryID")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("H1")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("H2")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("ModifiedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("W")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("W1")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("W2")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("W3")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("PaintBoothID");
-
-                    b.ToTable("PaintBooths");
+                    b.ToTable("EnquiryMasters", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.PanelCutout", b =>
@@ -291,8 +241,10 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CutoutID"));
+
                     b.Property<double>("CutoutLength")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<decimal>("CutoutWidth")
                         .HasColumnType("decimal(18,2)");
@@ -304,7 +256,7 @@ namespace Bullows.Database.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<int>("PanelInputID")
                         .HasColumnType("int");
@@ -317,17 +269,19 @@ namespace Bullows.Database.Migrations
 
                     b.HasKey("CutoutID");
 
-                    b.ToTable("PanelCutouts");
+                    b.ToTable("PanelCutouts", (string)null);
                 });
 
-            modelBuilder.Entity("Bullows.Database.PanelInputDetail", b =>
+            modelBuilder.Entity("Bullows.Database.PanelInputDetails", b =>
                 {
                     b.Property<int>("PanelInputID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PanelInputID"));
+
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<int>("NoofPanels")
                         .HasColumnType("int");
@@ -358,7 +312,7 @@ namespace Bullows.Database.Migrations
 
                     b.HasKey("PanelInputID");
 
-                    b.ToTable("PanelInputDetails");
+                    b.ToTable("PanelInputDetail", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.Projects", b =>
@@ -367,24 +321,26 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectID"));
+
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasColumnType("varchar(100)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ProjectCode")
                         .IsRequired()
@@ -396,7 +352,7 @@ namespace Bullows.Database.Migrations
 
                     b.HasKey("ProjectID");
 
-                    b.ToTable("Project");
+                    b.ToTable("Project", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.UserRoles", b =>
@@ -405,16 +361,18 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRoleID"));
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.HasKey("UserRoleID");
 
-                    b.ToTable("UserRole");
+                    b.ToTable("UserRole", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.Users", b =>
@@ -423,13 +381,15 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpId"));
+
                     b.Property<string>("ConfirmPassword")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
                     b.Property<string>("EmailId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -461,7 +421,7 @@ namespace Bullows.Database.Migrations
 
                     b.HasIndex("UserRoleID");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.tblAddContactPerson", b =>
@@ -470,61 +430,65 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContactId"));
+
                     b.Property<string>("ContactPerson")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
                     b.Property<string>("EmailId")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("MobileNo")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ContactId");
 
-                    b.ToTable("tblAddContactPersons");
+                    b.ToTable("tblAddContactPersons", (string)null);
                 });
 
-            modelBuilder.Entity("Bullows.Database.tblCity", b =>
-                {
-                    b.Property<int>("CityId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            //modelBuilder.Entity("Bullows.Database.tblCity", b =>
+            //    {
+            //        b.Property<int>("CityId")
+            //            .ValueGeneratedOnAdd()
+            //            .HasColumnType("int");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+            //        SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"));
 
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("int");
+            //        b.Property<string>("City")
+            //            .IsRequired()
+            //            .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Isdeleted")
-                        .HasColumnType("tinyint(1)");
+            //        b.Property<int>("DistrictId")
+            //            .HasColumnType("int");
 
-                    b.HasKey("CityId");
+            //        b.Property<bool>("Isdeleted")
+            //            .HasColumnType("bit");
 
-                    b.ToTable("TblCities");
-                });
+            //        b.HasKey("CityId");
+
+            //        b.ToTable("TblCities", (string)null);
+            //    });
 
             modelBuilder.Entity("Bullows.Database.tblDistrict", b =>
                 {
@@ -532,19 +496,21 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DistrictId"));
+
                     b.Property<string>("District")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Isdeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<int>("StateId")
                         .HasColumnType("int");
 
                     b.HasKey("DistrictId");
 
-                    b.ToTable("tblDistricts");
+                    b.ToTable("tblDistricts", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.tblState", b =>
@@ -553,16 +519,103 @@ namespace Bullows.Database.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StateId"));
+
                     b.Property<bool>("Isdeleted")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("State")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StateId");
 
-                    b.ToTable("tblStates");
+                    b.ToTable("tblStates", (string)null);
+                });
+
+            modelBuilder.Entity("bullows.database.PaintBooth", b =>
+                {
+                    b.Property<int>("PaintBoothID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaintBoothID"));
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("D")
+                        .HasColumnType("float");
+
+                    b.Property<double>("D1")
+                        .HasColumnType("float");
+
+                    b.Property<double>("D2")
+                        .HasColumnType("float");
+
+                    b.Property<double>("D3")
+                        .HasColumnType("float");
+
+                    b.Property<int>("EnquiryId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("H")
+                        .HasColumnType("float");
+
+                    b.Property<double>("H1")
+                        .HasColumnType("float");
+
+                    b.Property<double>("H2")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<double>("PanelHeight")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PanelWidth")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PitchDistance")
+                        .HasColumnType("float");
+
+                    b.Property<double>("SheetThickness")
+                        .HasColumnType("float");
+
+                    b.Property<double>("StandardBend1")
+                        .HasColumnType("float");
+
+                    b.Property<double>("StandardBend2")
+                        .HasColumnType("float");
+
+                    b.Property<double>("W")
+                        .HasColumnType("float");
+
+                    b.Property<double>("W1")
+                        .HasColumnType("float");
+
+                    b.Property<double>("W2")
+                        .HasColumnType("float");
+
+                    b.Property<double>("W3")
+                        .HasColumnType("float");
+
+                    b.Property<double>("jobsize")
+                        .HasColumnType("float");
+
+                    b.Property<int>("noofpanels")
+                        .HasColumnType("int");
+
+                    b.HasKey("PaintBoothID");
+
+                    b.ToTable("PaintBooths", (string)null);
                 });
 
             modelBuilder.Entity("Bullows.Database.Users", b =>

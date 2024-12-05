@@ -20,11 +20,13 @@ namespace Bullows.Database
         public int ComponentID { get; set; }
         public DateTime ProposalDate { get; set; }
         public string SalesNO { get; set; }
-
+       
+        public string PaintBoothType { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public bool IsDeleted { get; set; }
-       
+
+
     }
 }

@@ -1,0 +1,428 @@
+﻿@model Bullows.Model.BendSectionModel
+@{
+    ViewData["Title"] = "BendSection";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+<style>
+    .smaller-font, .smaller-font input {
+        font-size: smaller;
+    }
+
+    .smaller-height {
+        height: 30px;
+    }
+
+    #loadingImage {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+        width: 70px; /* Set your desired width */
+        height: 70px; /* Set your desired height */
+    }
+
+</style>
+
+<link rel="stylesheet" href="~/css/site.css">
+
+
+<form id="bendSectionForm" method="post" action="@Url.Action("Save", "BendSection")">
+
+    <h6 style="color:Blue">Bend Section</h6>
+    <div class="container">
+        <div class="image-gallery">
+            <div class="row">
+                <div class="col-md-3">
+                    <label>C Section</label>
+                    <img src="~/img/CSection.png" alt="C Section" class="gallery-image" data-section-name="CSection">
+                </div>
+                <div class="col-md-3">
+                    <label>L Section</label>
+                    <img src="~/img/LSection.png" alt="L Section" class="gallery-image" data-section-name="LSection">
+                </div>
+                <div class="col-md-3">
+                    <label>Stiffener Section</label>
+                    <img src="~/img/L1Section.png" alt="L1 Section" class="gallery-image" data-section-name="L1Section">
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <label>Panel Support</label>
+                    <img src="~/img/PanelSupport.png" alt="PanelSupport" class="gallery-image" data-section-name="PanelSupport">
+                </div>
+                <div class="col-md-3">
+                    <label>Corner</label>
+                    <img src="~/img/Corner.png" alt="Corner" class="gallery-image" data-section-name="Corner">
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-md-12 col-lg-12 row">
+            <div class="selected-image col-md-6">
+                <img id="largeImage" src="~/images/CSection.jpg" alt="Selected Image">
+            </div>
+
+            <!-- Hidden field for SectionName -->
+            @Html.HiddenFor(m => m.SectionName, new { id = "SectionName" })
+
+            <!-- Single textboxes container initially hidden -->
+            <div id="TextboxesContainer" class="textboxes col-md-6" style="display:none;margin-top:10px;">
+                <label class="smaller-font">W:</label>
+                @Html.TextBoxFor(c => c.W, new { id = "txtCsectionW", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })<br />
+                <label class="smaller-font">H:</label>
+                @Html.TextBoxFor(c => c.H, new { id = "txtCsectionH", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })<br />
+                <label class="smaller-font">T:</label>
+                @Html.TextBoxFor(c => c.T, new { id = "txtCsectionT", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })<br />
+                <label id="lblL" class="smaller-font">L:</label>
+                @Html.TextBoxFor(c => c.L, new { id = "txtCsectionL", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                <label class="smaller-font">Length:</label>
+                @Html.TextBoxFor(c => c.Length, new { id = "txtCsectionLength", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })<br />
+                <label id="lblL1" class="smaller-font">L1:</label>
+                @Html.TextBoxFor(c => c.L1, new { id = "txtL1", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                <label class="smaller-font">No.Of Quantity</label>
+                @Html.TextBoxFor(c => c.Quantity, new { id = "txtQuantity", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                <label class="smaller-font">Materials</label>
+                @Html.DropDownListFor(c => c.Materials,
+            new List<SelectListItem>
+            {
+            new SelectListItem { Text = "G.I", Value = "G.I" },
+            new SelectListItem { Text = "MS", Value = "MS" },
+            new SelectListItem { Text = "SS304", Value = "SS304" },
+            new SelectListItem { Text = "Al", Value = "Al" }
+            },
+            "--Select--",
+            new { @id = "Materials", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+            <div id="csectionDetails" class="col-md-12">
+                <div>
+                   @*  <input type="checkbox" id="addSlotsCheckbox" /> *@
+                    <label for="addSlotsCheckbox">Add Slots</label>
+                    @Html.CheckBoxFor(c=>c.AddSlotchk,new{@id="addSlotsCheckbox"})
+                </div>
+                <div id="SlotSections">
+
+              
+                <div id="slotDetailsSection" class="d-flex align-items-end">
+                    <div class="col-md-3">
+                        <label>Slot Location</label>
+                        @Html.DropDownListFor(c => c.SlotLocation, new List<SelectListItem>{ new SelectListItem {Text = "Both Sides", Value="Both Sides"},
+                    new SelectListItem{Text="Top Sides",Value="Top Sides"},new SelectListItem{Text="Bottom Sides",Value="Bottom Sides"}
+                    ,new SelectListItem{Text="On Height",Value="On Height"} }, "--Select--",
+                    new { @id = "slotLocationDropdown", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                    </div>
+                    <div class="col-md-3">
+                        <label>Pitch Distance</label>
+                        @Html.TextBoxFor(c => c.PitchDistance, new { @class = "form-control smaller-font smaller-height", @id = "pitchDistanceInput", style = "width: 130px;", placeholder = " Distance" })
+                    </div>
+                    <div class="col-md-3">
+                        <label>Slot Dimensions</label>
+                        @Html.DropDownListFor(c => c.SlotDimentions, new List<SelectListItem>{ new SelectListItem {Text = "10-12", Value="10-12"},
+                    new SelectListItem{Text="10-18",Value="10-18"},new SelectListItem{Text="12-16",Value="12-16"} }, "--Select--",
+                    new { @id = "slotDimensionsInput", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                    </div>
+                    <button type="button" id="addSlotButton" class="btn btn-primary rounded-pill" style="width:100px" ;>Add Slot</button>
+                </div>
+                </div>
+
+            </div>
+
+            <table class="table table-bordered" style="width:90%;margin-top:20px" ; id="slotsGrid">
+                <thead>
+                    <tr>
+                        <th>Slot Location</th>
+                        <th>Pitch Distance</th>
+                        <th>Slot Dimensions</th>
+                    </tr>
+                </thead>
+                <tbody id="slotsGridBody">
+                   @*  <tr><td colspan="3">No slots added</td></tr> *@
+                </tbody>
+            </table>
+
+            <button type="submit" class="btn btn-primary rounded-pill" style="width:100px ;margin-top:20px">Add</button>
+        </div>
+    </div>
+
+    <div style="margin-top:10px;/* margin-right:10px */">
+        <div class="table-responsive" style="width:90%;max-height:400px;overflow-y:scroll">
+            <table class="table" id="dataGrid">
+                <thead class="webgrid-header" style="background-color:gray">
+                    <tr>
+                        <th>Sr.NO</th>
+                        <th id="tableId" style="display:none;">BendId</th>
+                        <th>section Name</th>
+                        <th>W</th>
+                        <th>H</th>
+                        <th>T</th>
+                        <th>L</th>
+                        <th>Length</th>
+                       @*  <th>Slot Location</th> *@
+                        <th>Development</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.getAllData == null)
+                    {
+                        <tr><td colspan="5">No data available</td></tr>
+                    }
+                    else
+                    {
+                        int i = 0;
+                        @foreach (var item in ViewBag.getAllData)
+                        {
+                            i++;
+                            <tr>
+                                <td>@i</td>
+                                <td style="display:none;">@item.BendId</td>
+                                <td>@item.SectionName</td>
+                                <td>@item.W</td>
+                                <td>@item.H</td>
+                                <td>@item.T</td>
+                                <td>@item.L</td>
+                                <td>@item.Length</td>
+                                @* <td>@item.SlotLocation</td> *@
+                                <td>
+
+
+                                    <a href="@Url.Action("DownloadFile", "BendSection", new { id = item.BendId })"
+                                       class="btn btn-primary btn-sm download-btn" data-loading-id="loadingImage-@i">
+                                        Download
+                                    </a>
+                                    <img id="loadingImage-@i" src="/images/loading.gif" alt="Loading..." style="display: none;" />
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Delete", "BendSection", new { id = item.BendId })">
+                                        <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="loadingOverlay" style="display: none;">
+        <img id="loadingImage" src="~/img/loading.gif" alt="Loading...">
+    </div>
+
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#pitchandDimentions").hide();
+            $("#SlotSections").hide();
+            $("#AllChkSlotsShow").hide();
+            $("#lblL1").hide();
+            $("#txtL1").hide();
+            var slotDetailsList = []; // Declare slotDetailsList globally for use
+
+            
+            $(".gallery-image").click(function () {
+
+                var src = $(this).attr('src');
+                    $('#largeImage').attr('src', src);
+                    var sectionName = $(this).data("section-name");
+                    var largeImageSrc = $(this).data("large-image");
+
+                    $("#SectionName").val(sectionName);
+                    $("#largeImage").attr("src", largeImageSrc);
+
+
+                if (sectionName === 'CSection') {
+                    $("#AllChkSlotsShow").show();
+                } else {
+                    $("#AllChkSlotsShow").hide();
+                }
+
+                if (sectionName === 'Corner') {
+                    $("#lblL1").show();
+                    $("#txtL1").show();
+                } else {
+                    $("#lblL1").hide();
+                    $("#txtL1").hide();
+                }
+
+                if (sectionName === 'CSection' || sectionName === 'LSection') {
+                    $('#txtCsectionL').hide();
+                    $('#lblL').hide();
+                } else {
+                    $('#txtCsectionL').show();
+                    $('#lblL').show();
+                }
+
+                var $slotLocationDropdown = $('#slotLocationDropdown');
+                $slotLocationDropdown.empty();
+                $slotLocationDropdown.append('<option value="">--Select--</option>');
+
+                if (sectionName === 'LSection') {
+                    var filteredOptions = [
+                        { Text: "Top Sides", Value: "Top Sides" },
+                        { Text: "On Height", Value: "On Height" }
+                    ];
+                    appendOptions($slotLocationDropdown, filteredOptions);
+                } 
+                else if (sectionName === 'L1Section') {
+                    var filteredOptions = [
+                        { Text: "Both Sides", Value: "Both Sides" },
+                        { Text: "Top Sides", Value: "Top Sides" },
+                        { Text: "Bottom Sides", Value: "Bottom Sides" },
+                        { Text: "On Height", Value: "On Height" },
+                        { Text: "Top Flange", Value: "Top Flange" },
+                        { Text: "Bottom Flange", Value: "Bottom Flange" }
+                    ];
+                    appendOptions($slotLocationDropdown, filteredOptions);
+                }
+                else if (sectionName === 'PanelSupport') {
+                    var filteredOptions = [
+                        { Text: "Both Sides", Value: "Both Sides" },
+                        { Text: "Top Sides", Value: "Top Sides" },
+                        { Text: "Bottom Sides", Value: "Bottom Sides" },
+                        { Text: "On Height", Value: "On Height" },
+                        { Text: "Top Flange", Value: "Top Flange" },
+                        { Text: "Bottom Flange", Value: "Bottom Flange" }
+                    ];
+                    appendOptions($slotLocationDropdown, filteredOptions);
+                }
+                else if (sectionName === 'Corner') {
+                    var filteredOptions = [
+                        { Text: "H", Value: "H" },
+                        { Text: "W", Value: "W" },
+                        { Text: "L", Value: "L" },
+                        { Text: "L1", Value: "L1" }
+                        
+                    ];
+                    appendOptions($slotLocationDropdown, filteredOptions);
+                }
+                else {
+                    var defaultOptions = [
+                        { Text: "Both Sides", Value: "Both Sides" },
+                        { Text: "Top Sides", Value: "Top Sides" },
+                        { Text: "Bottom Sides", Value: "Bottom Sides" },
+                        { Text: "On Height", Value: "On Height" }
+                    ];
+                    appendOptions($slotLocationDropdown, defaultOptions);
+                }
+
+                $("#TextboxesContainer").show();
+            });
+
+            function appendOptions(dropdown, options) {
+                $.each(options, function (index, option) {
+                    dropdown.append(
+                        $('<option>', { value: option.Value, text: option.Text })
+                    );
+                });
+            }
+
+            $("#addSlotsCheckbox").change(function () {
+                if ($(this).is(":checked")) {
+                    $("#SlotSections").show(); // Show with a sliding effect
+                } else {
+                    $("#SlotSections").hide(); // Hide with a sliding effect
+                }
+            });
+
+            // Add Slot button functionality
+            $("#addSlotButton").click(function () {
+                var slotLocation = $("#slotLocationDropdown").val();
+                var pitchDistance = $("#pitchDistanceInput").val();
+                var slotDimensions = $("#slotDimensionsInput").val();
+
+                if (slotLocation && pitchDistance && slotDimensions) {
+                    var newSlot = {
+                        SlotLocation: slotLocation,
+                        PitchDistance: pitchDistance,
+                        SlotDimensions: slotDimensions
+                    };
+
+                    // Add to the slotDetailsList array
+                    slotDetailsList.push(newSlot);
+
+                    // Append slot to the table for display
+                    var newRow = "<tr><td>" + slotLocation + "</td><td>" + pitchDistance + "</td><td>" + slotDimensions + "</td></tr>";
+                    $("#slotsGridBody").append(newRow);
+                } else {
+                    alert("Please fill in all fields.");
+                }
+            });
+
+            // Submit form with slot details
+            $("#bendSectionForm").submit(function (e) {
+                e.preventDefault(); // Prevent default form submission
+                var modelData = {
+                    W: $("#txtCsectionW").val(),
+                    H: $("#txtCsectionH").val(),
+                    T: $("#txtCsectionT").val(),
+                    L: $("#txtCsectionL").val(),
+                    Length: $("#txtCsectionLength").val(),
+                    L1: $("#txtL1").val(),
+                    Quantity: $("#txtQuantity").val(),
+                    Materials: $("#Materials").val(),
+                    SectionName: $("#SectionName").val(),
+                    // Add the checkbox value (true if checked, false otherwise)
+                    AddSlotchk: $("#addSlotsCheckbox").is(":checked")
+                    
+                };
+                console.log("modelData", modelData)
+                // Use slotDetailsList instead of collecting again
+                $.ajax({
+                    url: '/BendSection/Save',
+                    method: 'POST',
+                    data: {
+                        model: modelData, // Pass the model data
+                        slotDetailsList: slotDetailsList
+                    },
+                    success: function () {
+                        // Redirect to the current page to reload it
+                        window.location.href = "/BendSection/BendSection";
+                    },
+                    error: function () {
+                        alert("An error occurred while saving data.");
+                    }
+                });
+            });
+            // Add click event listener for download buttons to show loading image in the middle of the page
+            $(".download-btn").click(function (e) {
+                e.preventDefault(); // Prevent the default anchor click behavior
+
+                // Show the loading overlay
+                $("#loadingOverlay").show();
+
+                // Start the file download
+                var href = $(this).attr("href");
+                fetch(href, {
+                    method: 'GET',
+                })
+                    .then(response => response.blob())
+                    .then(blob => {
+                        // Hide the loading overlay
+                        $("#loadingOverlay").hide();
+
+                        // Create a link to download the file
+                        var url = window.URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'BendSectionDrawings.zip';
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                    })
+                    .catch(error => {
+                        // Hide the loading overlay if there's an error
+                        $("#loadingOverlay").hide();
+                        console.error('Error downloading the file:', error);
+                    });
+            });
+
+        });
+
+
+    </script>
+}

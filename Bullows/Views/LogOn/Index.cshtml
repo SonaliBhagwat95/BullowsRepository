@@ -51,6 +51,7 @@
             <div class="container-login100-form-btn">
                 <button class="login100-form-btn" data-loading-text="Logging-In..." id="btnLogin">Log in</button>
                 <div id="divError" class="ErrorMessage" style="color:red; font-size: 12px; ">@Html.Raw(Model == null ? "" : Model.Message)</div>
+                
             </div>
             @*</form>*@
         </div>
@@ -166,8 +167,7 @@
 
             });
         }
-    });
-
+    });      
     </script>
 
 </body>

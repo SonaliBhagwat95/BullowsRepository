@@ -19,9 +19,11 @@ namespace Bullows.Model
         public string ProjectName { get; set; }
         public int Type { get; set; }
         public string PartDescription { get; set; }
+        [Range(0, 1140, ErrorMessage = "PanelWidth must be less than or equal to 1140.")]
         public double PanelWidth { get; set; } = 1140;
 
         [Required(ErrorMessage = "*")]
+        [Range(0, 2390, ErrorMessage = "PanelHeight must be less than or equal to 2390.")]
         public double PanelHeight { get; set; } = 2390;
         [Required(ErrorMessage = "*")]
         public double SheetThickness { get; set; } = 1.2;
@@ -33,7 +35,7 @@ namespace Bullows.Model
         [Required(ErrorMessage = "*")]
         public double PitchDistance { get; set; } = 150;
         [Required(ErrorMessage = "*")]
-        public double SlotDimentions { get; set; }
+        public string SlotDimentions { get; set; }
         [Required(ErrorMessage = "*")]
         public int NoofPanels { get; set; }=1;
        
@@ -71,5 +73,10 @@ namespace Bullows.Model
         public bool IsDeleted { get; set; }
 
         public int PartName { get; set; }
+
+        public double PreviousPanelWidth { get; set; }
+        public double PreviousPanelHeight { get; set; }
+        public bool RightSideProcessed { get; set; }
+        public bool LeftSideProcessed { get; set; }
     }
 }

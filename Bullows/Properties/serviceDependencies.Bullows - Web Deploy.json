@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/Bullows/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsDefaultConnection_D7F0FFDDDF",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/bullowsdbserver/databases/bullows",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DefaultConnection"
+    }
+  }
+}

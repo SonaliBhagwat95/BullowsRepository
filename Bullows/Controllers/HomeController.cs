@@ -1,11 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bullows.Repositories.Contracts;
+using Bullows.Repositories.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bullows.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
+        private readonly UnitOfWorks _uow;
+        public HomeController(IUnitOfWork uow, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        {
+            this._uow = uow as UnitOfWorks;
+        }
+
         public IActionResult Index()
         {
+            return RedirectToAction("Dashboard");
+        }
+        public IActionResult Dashboard()
+        {
+            ViewBag.EnquiryCount = _uow.enquiryRepository.GetAllEnquiryCount();
+            ViewBag.PaintBoothCount = _uow.PaintBoothRepository.GetAllPaintBoothDesignCount();
+            ViewBag.RowCostingCount = _uow.costingRepository.GetCostingCountByEnquiryID();
+
             return View();
         }
     }

@@ -1,0 +1,324 @@
+﻿@model Bullows.Model.CostingModel
+@{
+    ViewData["Title"] = "Costing";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+
+<style>
+    .smaller-font, .smaller-font input {
+        font-size: smaller;
+    }
+
+    .smaller-height {
+        height: 30px;
+    }  
+    .row-spacing {
+        margin-bottom: 50px; 
+    }
+
+    #resultsContainer {
+        max-height: 150px; 
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+        padding: 5px;
+        margin-top: 5px;
+    }
+
+        #resultsContainer div {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+            #resultsContainer div:hover {
+                background-color: #eaeaea;
+            }
+</style>
+<script>
+    // function filterGrid() {
+    //     var originalTable = document.getElementById("originalTable");
+    //     var filteredTable = document.getElementById("filteredTable");
+    //     var tbody = filteredTable.getElementsByTagName("tbody")[0];
+    //     tbody.innerHTML = ""; // Clear the filtered table
+
+    //     var rows = originalTable.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+    //     for (var i = 0; i < rows.length; i++) {
+    //         var panelPosition = rows[i].getElementsByClassName("panel-position")[0].innerText;
+    //         if (panelPosition === "BaseStructureFrame" || panelPosition === "TopStructureFrame") {
+    //             var clonedRow = rows[i].cloneNode(true);
+    //             tbody.appendChild(clonedRow);
+    //         }
+    //     }
+    // }
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     document.getElementById("searchbtn").addEventListener("click", function () {
+    //         // Perform your search logic here and update the original table
+    //         filterGrid(); // Call the filter function after updating the original table
+    //     });
+    // });
+    function filterGrid() {
+        var originalTable = document.getElementById("originalTable");
+        var filteredTable = document.getElementById("filteredTable");
+        var tbody = filteredTable.getElementsByTagName("tbody")[0];
+        tbody.innerHTML = ""; // Clear the filtered table
+
+        var rows = originalTable.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+        for (var i = 0; i < rows.length; i++) {
+            var panelPositionCell = rows[i].getElementsByClassName("panel-position")[0];
+
+            // Check if panelPositionCell exists
+            if (panelPositionCell) {
+                var panelPosition = panelPositionCell.innerText;
+                if (panelPosition === "BaseStructureFrame" || panelPosition === "TopStructureFrame") {
+                    var clonedRow = rows[i].cloneNode(true);
+                    tbody.appendChild(clonedRow);
+                }
+            }
+        }
+    }
+    document.getElementById("searchbtn").addEventListener("click", function () {
+        filterGrid(); // Assuming data in `originalTable` is already updated via search.
+    });
+   
+
+    
+
+
+</script>
+
+<div class="divCosting">
+    <h6>Costing Form</h6>
+   
+    <div class="row">
+        <div class="col-md-2">
+            <label class="smaller-font">Enquiry Code</label>
+            @Html.TextBoxFor(c=>c.EnquiryCode, new { @id = "txtEnquiryID", @class = "form-control smaller-font smaller-height", style = "width:120px;" }) 
+            <div id="resultsContainer" class="results-container" style="display:none;"></div>
+        </div>     
+        <div class="col-md-2" style="padding-top:10px">
+            <div></div>
+            <button type="button" id="searchbtn" class="btn btn-primary rounded-pill" style="width:100px;">Search</button>
+        </div>
+        <div class="container" style="margin-top:10px;margin-left:-7px;">
+            <div class="table-responsive" style="width:80% ;max-height:400px;overflow-y:scroll;">
+                <table id="originalTable" class="table">
+                    <thead class="webgrid-header" style="background-color:grey">
+                        <tr>
+                            <th>Item</th>
+                            <th id="tableId" style="display:none;">EnquiryID</th>
+                            <th>Panel Position</th>
+                            <th>Panel Width</th>
+                            <th>Panel Length</th>
+                            <th>Thickness</th>
+                            <th>No.of Panels</th>
+                            <th>Weight(Kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @if (Model.DetailsList == null || !Model.DetailsList.Any())                       
+                        {
+                            <tr><td colspan="8">No data available</td></tr>
+                        }
+                        else
+                        {
+                            int i = 0;
+                            foreach (var item in Model.DetailsList)
+                            {
+                                if (!Model.IsInFilteredList(item))
+                                {                              
+                                i++;
+                                <tr>
+                                    <td>@i</td>
+                                    <td style="display:none;">@item.EnquiryId</td>
+                                    <td class="panel-position">@item.PanelPosition</td>
+                                        <td>@item.EqualPanelWidthForD.ToString("F2")</td>
+                                    <td>@item.EqualPanelWidthByH.ToString("F2")</td>
+                                    <td>@item.SheetThickness</td>
+                                    <td>@item.NoofPanels</td>
+                                    <td class="panel-weight">@item.PanelWeight.ToString("F2")</td>
+                                </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container" style="margin-top:10px">
+            <div class="table-responsive" style="width:80%;max-height:400px;overflow-y:scroll;margin-left:-7px;">
+                <table id="filteredTable" class="table">
+                    <thead class="webgrid-header" style="background-color:grey">
+                        <tr>
+                            <th>Item</th>
+                            <th id="tableId" style="display:none;">EnquiryID</th>
+                            <th>Frame Position</th>
+                            <th>Frame Width</th>
+                            <th>frame Length</th>
+                            <th>Size</th>                          
+                            <th>Weight(Kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.FilteredDetailsList == null || !Model.FilteredDetailsList.Any())
+
+                        {
+                            <tr><td colspan="8">No data available</td></tr>
+                        }
+                        else
+                        {
+                            int i = 0;
+                            foreach (var item in Model.FilteredDetailsList)
+                            {
+                                i++;
+                                <tr>
+                                    <td>@i</td>
+                                    <td style="display:none;">@item.EnquiryId</td>
+                                    <td class="panel-position">@item.PanelPosition</td>
+                                    <td>@item.FrameWidth.ToString("F2")</td>
+                                    <td>@item.FrameHeight.ToString("F2")</td>
+                                    <td>@item.Section</td>                                   
+                                    <td class="panel-weight">@item.PanelWeight.ToString("F2")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>      
+    </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label class="smaller-font">Raw Matrial Weight of Panels</label>
+                @Html.TextBoxFor(c=>c.RMWeightOfPanels, new { @id = "txtRMWeightOfPanels", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+            </div>
+            <div class="col-md-4">
+                <label class="smaller-font">Total Cost of Panels</label>
+                @Html.TextBoxFor(c=>c.TotalPriceofPanels, new { @id = "txtTotalPrice", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-4">
+                <label class="smaller-font">Raw Matrial Weight of Frame</label>
+            @Html.TextBoxFor(c => c.TotalWeightOfFrame, new { @id = "txtSpecificPanelWeight", @class = "form-control smaller-font smaller-height", style = "width:120px;",@Value = Model.TotalWeightOfFrame.ToString("F2") })
+            </div>
+            <div class="col-md-4">
+                <label class="smaller-font">Total Cost of Frame</label>
+                @Html.TextBoxFor(c=>c.TotalPriceofFrame, new { @id = "TotalPriceofFrame", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+            </div>
+        </div>
+       <div class="row" style="padding-top:10px;margin-left:0px;">
+        <button type="button" id="btnNext" class="btn btn-secondary rounded-pill " style="width:100px"> Next</button>
+       </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        bindEvents();
+        $('#searchbtn').click(function () {
+            var EnquiryCode = $('#txtEnquiryID').val().trim();
+            if (EnquiryCode) {
+                $.post('@Url.Action("SearchByEnquiryID", "Costing")', { EnquiryCode: EnquiryCode }, function (result) {
+                    $('.divCosting').html($(result).find('.divCosting').html());
+                    bindEvents(); // Rebind after update.
+                }).fail(function () {
+                    $('.divCosting').html('<div>Error occurred while processing the request.</div>');
+                });
+            }
+        });
+        // $('#searchbtn').click(function () {
+        //     var EnquiryCode = $('#txtEnquiryID').val().trim(); // Trim any whitespace
+        //     $.post('@Url.Action("SearchByEnquiryID", "Costing")', { EnquiryCode: EnquiryCode }, function (result) {
+        //         $('.divCosting').html($(result).find('.divCosting').html());
+        //     }).fail(function () {
+        //         $('.divCosting').html('<div>Error occurred while processing the request.</div>');
+        //     });
+        // });
+
+        // function bindEvents() {
+        //     $('#txtEnquiryID').on('keyup', function () {
+        //         var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase
+        //         if (enquiryCode.length > 0) {
+        //             $.ajax({
+        //                 url: '@Url.Action("SearchEnquiryCode", "Costing")',
+        //                 type: 'POST',
+        //                 data: { enquiryCode: enquiryCode },
+        //                 success: function (data) {
+        //                     $('#resultsContainer').empty();
+        //                     console.log(data); // Log data for debugging
+        //                     if (data.success && data.results.length > 0) {
+        //                         data.results.forEach(function (item) {
+        //                             $('#resultsContainer').append('<div>' + item + '</div>');
+        //                         });
+        //                     } else {
+        //                         $('#resultsContainer').append('<div>Enquiry Code does not Available</div>');
+        //                     }
+        //                 },
+        //                 error: function () {
+        //                     $('#resultsContainer').empty();
+        //                     $('#resultsContainer').append('<div>Error occurred while searching.</div>');
+        //                 }
+        //             });
+        //         } else {
+        //             $('#resultsContainer').empty();
+        //         }
+        //     });
+
+        //     $(document).on('click', '#resultsContainer div', function () {
+        //         var selectedCode = $(this).text();
+        //         $('#txtEnquiryID').val(selectedCode);
+        //         $('#resultsContainer').empty();
+        //     });
+
+        //     $(document).on('click', '#btnNext', function () {
+        //         window.location.href = '@Url.Action("BOCalculations", "Costing")';
+        //     });
+        // }
+
+        // Initial event binding
+        function bindEvents() {
+            $('#txtEnquiryID').on('keyup', function () {
+                var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase
+                if (enquiryCode.length > 0) {
+                    $.ajax({
+                        url: '@Url.Action("SearchEnquiryCode", "Costing")',
+                        type: 'POST',
+                        data: { enquiryCode: enquiryCode },
+                        success: function (data) {
+                            $('#resultsContainer').empty(); // Clear previous results
+
+                            if (data.success && data.results.length > 0) {
+                                var resultsHtml = '';
+                                data.results.forEach(function (item) {
+                                    resultsHtml += '<div>' + item + '</div>';
+                                });
+                                $('#resultsContainer').html(resultsHtml).show(); // Show container with results
+                            } else {
+                                $('#resultsContainer').html('<div>Enquiry Code does not Available</div>').show(); // Show 'not available' message
+                            }
+                        },
+                        error: function () {
+                            $('#resultsContainer').html('<div>Error occurred while searching.</div>').show(); // Show error message
+                        }
+                    });
+                } else {
+                    $('#resultsContainer').empty().hide(); // Hide container if input is empty
+                }
+            });
+
+            $(document).on('click', '#resultsContainer div', function () {
+                var selectedCode = $(this).text();
+                $('#txtEnquiryID').val(selectedCode);
+                $('#resultsContainer').empty().hide(); // Hide container after selection
+            });
+
+            $(document).on('click', '#btnNext', function () {
+                window.location.href = '@Url.Action("BOCalculations", "Costing")';
+            });
+        }
+
+        bindEvents();
+    });
+</script>

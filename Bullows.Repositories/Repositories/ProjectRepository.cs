@@ -88,9 +88,7 @@ namespace Bullows.Repositories.Repositories
 
 
         public List<ProjectModel> GetAllData()
-
         {
-            
             List<ProjectModel> lstData = _DbContext.Project.Where(x=>x.IsDeleted==false).Select(item => new ProjectModel()
             {
                 ProjectID = item.ProjectID,
@@ -131,7 +129,7 @@ namespace Bullows.Repositories.Repositories
 
         public List<PanelInputModel> GetRelatedPanelInputs(int ProjectID)
         {
-            List<PanelInputModel> panelInputs = _DbContext.PanelInputDetails
+            List<PanelInputModel> panelInputs = _DbContext.PanelInputDetail
                 .Where(pi => pi.ProjectID == ProjectID && pi.IsDeleted == false)
                 .Select(pi => new PanelInputModel()
                 {

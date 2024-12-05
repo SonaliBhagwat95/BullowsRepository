@@ -21,11 +21,14 @@ namespace Bullows.Database
         [EmailAddress(ErrorMessage = "Invalid Email")]
         [RegularExpression("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$", ErrorMessage = "Invalid Email")]
         public string EmailId { get; set; }
-       
+        public string PAN { get; set; }
+        public string Designation { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
+
+
         public bool IsDeleted { get; set; }
 
 

@@ -12,17 +12,22 @@ namespace Bullows.Database
     {
         [Key]
         public int ComponentID { get; set; }
-        [Required(ErrorMessage ="*")]
+        [Required(ErrorMessage = "*")]
         public int Category { get; set; }
         public string Component { get; set; }
+        public string Shape { get; set; }
+        public string Orientation { get; set; }
+       // public decimal Diameter { get; set; }
 
-        public double Length{ get; set; }
+        public double Length { get; set; }
         public double WidthSize { get; set; }
         public double HeightSize { get; set; }
         public double Weight { get; set; }
-        public int QtyperAssembly { get; set; }
+        public decimal CarringCapacity { get; set; }
 
         public string MaterialofConstruction { get; set; }
+        public string OverheadConveyorSubTypes { get; set; }
+        public string ConveyorNumber { get; set; }
 
         public double SurfaceArea { get; set; }
 
@@ -53,7 +58,9 @@ namespace Bullows.Database
         public double Paint { get; set; }
         public double Powder { get; set; }
         public double DFT { get; set; }
+
+        public double SpecificHeat { get; set; }
         public string ConsumptionPerDay { get; set; }
-       
+
     }
 }

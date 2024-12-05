@@ -13,11 +13,7 @@ namespace Bullows.Controllers
     public class ProjectController : BaseController
     {
        static int PID = 0; static int SaveFlag = 0;static int pageIndex = 0;
-        //private readonly ILogger<ProjectController> _logger;
-        //public ProjectController(ILogger<ProjectController> logger)
-        //{
-        //    _logger = logger;
-        //}
+       
         private readonly UnitOfWorks _uow;
         private readonly ISession Session;
         public ProjectController(IUnitOfWork uow, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
@@ -51,6 +47,7 @@ namespace Bullows.Controllers
                 PID = 0;
 
             }
+            ViewBag.ActivePage = "Project";
             return View( new ProjectModel());
         }
 
@@ -80,8 +77,9 @@ namespace Bullows.Controllers
         public IActionResult Delete(int id =0)
         {
             PID = _uow.projectRepository.Delete(id);
-            return RedirectToAction("Project");
             PID = 2;
+            return RedirectToAction("Project");
+            
         }
 
     }

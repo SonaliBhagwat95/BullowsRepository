@@ -22,8 +22,11 @@ namespace Bullows.Repositories.Repositories
 
         public CustomerMasterRepository CustomerMasterRepository { get; private set; }
 
-        public PaintBoothRepository PaintBoothRepository { get; private set; }  
-
+        public PaintBoothRepository PaintBoothRepository { get; private set; }
+        public MaterialRepository materialRepository { get; private set; }
+        public CostingRepository costingRepository { get; private set; }
+        public BendSectionRepository bendSectionRepository { get; private set; }
+        public SettingDetailsRepository settingDetailsRepository { get; private set; }
 
         public UnitOfWorks(BullowsDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -33,9 +36,13 @@ namespace Bullows.Repositories.Repositories
             this.userRepository = new UserRepository(this._DbContext, httpContextAccessor);          
             this.projectRepository = new ProjectRepository(this._DbContext,httpContextAccessor);
             this.PanelInputRepository = new PanelInputRepository(this._DbContext, httpContextAccessor);
-            this.enquiryRepository=new EnquiryRepository(this._DbContext, httpContextAccessor);
-            this .CustomerMasterRepository= new CustomerMasterRepository(this._DbContext, httpContextAccessor);
-            this.PaintBoothRepository= new PaintBoothRepository(this._DbContext, httpContextAccessor);
+            this.enquiryRepository = new EnquiryRepository(this._DbContext, httpContextAccessor);
+            this.CustomerMasterRepository = new CustomerMasterRepository(this._DbContext, httpContextAccessor);
+            this.PaintBoothRepository = new PaintBoothRepository(this._DbContext, httpContextAccessor);
+            this.materialRepository= new MaterialRepository(this._DbContext, httpContextAccessor);
+            this.costingRepository= new CostingRepository(this._DbContext, httpContextAccessor);
+            this.bendSectionRepository= new BendSectionRepository(this._DbContext, httpContextAccessor);
+            this.settingDetailsRepository= new SettingDetailsRepository(this._DbContext, httpContextAccessor);
         }
         public async Task Commit()
         {

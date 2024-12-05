@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Bullows.Repositories.Repositories;
 using System.Security.Claims;
 using Constants = Bullows.Utilities.Constants;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Bullows.Controllers
 {
@@ -18,7 +19,8 @@ namespace Bullows.Controllers
             this._uow = uow as UnitOfWorks;
             this.Session = httpContextAccessor.HttpContext.Session;
         }
-        public IActionResult LogIn()  
+
+        public IActionResult LogIn()
         {
             return View();
         }
@@ -29,24 +31,23 @@ namespace Bullows.Controllers
         [HttpPost]
         public JsonResult Index(LoginModel loginModel, string returnUrl)
         {
-            //if (ModelState.IsValid)
-            //{
-                try
-                {
-                   UserModel model = this._uow.userRepository.ValidateUser(loginModel.LoginId, loginModel.Password);
-                    if (model == null)
-                    {
-                        return Json(new { Result = false, Message = "Invalid username or password." });
-                    }
-                    else
-                    {
-                        this.Session.SetString("FirstName", model.FullName);
-                        int UserRoleId = model.UserRoleID;
-                        this.Session.SetInt32("UserRoleId", UserRoleId);
-                        this.Session.GetInt32("UserRoleId");
-                        int RoleId = Convert.ToInt32(HttpContext.Session.GetInt32("UserRoleId"));
 
-                        var LoginClaims = new List<Claim>()
+            try
+            {
+                UserModel model = this._uow.userRepository.ValidateUser(loginModel.LoginId, loginModel.Password);
+                if (model == null)
+                {
+                    return Json(new { Result = false, Message = "Invalid username or password." });
+                }
+                else
+                {
+                    this.Session.SetString("FirstName", model.FullName);
+                    int UserRoleId = model.UserRoleID;
+                    this.Session.SetInt32("UserRoleId", UserRoleId);
+                    this.Session.GetInt32("UserRoleId");
+                    int RoleId = Convert.ToInt32(HttpContext.Session.GetInt32("UserRoleId"));
+
+                    var LoginClaims = new List<Claim>()
                         {
                              new Claim(ClaimTypes.Name, model.EmpId.ToString()),
                              new Claim(Constants.ClaimType.UserId, model.EmpId.ToString()),
@@ -55,45 +56,46 @@ namespace Bullows.Controllers
 
                         };
 
-                        var LoginIdentity = new ClaimsIdentity(LoginClaims, "Login Identity");
-                        if (model.Roles != null)
+                    var LoginIdentity = new ClaimsIdentity(LoginClaims, "Login Identity");
+                    if (model.Roles != null)
+                    {
+                        foreach (var item in model.Roles)
                         {
-                            foreach (var item in model.Roles)
-                            {
-                                LoginIdentity.AddClaim(new Claim(ClaimTypes.Role, item.ToString()));
-                            }
+                            LoginIdentity.AddClaim(new Claim(ClaimTypes.Role, item.ToString()));
                         }
-
-                        var userPrinciple = new ClaimsPrincipal(new[] { LoginIdentity });
-                        HttpContext.SignInAsync(userPrinciple);
-
-                        if (string.IsNullOrEmpty(returnUrl))
-                            this.Session.SetString("RedirectUrl", "~/Home/Index");
-                        else
-                            this.Session.GetString("RedirectUrl");
-
-                        this.Session.SetInt32("UserId", model.EmpId);
-                        this.Session.SetString("UserName", model.FullName);
-                        this.Session.SetString("UserRoleId", model.UserRoleID.ToString());
-                        return Json(new { Result = true });
-                        //return RedirectToAction("Index","Home");
                     }
+
+                    var userPrinciple = new ClaimsPrincipal(new[] { LoginIdentity });
+                    HttpContext.SignInAsync(userPrinciple);
+
+                    if (string.IsNullOrEmpty(returnUrl))
+                        this.Session.SetString("RedirectUrl", "~/Home/Dashboard");
+                    else
+                        this.Session.GetString("RedirectUrl");
+
+                    this.Session.SetInt32("UserId", model.EmpId);
+                    this.Session.SetString("UserName", model.FullName);
+                    this.Session.SetString("UserRoleId", model.UserRoleID.ToString());
+                    return Json(new { Result = true });
                 }
-                catch (Exception ex)
-                {
-                    return Json(new { Result = false, Message = ex.Message });
-                }
-            //}
-            //else
-            //{
-            //    return Json(new { Result = false, Message = "Invalid username or password." });
-            //}
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Result = false, Message = ex.Message });
+            }
+
         }
         [Microsoft.AspNetCore.Authorization.Authorize]
-        public IActionResult LogOff()
+        //public IActionResult LogOff()
+        //{
+        //    HttpContext.Session.Clear();
+        //    return RedirectToAction("Index", "LogOn");
+        //}
+        public async Task<IActionResult> LogOff()
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Index", "LogOn");
+            // Clear authentication cookie
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("LogIn"); // Redirect to login page
         }
     }
 }

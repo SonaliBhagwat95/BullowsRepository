@@ -1,23 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bullows.Model
 {
     public class EnquiryModel
     {
         public DateTime ProposalDate { get; set; }
-
+        public string Shape { get; set; }
+        public decimal CarringCapacity { get; set; }
+        public string ConveyorNumber { get; set; }
+        public string OverheadConveyorSubTypes { get; set; }
+        public string Orientation { get; set; }
         public int EnquiryId { get; set; }
-
+        public bool settingStatus { get; set; }
+        public string MotorType { get; set; }
+        public string LightType { get; set; }
         public string SalesNO { get; set; }
 
-       
+        public decimal Diameter { get; set; }
         public int CustomerID { get; set; }
         public int ComponentID { get; set; }
 
@@ -25,7 +24,7 @@ namespace Bullows.Model
         public int NoOfColors { get; set; }
         public int NoOfCoats { get; set; }
 
-        public string SpecificHeat { get; set; }
+        public double SpecificHeat { get; set; }
         public string CompanyName { get; set; }
 
         public string CustomerAddress { get; set; }
@@ -42,11 +41,12 @@ namespace Bullows.Model
         public double LengthSize { get; set; }
         public double WidthSize { get; set; }
         public double HeightSize { get; set; }
+        public double CircularHeightSize { get; set; }
         public double Weight { get; set; }
         public int QtyperAssembly { get; set; }
 
         public string MaterialofConstruction { get; set; }
-
+        public string PaintBoothType { get; set; }
         public double SurfaceArea { get; set; }
 
         public double WallThickness { get; set; }
@@ -70,7 +70,7 @@ namespace Bullows.Model
 
         public int StateId { get; set; }
 
-        public int DistrictId { get; set; }
+       // public int DistrictId { get; set; }
         public int CityId { get; set; }
         public string State { get; set; }
         public int Pin { get; set; }
@@ -79,16 +79,17 @@ namespace Bullows.Model
         public string MobileNo { get; set; }
 
         public string EmailId { get; set; }
+ 
 
         public string Consumption { get; set; }
 
-        public EnquiryModel()
-        {
-            ContactPersons = new List<ContactPersonModel>();
-        }
-        public  List<ContactPersonModel> ContactPersons { get; set; }
+        public string Description { get; set; }
 
-       
+
+
+
+
+
 
     }
 }

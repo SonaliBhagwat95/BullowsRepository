@@ -27,11 +27,11 @@
             <div class="row">
                 <div class="col-md-3">
                     <label class="smaller-font">Company Name</label>
-                    @Html.TextBoxFor(c => c.CompanyName, new {@id="txtCompanyName", @class = "form-control", style = "width: 250px;"})
+                    @Html.TextBoxFor(c => c.CompanyName, new {@id="txtCompanyName",@class = "form-control smaller-font smaller-height", style = "width: 250px;"})
                 </div>
                 <div class="col-md-3">
                     <label class="smaller-font">Company Address</label>
-                    @Html.TextBoxFor(c => c.CustomerAddress, new {@id="txtCustomerAddress", @class = "form-control", style = "width:250px;"})
+                    @Html.TextBoxFor(c => c.CustomerAddress, new {@id="txtCustomerAddress",@class = "form-control smaller-font smaller-height", style = "width: 250px;"})
                 </div>
                
             </div>
@@ -39,7 +39,7 @@
         <br/>
         <div class="row cl-md-12 col-lg-12 col-sm-12 ">
             <div class="row">
-                <div class="col-md-2">
+                @* <div class="col-md-2">
                     <label class="smaller-font">State</label>
                     @Html.DropDownListFor(c => c.StateId, new List<SelectListItem>
                     {
@@ -47,42 +47,30 @@
                     new SelectListItem { Text = "Assam", Value = "2" },
 
                     }, "--Select--", new { @id = "drpstate", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                </div>
+                </div> *@
                 <div class="col-md-2">
-                    <label class="smaller-font">District</label>
-                @Html.DropDownListFor(c => c.DistrictId, new List<SelectListItem>
-                {
-                new SelectListItem { Text = "Pune", Value = "1" },
-                new SelectListItem { Text = "Mumbai", Value = "2" },
-                new SelectListItem { Text = "Nagpur", Value = "3" },
-                new SelectListItem { Text = "Nashik", Value = "4" },
-                    new SelectListItem { Text = "Baksa", Value = "5" },
-                    new SelectListItem { Text = "Bajali", Value = "6" },
-                    }, "--Select--", new { @id = "drpdistrict", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                    <label class="smaller-font">State</label>
+                    <select id="StateDropdown" name="selectedStateID" class="form-control smaller-font smaller-height" style="width:130px">
+                        <option value="">-- Select--</option>
+                        @foreach (var state in ViewBag.State)
+                        {
+                            <option value="@state.Value">@state.Text</option>
+                        }
+                    </select>
                 </div>
+               
          
             <div class="col-md-2">
                     <label class="smaller-font">City</label>
-                @Html.DropDownListFor(c => c.CityId, new List<SelectListItem>
-                {
-               
-                new SelectListItem { Text = "Karve Nagar", Value = "1" },
-                new SelectListItem { Text = "Kothrud", Value = "2" },
-                new SelectListItem { Text = "Hadapsar", Value = "3" },  
-                new SelectListItem { Text = "Andheri", Value = "4" },
-                new SelectListItem { Text = "Bandra", Value = "5" },
-                new SelectListItem { Text = "Dadar", Value = "6" },
-
-                    }, "--Select--", new { @id = "drpcity", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                    <select id="CityDropdown" name="selectedCityID" class="form-control smaller-font smaller-height" style="width:130px">
+                        <option value="">-- Select--</option>
+                    </select>
             </div>
             <div class="col-md-2">
                     <label class="smaller-font">Pin</label>
                     @Html.TextBoxFor(c => c.Pin, new {@id="txtpin", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
             </div>
-                <div class="col-md-2">
-                    <label class="smaller-font">PAN</label>
-                    @Html.TextBoxFor(c => c.PAN, new {@id="txtpan", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
-                </div>
+                
             </div>
             </div>
         @* </div> *@
@@ -97,13 +85,13 @@
                     }, "--Select--",
                     new { @id = "drptitle",@class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div> *@
-                <div class="col-md-4">
-                    <label class="smaller-font">Contact Person Name</label>
+                <div class="col-md-2">
+                    <label class="smaller-font">Contact Person</label>
                     @Html.TextBoxFor(c => c.Contactperson, new {@id="txtcontactperson", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
                 </div>
                 <div class="col-md-2">
                     <label class="smaller-font">Designation</label>
-                    @Html.TextBoxFor(c => c.Designation, new {@id="txtCustomerAddress", @class = "form-control", style = "width:150px;"})
+                    @Html.TextBoxFor(c => c.Designation, new {@id="txtCustomerAddress", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
                 </div>
                
                 <div class="col-md-2">
@@ -114,15 +102,19 @@
                     <label class="smaller-font">EmailId</label>
                     @Html.TextBoxFor(c => c.EmailId, new {@id="txtEmail",@class = "form-control smaller-font smaller-height", style = "width: 130px;"})
                 </div>
+                <div class="col-md-2">
+                    <label class="smaller-font">PAN</label>
+                    @Html.TextBoxFor(c => c.PAN, new {@id="txtpan", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
+                </div>
             </div>
-            <div class="row">
+           @*  <div class="row">
                 <div class="col-md-1" style="margin-top:20px">
                     <input type="button" class="btn btn-primary rounded-pill" id="BtnAdd" style="width:100px" value="Add" />
                 </div>
                 <div class="col-md-1" style="margin-top:20px;margin-left:40px">
                     <input type="reset" class=" btn btn-secondary rounded-pill" id="btnCancel" style="width:100px" value="Cancel" />
                 </div>
-            </div>
+            </div> *@
             </div>
         <div class="row">
             <div class="col-md-1" style="margin-top:20px">
@@ -134,66 +126,19 @@
         </div>
 
 
-        <div style="margin-top:10px;margin-right:10px">
-            <div class="table-responsive" style="width:80%;max-height:400px;overflow-y:scroll">
-                <table class="table" id="dataGrid">
-                    <thead class="webgrid-header" style="background-color:gray">
-                        <tr>
-                            <th>Sr.NO</th>
-                            <th id="tableId" style="display:none;">ContactId</th>
-                            <th>Contact Person</th>
-                            <th>Mobile</th>
-                            <th>EmailID</th>
-                           @*  <th>Action</th> *@
-                        </tr>
-                    </thead>
-                   <tbody>
-                        @if (Model.ContactPersons.Count == null)
-                        {
-                            <tr><td colspan="5">No data available</td></tr>
-                        }
-                        else
-                        {
-                            int i = 0;
-                            @foreach (var contact in Model.ContactPersons)
-                            {
-                                i++;
-                                <tr>
-                                    <td>@i</td>
-                                    <td style="display:none;">ContactId</td>
-                                    <td>@contact.ContactPerson</td>
-                                    <td>@contact.MobileNo</td>
-                                    <td>@contact.EmailId</td>
-                                   @*  <td>
-                                        <a href="@Url.Action("Enquiry", "Enquiry", new { id = contact.ContactId })">
-                                            <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
-                                        </a>
-                                         </td>
-                                <td>
-                                        <a href="@Url.Action("Delete", "Enquiry", new { id = contact.ContactId })">
-                                            <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
-                                        </a>
-                                    </td> *@
-                                </tr>
-                            }
-                        }
-                    </tbody> 
-                 </table>
-            </div>
-        </div>     
+        
 </form>
 
 </div>
-@* <div style="margin-top:10px;margin-right:10px">
-    <div class="table-responsive" style="width:80%;max-height:400px;overflow-y:scroll">
+ <div style="margin-top:10px;/* margin-right:10px */">
+    <div class="table-responsive" style="width:90%;max-height:400px;overflow-y:scroll">
         <table class="table" id="dataGrid">
             <thead class="webgrid-header" style="background-color:gray">
                 <tr>
                     <th>Sr.NO</th>
                     <th id="tableId" style="display:none;">CustomerID</th>
                     <th>CompanyName</th>
-                    <th>PAN</th>
-                    <th>State</th>
+                    <th>Address</th>                  
                     <th>Action</th>
                 </tr>
             </thead>
@@ -210,17 +155,15 @@
                         i++;
                         <tr>
                             <td>@i</td>
-                            <td style="display:none;"></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td style="display:none;">@item.CustomerID</td>
+                            <td>@item.CompanyName</td>
+                            <td>@item.CustomerAddress</td>                          
                             <td>
-                                <a href="@Url.Action("Enquiry", "Enquiry", new { id = item.EnquiryId })">
+                                <a href="@Url.Action("Customer", "Customer", new { id = item.CustomerID })">
                                     <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
                                 </a>
-                                @*  </td>
-                        <td> *@
-                               @*  <a href="@Url.Action("Delete", "Enquiry", new { id = item.EnquiryId })">
+                               
+                                <a href="@Url.Action("Delete", "Customer", new { id = item.CustomerID })">
                                     <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
                                 </a>
                             </td>
@@ -230,77 +173,46 @@
             </tbody>
         </table>
     </div>
-</div>  *@
+</div>  
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Hide district and city dropdowns initially
-        // $("#drpdistrict").hide();
-        // $("#drpcity").hide();
+@section Scripts {
+    <script type="text/javascript">
+        // Handle state dropdown change event
+        $('#StateDropdown').change(function () {
+            debugger;
+            var stateId = $(this).val();
 
-        // Define city options for each district
-        var cityOptions = {
-            "1": ["1", "2", "3"], // Pune
-            "2": ["4", "5", "6"], // Mumbai
-            "3": [], // Nagpur (No cities in this example)
-            "4": []  // Nashik (No cities in this example)
-        };
-       
-        On changing the state dropdown
-        $("#drpstate").change(function () {
-            var selectedStateId = $(this).val();
-            // Hide city dropdown
-           // $("#drpcity").hide();
-            // Show district dropdown
-            $("#drpdistrict").show();
-            $("#drpdistrict option").each(function () {
-                var districtStateId = $(this).attr("data-state-id");
-                if (selectedStateId == districtStateId || districtStateId == undefined) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-            $("#drpdistrict").val("--Select--");
-        });
-       
-        $("#drpdistrict").change(function () {
-            var selectedDistrictId = $(this).val();
-            // Show city dropdown
-            $("#drpcity").show();       
-            $("#drpcity").empty();
+            if (stateId) {
+                $.ajax({
+                    url: '@Url.Action("GetCitiesByState", "Customer")',
+                    type: 'GET',
+                    data: { stateId: stateId },
+                    success: function (data) {
+                        $('#CityDropdown').empty();
+                        $('#CityDropdown').append('<option value="">-- Select--</option>');
 
-            // Add cities based on selected district
-            $.each(cityOptions[selectedDistrictId], function (index, value) {
-                $("#drpcity").append('<option value="' + value + '">' + getCityName(value) + '</option>');
-            });
-
-            // Select the default option
-            $("#drpcity").val("--Select--");
-        });
-
-        // Function to get city name based on its ID
-        function getCityName(cityId) {
-            switch (cityId) {
-                case "1":
-                    return "Karve Nagar";
-                case "2":
-                    return "Kothrud";
-                case "3":
-                    return "Hadapsar";
-                case "4":
-                    return "Andheri";
-                case "5":
-                    return "Bandra";
-                case "6":
-                    return "Dadar";
-                default:
-                    return "";
+                        if (data && data.length > 0) {
+                            $.each(data, function (index, city) {
+                                $('#CityDropdown').append('<option value="' + city.value + '">' + city.text + '</option>');
+                            });
+                        } else {
+                            $('#CityDropdown').append('<option value="">No cities available</option>');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX request failed');
+                        console.error('Status: ' + status);
+                        console.error('Error: ' + error);
+                        console.error('Response Text: ' + xhr.responseText);
+                        alert('Error loading cities: ' + error);
+                    }
+                });
+            } else {
+                $('#CityDropdown').empty();
+                $('#CityDropdown').append('<option value="">-- Select--</option>');
             }
-        }
-
+        });
+    </script>
+}
         
-    });
-</script>
-

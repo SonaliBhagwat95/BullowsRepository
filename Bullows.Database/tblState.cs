@@ -14,23 +14,20 @@ namespace Bullows.Database
         public int StateId { get; set; }
         public string State { get; set; }
         public bool Isdeleted { get; set;}
+        public int? CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int? ModifiedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public bool IsDeleted { get; set; }
     }
-    public class tblDistrict
-    {
-        [Key]
-        public int DistrictId { get; set; }
-        [ForeignKey("StateId")]
-        public int StateId { get; set; }
-        public string District { get; set; }
-        public bool Isdeleted { get; set; }
-    }
-    public class tblCity
-    {
-        [Key]
-        public int CityId { get; set; }
-        [ForeignKey("DistrictId")]
-        public int DistrictId { get; set; }
-        public string City { get; set; }
-        public bool Isdeleted { get; set; }
-    }
+    //public class tblDistrict
+    //{
+    //    [Key]
+    //    public int DistrictId { get; set; }
+    //    [ForeignKey("StateId")]
+    //    public int StateId { get; set; }
+    //    public string District { get; set; }
+    //    public bool Isdeleted { get; set; }
+    //}
+    
 }
