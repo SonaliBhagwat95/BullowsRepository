@@ -17,6 +17,19 @@
     .smaller-height {
         height: 30px;
     }
+
+    .table-responsive {
+        position: relative;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background: gray !important;
+        z-index: 10;
+    }
 </style>
 
 <div>
@@ -40,12 +53,12 @@
                                 <div id="resultsContainer" class="results-container"></div>
                             </div>
                             <div class="col-md-4">
-                                <label class="smaller-font">Panel Width</label>
+                                <label class="smaller-font">Panel Width (mm)</label>
                                 @*  @Html.ValidationMessageFor(c => c.PanelWidth, "", new { @class = "text-danger" }) *@
                                 @Html.TextBoxFor(c => c.PanelWidth, new { @class = "form-control smaller-font smaller-height", @id = "txtPanelWidth", style = "width: 130px;", placeholder = " Panel Width", Value = "1140" })
                             </div>
                             <div class="col-md-4">
-                                <label class="smaller-font">Panel Height</label>
+                                <label class="smaller-font">Panel Height (mm)</label>
                                 @*   @Html.ValidationMessageFor(c => c.PanelHeight, "", new { @class = "text-danger" }) *@
                                 @Html.TextBoxFor(c => c.PanelHeight, new { @class = "form-control smaller-font smaller-height", @id = "txtPanelHeight", style = "width: 130px;", placeholder = " Panel Height", Value = "2390" })
                             </div>
@@ -54,7 +67,7 @@
                         <div class="row">
 
                             <div class="col-md-4">
-                                <label class="smaller-font">Sheet Thickness</label>
+                                <label class="smaller-font">Sheet Thickness (mm)</label>
                                 @Html.ValidationMessageFor(c => c.SheetThickness, "", new { @class = "text-danger" })
                                 @Html.DropDownListFor(c => c.SheetThickness, new List<SelectListItem>{ new SelectListItem {Text = "1.2", Value="1.2"}, new SelectListItem {Text = "1.6", Value="1.6"},
                                 new SelectListItem{Text="2.0",Value="2.0"} }, "--Select--",
@@ -71,11 +84,30 @@
                                 "--Select--",
                                 new { @id = "drpSection", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                             </div>
-                            <div class="col-md-4">
+                            @* <div class="col-md-4">
                                 <label class="smaller-font">Bend/Structural M.</label>
                                 @Html.DropDownListFor(c => c.BendSection, new List<SelectListItem>(), "--Select--", new { @id = "drpBendStructural", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                            </div>
+                            </div> *@
+                            <div class="col-md-4">
+                                <label class="smaller-font">Bend/Structural M.</label>
 
+                                <!-- Main dropdown (predefined + Custom) -->
+                                @Html.DropDownListFor(c => c.BendSection,
+                                                                new List<SelectListItem>(),  // Will be populated by JS
+                                                                "--Select--",
+                                                                new { @id = "drpBendStructural", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+
+                                <!-- Custom textbox - hidden by default -->
+                                <input type="text"
+                                       id="txtCustomBendSection"
+                                       name="BendSection"  
+                                class="form-control smaller-font smaller-height mt-2"
+                                style="width: 130px; display: none;"
+                                placeholder="Enter custom value"
+                                value="@(Model.BendSection != null &&
+                                                                !new[] { "70*40*3", "75*40*2", "100*50*2", "100*50*3", "ISMC 75*40", "ISMC 100*50", "custom" }.Contains(Model.BendSection)
+                                                                ? Model.BendSection : "")" />
+                            </div>
                         </div>
                         <br />
                         <div class="row">
@@ -132,7 +164,7 @@
                             <div class="col-md-4">
                                 <label class="smaller-font">Light Sub Type</label>
                                 @Html.DropDownListFor(c=>c.LightSubTypes,new List<SelectListItem>{
-                                new SelectListItem{Text="NLP", Value="NLP"},
+                                new SelectListItem{Text="NFLP", Value="NFLP"},
                                 new SelectListItem{Text="FLP",Value="FLP"}
                                 },"---Select---",
                                 new {@id="drpLightSubType",@class = "form-control smaller-font smaller-height", style = "width: 130px;" })
@@ -171,7 +203,7 @@
         <div class="container" style="margin-top:10px;margin-left:-20px;">
             <div class="table-responsive" style="width:100% ;max-height:400px;overflow-y:scroll;">
                 <table class="table">
-                    <thead class="webgrid-header" style="background-color:grey">
+                    <thead class="webgrid-header">
                         <tr>
                             <th>Sr.No.</th>
                             <th id="tableId" style="display:none;">SId</th>
@@ -238,7 +270,7 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+@* <script>
     $(document).ready(function () {       
         var selectedBendSection = '@Model.BendSection'; // The value from your model
         $('#drpSection').change(function () {
@@ -250,8 +282,8 @@
                 { Text: "100*50*3", Value: "100*50*3" }
             ];
             var structuralOptions = [
-                { Text: "ISLC 75*40", Value: "ISLC 75*40" },
-                { Text: "ISLC 100*40", Value: "ISLC 100*40" }
+                { Text: "ISMC 75*40", Value: "ISMC 75*40" },
+                { Text: "ISMC 100*50", Value: "ISMC 100*50" }
             ];
             var options = [];
             if (selectedSection === "Bend Section") {
@@ -312,4 +344,128 @@
         });
 
     } 
-</script> 
+</script>  *@
+
+<script>
+    $(document).ready(function () {
+        var $sectionDropdown = $('#drpSection');
+        var $bendDropdown = $('#drpBendStructural');
+        var $customInput = $('#txtCustomBendSection');
+
+        // Store the current custom value on postback
+        var currentBendValue = '@Model.BendSection';  // Server-side value
+
+        var bendOptions = [
+            { Text: "70*40*3", Value: "70*40*3" },
+            { Text: "75*40*2", Value: "75*40*2" },
+            { Text: "100*50*2", Value: "100*50*2" },
+            { Text: "100*50*3", Value: "100*50*3" }
+        ];
+
+        var structuralOptions = [
+            { Text: "ISMC 75*40", Value: "ISMC 75*40" },
+            { Text: "ISMC 100*50", Value: "ISMC 100*50" }
+        ];
+
+        function populateBendDropdown(options) {
+            $bendDropdown.empty();
+            $bendDropdown.append('<option value="">--Select--</option>');
+
+            $.each(options, function (index, opt) {
+                $bendDropdown.append('<option value="' + opt.Value + '">' + opt.Text + '</option>');
+            });
+
+            // Always add "Custom" option at the end
+            $bendDropdown.append('<option value="custom">Custom</option>');
+
+            // After populating, restore the previous value (if it's not custom)
+            if (currentBendValue &&
+                options.some(function(opt) { return opt.Value === currentBendValue; })) {
+                $bendDropdown.val(currentBendValue);
+            }
+
+            updateCustomInputVisibility();
+        }
+
+        function updateCustomInputVisibility() {
+            if ($bendDropdown.val() === "custom") {
+                $customInput.show().focus();
+                $bendDropdown.prop('disabled', true);  // Prevent "custom" from being posted
+            } else {
+                $customInput.hide().val('');
+                $bendDropdown.prop('disabled', false);
+            }
+
+            // If postback had a custom value (not in predefined list), show it
+            if (currentBendValue &&
+                $bendDropdown.find('option[value="' + currentBendValue + '"]').length === 0 &&
+                currentBendValue !== "custom" && currentBendValue !== "") {
+                $bendDropdown.val("custom");
+                $customInput.val(currentBendValue).show();
+                $bendDropdown.prop('disabled', true);
+            }
+        }
+
+        // On Section change
+        $sectionDropdown.change(function () {
+            var selectedSection = $(this).val();
+            if (selectedSection === "Bend Section") {
+                populateBendDropdown(bendOptions);
+            } else if (selectedSection === "Structural member") {
+                populateBendDropdown(structuralOptions);
+            } else {
+                $bendDropdown.empty().append('<option value="">--Select--</option>');
+                $customInput.hide();
+            }
+        });
+
+        // On Bend dropdown change
+        $bendDropdown.change(function () {
+            updateCustomInputVisibility();
+        });
+
+        // Initial load: trigger based on current Section
+        if ($sectionDropdown.val()) {
+            $sectionDropdown.trigger('change');
+        } else {
+            updateCustomInputVisibility(); // In case only custom was selected before
+        }
+
+        function bindEvents() {
+        $('#txtEnquiryCode').on('keyup', function () {
+            var enquiryCode = $(this).val();
+            if (enquiryCode.length > 0) {
+                $.ajax({
+                    url: '@Url.Action("GetEnquiryCodes", "PanelSetting")',
+                    type: 'POST',
+                    data: { term: enquiryCode },
+                    success: function (data) {
+                        $('#resultsContainer').empty();
+                        if (data.success && data.results.length > 0) {
+                            data.results.forEach(function (item) {
+                                $('#resultsContainer').append('<div>' + item + '</div>');
+                            });
+                        } else {
+                            $('#resultsContainer').append('<div>Enquiry Code does not Available</div>');
+                        }
+                    },
+                    error: function () {
+                        $('#resultsContainer').empty();
+                        $('#resultsContainer').append('<div>Error occurred while searching.</div>');
+                    }
+                });
+            } else {
+                $('#resultsContainer').empty();
+            }
+        });
+        $(document).on('click', '#resultsContainer div', function () {
+            var selectedCode = $(this).text();
+            $('#txtEnquiryCode').val(selectedCode);
+            $('#resultsContainer').empty();
+        });
+
+}
+
+
+    });
+</script>

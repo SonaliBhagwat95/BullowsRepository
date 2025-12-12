@@ -1,0 +1,1465 @@
+﻿@model Bullows.Model.ProposalPriceBIDViewModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.3.0/docx.min.js"></script>
+<style>
+    header, footer {
+        background: #003366;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+        header h1, footer p {
+            margin: 0;
+        }
+
+    h1, h4, h3 {
+        color: #003366;
+        margin: 0 0 10px;
+        font-weight: 600;
+    }
+
+    .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+
+        .section h4 {
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+    .content-box {
+        margin: 10px 0;
+        font-size: 14px;
+    }
+
+    table {
+        width: 90%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #e7eaf0;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .table-header {
+        font-size: 15px;
+    }
+
+    .table-row {
+        background-color: #fdfdfd;
+    }
+
+        .table-row:hover {
+            background-color: #f1f5f9;
+        }
+
+    ul, ol {
+        padding-left: 20px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    .signature-box {
+        text-align: right;
+        margin-top: 40px;
+        font-size: 15px;
+        color: #555;
+    }
+
+    .image-placeholder {
+        border: 1px dashed #bbb;
+        padding: 30px;
+        text-align: center;
+        margin: 20px 0;
+        border-radius: 8px;
+        color: #888;
+        font-style: italic;
+    }
+
+    .content-list {
+        list-style-type: none;
+        padding: 0;
+        width: 100%;
+        max-width: 600px; /* Optional: Restricts the content's width */
+    }
+
+        .content-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            border-bottom: 1px solid #ccc; /* Optional for cleaner rows */
+            padding-bottom: 5px;
+        }
+
+    .radio-buttons {
+        display: flex;
+        gap: 20px;
+    }
+
+    .content-list li span {
+        flex-grow: 1;
+        margin-right: 10px; /* Space between content and checkbox */
+    }
+
+    footer {
+        font-size: 14px;
+        border-top: 2px solid #ddd;
+        margin-top: 30px;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<div id="divProposal" style="margin-left:50px;margin-top:5px;">
+  
+    <h6 style="color:blue">Proposal</h6>
+
+
+    <!-- Proposal Content (Initially Hidden) -->
+    <div id="proposalContent" style="margin-top: 20px;" class="section">
+
+        <div style="margin-bottom: 20px;">
+
+            <img src="~/img/logo.png" alt="Bullows Paint Equipment Pvt. Ltd." style="max-width: 150px;">
+            <h4 style="color:red">Bullows Paint Equipment Private Limited</h4>
+
+            <p>
+                Office: Unit No. 404, Lodha Supremus 2, Plot no. - F4 & F4/1 MIDC, Wagle Industrial Area, Thane 400 604<br>
+                Mob No: +91 84339 30782 | Email: bullows@bullows.com | Website: <a href="http://www.bullows.com">www.bullows.com</a><br>
+                CIN: U29221MH1963PTC012756
+            </p>
+            <p style="font-weight: bold;">
+                BP/AVG/@Model.ProposalDetails.SalesNO<br>
+                @DateTime.Now.ToString("dd/MM/yyyy")
+            </p>
+        </div>
+
+      
+            <!-- Proposal Information Section -->
+            <div class="section">
+                <table>
+                    <tr><th>Client Name:</th><td>@Model.ProposalDetails.CompanyName</td></tr>
+                    <tr><th>Attention:</th><td>@Model.ProposalDetails.ContactPerson</td></tr>
+                    <tr><th>Project Title:</th><td>Requirement of Paint Booth & Paint Drying Oven</td></tr>
+                    <tr><th>Date:</th><td>@DateTime.Now.ToString("dd/MM/yyyy")</td></tr>
+                </table>
+            </div>
+            <div class="section">
+                <h4>Introduction</h4>
+                <p>
+                    Dear Sir,<br>
+                    We thankfully acknowledge receipt of your inquiry regarding your requirement for the mentioned subject.
+                    We are pleased to submit herewith our proposal for your requirement.
+                </p>
+                <h6>The contents of the proposal are as Below: -</h6>
+                <ol class="content-list">
+                    <li>
+                        <span>1. Basis of Design</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>2. Scope of Supply</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>3. Technical Specifications for all equipment</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>4. Utility Requirements for the Plant</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>5. Make of Components</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>6. Exclusion List</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>7. Price Bid</span>
+                        <input type="checkbox" checked />
+                    </li>
+                    <li>
+                        <span>8. Terms & Conditions</span>
+                        <input type="checkbox" checked />
+                    </li>
+                </ol>
+                <p>
+                    We sincerely trust our proposal will be in line with your requirements, and we now look forward to receiving
+                    your earliest favorable reply. Should you need further clarification, please feel free to contact us.
+                    Thank you and always assuring our best services.
+                </p>
+                <p>Yours faithfully,</p>
+                <h5>For Bullows Paint Equipment Private Limited,</h5>
+                <br /><br />
+                <div>
+                   @*  <h6>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</h6> *@
+                    <h6>Regional Manager- East & North </h6>
+                </div><hr />
+                <div style="background-color:lightgray">
+                    <h5>
+                        CC Mr. Abhay V. Gurav – Sales and Application- Sr. Manager
+                    </h5>
+                    <h5>Mr. Prashant R Waghulade - General Manager & Business Head</h5>
+                </div>
+
+            </div>
+
+
+            <!-- Fan Specification Section -->
+            <div class="section">
+                
+                <h4>Basis of Design</h4>
+                <table>
+                    <tr>
+                        <th>Component Details</th>
+                        <td>
+                            <div class="radio-buttons">
+                                <label>
+                                    <input type="radio" name="componentDetails" value="provided" checked />
+                                    Provided
+                                </label>
+                                <label>
+                                    <input type="radio" name="componentDetails" value="notProvided" />
+                                    Not Provided
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Image/Photo/Drawing</th>
+                        <td>
+                            <div class="radio-buttons">
+                                <label>
+                                    <input type="radio" name="ImageDetails" value="provided" checked />
+                                    Provided
+                                </label>
+                                <label>
+                                    <input type="radio" name="ImageDetails" value="notProvided" />
+                                    Not Provided
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr><th>Component Dimension</th><td>@Model.ProposalDetails.Length mm L x @Model.ProposalDetails.WidthSize mm W x @Model.ProposalDetails.HeightSize mm H</td></tr>
+                  
+                    <tr><th>Production</th><td>@Model.ProposalDetails.ProductionRequirement Nos. per year</td></tr>
+                    <tr><th>Component Weight</th><td>Min: 5000 Kg, Max: 42000 Kg</td></tr>
+                    <tr><th>No. of shifts per day </th><td>@Model.ProposalDetails.NumberofShifts Nos.</td></tr>
+                    <tr><th>Effective working hrs. </th><td>@Model.ProposalDetails.EffectiveWorking Hours</td></tr>
+                    <tr><th>Working days/Annum</th><td>@Model.ProposalDetails.Workingdays</td></tr>
+                    <tr><th>Paint Type</th><td>Epoxy / PU</td></tr>
+                    <tr><th>Viscosity</th><td>@Model.ProposalDetails.Viscosity</td></tr>
+                    <tr><th>Primer & Topcoat DFT</th><td>@Model.ProposalDetails.DFT</td></tr>
+                    <tr><th>No. of Colors to be applied</th><td>@Model.ProposalDetails.NoOfColors</td></tr>
+                    <tr><th>Specific heat of component</th><td>@Model.ProposalDetails.SpecificHeat</td></tr>
+                    <tr><th>Component handling</th><td>Epoxy / PU</td></tr>
+                    <tr><th>Cycle Time</th><td>Not Applicable</td></tr>
+                    <tr><th>Loading & Unloading </th><td>@Model.ProposalDetails.LoadingUnloading</td></tr>
+                </table><hr />
+                <h6>Note: Booth size confirm by the customer</h6>
+            </div>
+
+           
+            <div class="section">
+                <h4>Scope of Supply</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>                      
+                        <tr>
+                            <td>1</td>
+                            <td>Dry Type PaintBooth</td>
+                            <td><input type="checkbox" name="item2" value="2" checked></td>
+                            <td>1 Set</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Exhaust ducting with angle Supports.</td>
+                            <td><input type="checkbox" name="item3" value="3" checked></td>
+                            <td>1 Set</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Electrical Control panel and cable trays for paint booth</td>
+                            <td><input type="checkbox" name="item4" value="4" checked></td>
+                            <td>1 Set</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Scope of Supply Section -->
+            @* <div class="section" id="BlastingRoom">
+                <h4>TECHNICAL SPECIFICATION OF BLASTING ROOM</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Description</th>
+                            <th>
+                                Specifications
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Size</td>
+                            <td>13000 mm [L] X 5000 mm [W] X 5500 mm [H].</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>
+                                Room For Shot Blasting
+                            </td>
+
+                            <td>
+                                The walls and roofs fabricated from mild steel sheet plate 2 mm, suitably stiffing, and
+                                the whole forming a robust cabinet construction. The roof is provided with air inlets
+                                or ventilators and boxes to receive electric lights. The room is fitted with hinged type
+                                doors on entrance Main door.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>
+                                Rubber Lining Inside
+                                Cabinet
+                            </td>
+
+                            <td>
+                                The interior of sidewalls of the chamber protected with replaceable hanging 3 mm
+                                thick abrasive resistant rubber sheets for protection against abrasion. (Excluding
+                                Roof)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>
+                                Door
+                            </td>
+
+                            <td>
+                                The room is fitted with doors on the entry side. The door will be hinged type –
+                                foldable, total Opening 4.7 Mtrs.W x 4.7 Mtrs. H. Rubber curtain provided on doors.
+                                Qty: 1 no
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Illumination</td>
+                            <td>
+                                The blast room is suitably illuminated with sufficient Watts of LED Lamps with
+                                fittings fitted on the ceilings with suitable wire mesh reinforced glass covers.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Abrasive Recycling System</td>
+                            <td>Not Provided</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Floor Grating & Screw Conveyor Hoppers</td>
+                            <td>Not Provided</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Screw Conveyors for Abrasive Recovery</td>
+                            <td>Not Provided</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Abrasive Elevator</td>
+                            <td>Not Provided</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Control Panel</td>
+                            <td>
+                                Conveniently located centralized control panel and a separate operation control
+                                cabinet will be provided. Dustproof control panels with contactors, fuses, overload
+                                protection relays with necessary interlocks shall be provided. All the electrical items
+                                will be of approved standard make. Troubleshooting chart/procedure will be
+                                provided for all the modules. The illumination lamps inside the blast chamber will be
+                                wired with suitable copper conductor armored wiring and the wiring will be
+                                routed through MS superior class conduit pipes.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Ducting</td>
+                            <td>
+                                We include connecting ductwork from the machines to the dust collector and a
+                                crawl on the fan discharge in our offer. The price quoted allows for not more than
+                                10 meters of ducting between the machine and dust collector and all ancillary
+                                ducting to separator unit, and any other ducting required on the machine.
+                                <br><b>Note:</b>
+                                <ol>
+                                    <li>
+                                        Additional Ducting required as per site condition needs to be ordered separately
+                                        with Additional Charges.
+                                    </li>
+                                    <li>
+                                        Exhaust Duct Supports will be taken from the existing wall/roof structure as per
+                                        shown in the layout.
+                                    </li>
+                                </ol>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Drawings</td>
+                            <td>
+                                Detailed General Arrangement Drawing will be provided after order is finalized.
+                                Meanwhile, we are giving you typical drawing for your reference only.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> *@
+            <div class="section">
+                <h4>TECHNICAL SPECIFICATION FOR PAINT BOOTH </h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Description</th>
+                            <th>Specification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Type</td>
+                            @{
+                                if (@Model.ProposalDetails.Category == 1)
+                                {
+                                    <td>Dry Paint Booth</td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        Wet Paint Booth
+                                    </td>
+                                }
+
+                            }
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Working Size of paint booth in mm</td>
+                            <td>@Model.ProposalDetails.Length mm L x @Model.ProposalDetails.WidthSize mm W x @Model.ProposalDetails.HeightSize mm H</td> <!-- Variable for Working Size -->
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Extraction Chamber</td>
+                        <td></td> 
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Planum Chamber Size in mm</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="PlenumChamber" value="Yes"  />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="PlenumChamber" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Fresh Air Supply Unit</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="FraishAirSupply" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="FraishAirSupply" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Average Velocity inside booth</td>
+                            <td>@* @Model.AverageVelocity *@</td> <!-- Variable for Average Velocity -->
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>
+                                Material of Construction
+                                <ul>
+                                    <li>Panels (Booth Enclosure):</li>
+                                    <li>Panels (Extraction Chamber):</li>
+                                    <li>Exhaust Chamber:</li>
+                                    <li>Exhaust Ducting:</li>
+                                </ul>
+                            </td>
+                            <td>@Model.MaterialList.Materials</td>
+
+
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Viewing Glass</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="ViewingGlass" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="ViewingGlass" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Painting Inside & Outside</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="PaintingInside" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                      
+                                        <input type="radio" name="PaintingInside" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="font-weight: bold; text-align: left;">
+                                Exhaust Blower Specifications
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Type</td>
+                            <td>Centrifugal Blower</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>MOC</td>
+                            <td>@Model.MaterialList.Materials</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Exhaust Capacity</td>
+                            <td>@Model.MaterialList.EXhaustCapacity</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Motor Capacity</td>
+                            <td>@* @Model.ExhaustMotorCapacity *@</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>VFD</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="VFD" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="VFD" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Blower Mounting</td>
+                            <td><input type ="text" class="form-control"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Volume Control Damper</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="VolumeControl" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="VolumeControl" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Quantity</td>
+                            <td><input type="text" class="form-control" id="txtQuantity" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="font-weight: bold; text-align: left;">
+                                Lighting
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Illumination Level :</td>
+                            <td>@Model.MaterialList.Lumens</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Quantity :</td>
+                            <td>@Model.MaterialList.TubelightQuantity</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>12</td>
+                            <td>Sampling Port </td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="SamplingPort" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="SamplingPort" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td> <!-- Variable for Extraction Chamber -->
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>VOC Monitoring units </td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="MonitoringUnits" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="MonitoringUnits" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>Fire Fighting System</td>
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="FireFightning" value="Yes" />
+                                        Yes
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="FireFightning" value="No" checked />
+                                        No
+                                    </label>
+                                </div>
+                            </td> 
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                Note:Normally without acoustic enclosure, noise generated when blowers are in running condition will be  87-90
+                                dB when measured at 3 Mtrs. distance from noise generating source (Blower).
+                                Water Hydrant line upto booth customer scope.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+
+            <div class="section">
+                <h4>General Specification of Control Panel</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Description</th>
+                            <th>Type/Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="3">
+                                <div class="section-title">Operational Philosophy</div>
+                                <p>This Operational Philosophy summarizes the various components of the system and presents a detailed overview of the associated control system.</p>
+
+                                <div class="section-title">Document Description</div>
+                                <p>Each major section of control is explained with respect to start/stop in the particular area. This document gives a textual description of operating sequence.</p>
+
+                                <div class="section">Electrical Specifications</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>No. Of Control Panel</td>
+                            <td>1 No.</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Type of Control Panel</td>                           
+                            <td>
+                                <div class="radio-buttons">
+                                    <label>
+                                        <input type="radio" name="Mounted" value="Yes" />
+                                        Floor Mounted
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="Mounted" value="No" checked />
+                                        Wall mounted
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Power Supply</td>
+                            <td><input type="text" class="form-control" value="3 Phase & Neutral, 50 HZ 415 VAC, 4 Wires" /></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Degree Of Protection</td>
+                            <td><input type="text" class="form-control" value="IP 52" /></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Type of Cabling (Field & Panel)</td>
+                            <td><input type="text" class="form-control" value="Copper (For Field- Flexible- Polycab)" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Type of Earthing</td>
+                            <td><input type="text" class="form-control" value="Copper" /></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Control Panel Fabrication</td>
+                            <td><input type="text" class="form-control" value="14 / 16SWG CRCA - Powder coated Siemens Grey" /></td>                          
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>All Pump & Blower up to 5 HP</td>
+                            <td><input type="text" class="form-control" value="DOL" /></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>All Pump & Blower above 5 HP</td>
+                            <td><input type="text" class="form-control" value="Star Delta" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="section-title">Power, Control & Metering Section</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Description</th>
+                            <th>Type/Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Main Incomer</td>
+                            <td><input type="text" class="form-control" value="MCCB / Rotary switch / SDFU" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>VAF Meter</td>
+                            <td><input type="text" class="form-control" value="Trinity / Selec (96x96)" /></td>
+
+                           
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Busbar</td>
+                            <td><input type="text" class="form-control" value="Aluminium" /></td>
+
+                            
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>MCB, Contactors, S/d Timers & OLR Relay</td>
+                            <td><input type="text" class="form-control" value="Type 2 Co-Ordination Chart Make- Siemens / Schneider / Mitsubishi" /></td>
+
+                          
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Relay</td>
+                            <td><input type="text" class="form-control" value="Omron / Equivalent Make" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Selector Switch, Push Buttons & Indication Lamp</td>
+                            <td><input type="text" class="form-control" value="Teknic / Siemens / Mitsubishi / Equivalent make" /></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Control Transformer / CT for VAF meter</td>
+                            <td><input type="text" class="form-control" value="Reputed make" /></td>
+
+                           
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="section">
+                    <h4>Special Features of Plant Control</h4>
+                    <table>
+                        <thead>
+                            
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>There will be 2 modes for operation: Manual mode & Auto mode.</td>
+
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Automatic Sequential starter is provided with Start & Stop facility. All blowers will operate sequentially in Auto mode. The controls of the Painting system will be independent of other equipment.</td>
+
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Manual overrides will be provided for all motors.</td>
+
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>All cables being taken out will pass through glands to avoid ingress. Wiring will be routed aesthetically through proper cable trays and secured wherever possible.</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+               
+                <div class="section">
+                <div class="section-title">Electrical Utility Break-up Details</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Item Description</th>
+                            <th>HP</th>
+                            <th>KW</th>
+                            <th>Quantity</th>
+                            <th>Total KW</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Dry Type Paint Booth</td>
+                            <td><input type="text" class="form-control" value="40"/></td>
+                            <td><input type="text" class="form-control" value="30" /></td>
+
+                            <td><input type="text" class="form-control" value="1" /></td>
+
+                            <td><input type="text" class="form-control" value="30" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Spray Paint Booth</td>
+                            <td><input type="text" class="form-control" value="40" /></td>
+                            <td><input type="text" class="form-control" value="30" /></td>
+
+                            <td><input type="text" class="form-control" value="1" /></td>
+
+                            <td><input type="text" class="form-control" value="30" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">Total</td>
+                            <td>60 KW</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <div class="section-title">
+                    Interlock Details:
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th> Description</th>
+                            <th>Select</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Tube lights shall be on independently by selector switch.</td>
+                            <td><input type="checkbox" class="form-check-input" name="select1"></td>
+
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>When operator pressed Emergency push button then all blowers will be turn off. Only Tube lights remains on.</td>
+                            <td><input type="checkbox" class="form-check-input" name="select2"></td>
+                        </tr>
+                        <tr>
+                            <td>4.3</td>
+                            <td>Safety Details:</td>
+                            <td><input type="checkbox" class="form-check-input" name="select3"></td>
+                        </tr>
+
+                        <tr>
+                            <td>1</td>
+                            <td>Emergency push buttons at Necessary Locations.</td>
+                            <td><input type="checkbox" class="form-check-input" name="select4"></td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Emergency push buttons at Necessary Locations.</td>
+                            <td><input type="checkbox" class="form-check-input" name="select5"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Overload protection for motor. Alarm will be generated whenever motor trip because of overload.</td>
+                            <td><input type="checkbox" class="form-check-input" name="select6"></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Earthing to be provided.</td>
+                            <td><input type="checkbox" class="form-check-input" name="select7"></td>
+                        </tr>
+                        <tr>
+                            <td>4.4</td>
+                            <td>Provision Details: -</td>
+                            <td><input type="checkbox" class="form-check-input" name="select8"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Item Description</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td>Overload Protection</td>
+                            <td>
+                                For every Motor
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Alarm</td>
+                            <td>In case of Motor Trip</td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Tower Lamp </td>
+                            <td>Green- Auto mode, Yellow- Man mode, Red- Fault</td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            @*  UTILITIES REQUIREMENTS *@
+            <div class="section">
+                <h4>UTILITIES REQUIREMENTS</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Sr No.</td>
+                            <td>Description</td>
+                            <td>Value</td>
+                            <td>Unit</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>A</td>
+                            <td>Electrical Power Supply</td>
+                            <td><input type="text"  class="form-control" style="width: 100%;"></td>
+                            <td><input type="text" class="form-control" style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Type</td>
+                            <td><input type="text" name="type_value" class="form-control" style="width: 100%;"></td>
+                            <td><input type="text" name="type_unit" class="form-control"  style="width: 100%;"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Voltage</td>
+                            <td><input type="text" name="voltage_value" class="form-control" style="width: 100%;"></td>
+                            <td><input type="text" name="voltage_unit" class="form-control" style="width: 100%;" value="Volts"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Frequency</td>
+                            <td><input type="text" name="frequency_value" class="form-control" style="width: 100%;" value="50+/-3%"></td>
+                            <td><input type="text" name="frequency_unit" class="form-control" style="width: 100%;" value="Hertz"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Neutral & Earth should be independent</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>B</td>
+                            <td>Electrical Connected Load</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Total Connected load of Booth</td>
+                            <td><input type="text" name="connected_load_value" class="form-control" style="width: 100%;" value="60 Kw"></td>
+                            <td><input type="text" name="connected_load_unit" style="width: 100%;" value="60 KW (approx.)"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Note:</strong> Customer will provide main incomer for Panel.</p>
+
+            </div>
+            @* MAKE LIST OF PREFERED BOUGHT OUT *@
+            <div class="section">
+                <h4>MAKE LIST OF PREFERED BOUGHT OUT</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Sr No.</td>
+                            <td>Equipment</td>
+                            <td>Make</td>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>1</td>
+                            <td>Blower </td>
+                            <td>
+                                <input type="text" class="form-control">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Electric Motors </td>
+                            <td><input type="text" class="form-control"/></td>
+
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Electrical Cables </td>
+                            <td>
+                                <input type="text" class="form-control"/>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Tube-Light </td>
+                            <td>
+                                <input type="text" class="form-control"/>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>GI/MS/SS 304</td>
+                            <td>
+                                <input type="text" class="form-control" />
+                            </td>                          
+                        </tr>
+
+                    </tbody>
+                </table>
+                <p><strong>Note:</strong> Customer will provide main incomer for Panel.</p>
+
+            </div>
+
+            @*     Exclusion *@
+            <div class="section">
+                <h4>EXCLUSIONS</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>All civil engineering work for Pit, Trench, RCC design.</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>All service utilities points piping up to off take points.</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Material unloading and shifting to weatherproof shed at site.</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Earthing and earthing pits for electrical and instrumentation systems and control panels will be provided by the Customer.</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Power correction equipment, if necessary, to be provided by Customer.</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Compressor, Air dryer, Air receiver, generator set if required.</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Shop and maintenance lighting for building, Plant lighting other than equipment lighting specified.</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Puncturing of roof for duct routing and sealing during erection.</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>If Required platform and ladder for inspection and sampling port.</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>All Blowers & Rotating Equipment’s and accessories placed outside in open to weather should be protected by suitable leak proof shed by Customer with due maintenance clear space all around the equipment.</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Customer will provide support of forklift, stacker in installation period whenever required.</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Site Office, Drinking water and toilet facility for our site engineers.</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Fire extinguishing system, its water circulation pumps and for the Shop including our equipment’s.</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>Chemical, Powder, Shot Blasting Grit, paint and all utilities required for trial and commissioning.</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Pollution Control Certificate.</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Unused & Excess Material Will Be Taken to Bullows.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            @*  Price Bid *@
+            <div class="section">
+                <h4>Price Details</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Description</th>
+                            <th>Qty.</th>
+                            <th>Price (INR)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Dry Type Paint Booth</td>
+                            <td>1 Set</td>
+                            <td><input type="text" class="form-control price-input" name="price1" value="@Model.PriceBIDDetails.POVALUE"></td>
+                        </tr>
+                  
+                        <tr>
+                            <td>2</td>
+                            <td>Exhaust ducting with angle Supports</td>
+                            <td>2 Sets</td>
+                            <td><input type="text" class="form-control price-input" name="price3"></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Electrical Control panel and cable trays for paint booth</td>
+                            <td>1 Set</td>
+                            <td><input type="text" class="form-control price-input" name="price4"></td>
+                        </tr>
+                       
+                        <tr>
+                            <td>4</td>
+                            <td>Erection & Commissioning</td>
+                            <td>1</td>
+                            <td><input type="text" class="form-control price-input" name="price6" value="@Model.PriceBIDDetails.EAndCCost"></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Packing & forwarding</td>
+                            <td>1</td>
+                            <td><input type="text" class="form-control price-input" name="price7" value="@Model.PriceBIDDetails.PandFCost"></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Freight, Insurance</td>
+                            <td>Buyer’s Scope</td>
+                            <td><input type="text" class="form-control price-input" name="price8" value="@Model.PriceBIDDetails.Insurance"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: right;"><strong>Total Price</strong></td>
+                            <td><input type="text" class="form-control" name="totalPrice" id="totalPrice" readonly></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: right;"><strong>Final Best Price</strong></td>
+                            <td><input type="text" class="form-control" name="finalPrice"  readonly></td>
+                        </tr>
+                        @*<tr>
+                            <td colspan="3" style="text-align: right;"><strong>GST 18.00%</strong></td>
+                            <td><input type="text" class="form-control" name="gst"  readonly></td>
+                        </tr>*@
+                        <tr>
+                            <td colspan="3" style="text-align: right;">
+                                <strong>GST</strong>
+                                <input type="number" class="form-control gst-percentage-input" name="gstPercentage" style="display: inline-block; width: 60px;">%
+                            </td>
+                            <td><input type="text" class="form-control" name="gstAmount" id="gstAmount" readonly></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    <strong>Note:</strong> HSN/SAC Code for above Plant Equipment - 8424 2000
+                    Erection & Commissioning - 998731
+                </p>
+            </div>
+
+            @* Terms and conditions *@
+            <div class="section">
+                <h4>Terms & Conditions</h4>
+                <h6>The above quoted prices are ex-Works and excludes the following.</h6>
+                <table>
+                   
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2">
+
+                                “In the eventuality, if the buyer is not ready to accept the material as per schedule, supplier shall be paid for ready
+                                material and the demurrage charges to be compensated minimum 0.5% per week.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td colspan="4" style="text-align: left;">
+                                <span id="gstText">18% GST will be applicable at extra. GST No: 27AAACB5489M1Z5</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Any statutory operation variations in the above taxes/levies at the time of supply, to be borne</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Payment
+                                Terms
+                            </td>
+                            <td>
+                                30% advance along with techno-commercially clear order.
+                                70% with 100% taxes and duties against Proforma Invoice on Pro rata basis.
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Delivery</td>
+                            <td>
+                                10-12 weeks from DAP & Receipts of Advance
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Erection </td>
+                            <td>
+                                4-5 weeks subject to availability of site readiness & utility connections
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Validity </td>
+                            <td>
+                                30 days, and subject to confirmation thereafter
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <p><strong>Note:</strong> Warranty 12 Months from the date of commissioning, whichever is earlier. However, all electrical items will have only back-to-back guarantee of 6 months from the date of dispatch.</p>
+                                <p>For Bullows, this is a turnkey project. It will be difficult to ascertain the exact requirement of raw material at the site. We supply raw material based on theoretical calculation.</p>
+                                <p>After completion of the site, we expect that BPEPL balance raw material lying at the site may please be returned to BPEPL under Customer delivery challan.</p>
+                                <p>We sincerely trust that the BPEPL given offer is in line with your requirements, however, should you need any further clarifications, please feel free to contact BPEPL. We now look forward to receiving your favorable reply at the earliest. Thanking you and always assuring our best services.</p>
+                                <p>Yours faithfully,</p>
+                                <h5>For Bullows Paint Equipment Private Limited, </h5>
+                                <br /><br />
+                                <div>
+                                    <h6>@HttpContextAccessor.HttpContext.Session.GetString("UserName")</h6>
+                                    <h6>Regional Manager- East & North </h6>
+                                </div>
+                                <hr />
+                                <div style="background-color:lightgray">
+                                    <h5>CC Mr. Abhay V. Gurav – Sales and Application- Sr. Manager</h5>
+                                    <h5>Mr. Prashant R Waghulade - General Manager & Business Head</h5>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>           
+            <footer>
+                <p>&copy; 2024 [Bullows Paint Equipment Private Limited]. All Rights Reserved.</p>
+            </footer>
+        </div>
+</div>
+
+
+
+<a href="javascript:void(0);" class="btn btn-primary" onclick="downloadPDF()">Download PDF</a>
+<button onclick="downloadWord()">Download as Word</button>
+
+
+
+
+<script>
+           
+
+    function downloadPDF() {
+        var element = document.getElementById('divProposal');
+        var options = {
+            filename: 'Report.pdf',
+            margin: [10, 10, 10, 10],
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Generate the PDF and add page numbers
+        html2pdf().from(element).set(options).toPdf().get('pdf').then(function (pdf) {
+            const totalPages = pdf.internal.getNumberOfPages();
+
+            // Add page numbers to each page
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.getWidth() - 20, pdf.internal.pageSize.getHeight() - 10);
+            }
+        }).save();
+    }
+
+    $(document).ready(function () {
+        $('input[name="item1"]').change(function () {
+            console.log("Checkbox state changed!");
+            if (!$(this).is(':checked')) {
+                console.log("Checkbox unchecked. Hiding #BlastingRoom.");
+                $("#BlastingRoom").hide();
+            } else {
+                console.log("Checkbox checked. Showing #BlastingRoom.");
+                $("#BlastingRoom").show();
+            }
+        });
+
+        function calculateTotalPrice() {
+            let total = 0;
+            $('.price-input').each(function () {
+                let value = parseFloat($(this).val()) || 0; // Parse value or use 0 if invalid/empty
+                total += value;
+            });
+            $('#totalPrice').val(total.toFixed(2)); // Format to 2 decimal places
+        }
+
+        // Call calculateTotalPrice on input event of any price-input field
+        $('.price-input').on('input', calculateTotalPrice);
+
+        // Initial calculation on page load (if fields are pre-filled)
+        calculateTotalPrice();
+
+        // Function to update GST text and calculate GST amount
+        function updateGSTTextAndAmount() {
+            let gstPercentage = parseFloat($('.gst-percentage-input').val()) || 0;
+            $('#gstText').text(`${gstPercentage}% GST will be applicable at extra. GST No: 27AAACB5489M1Z5`);
+        }
+        $('.gst-percentage-input').on('input', updateGSTTextAndAmount);
+
+        // Initial update on page load
+        updateGSTTextAndAmount();
+    });
+</script>
+
+
+

@@ -1,0 +1,865 @@
+﻿@model Bullows.Model.PriceBIDModel
+@{
+    ViewData["Title"] = "Costing Sheet";
+    Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
+}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<style>
+    table {
+        width: 60%; /* Adjust the size of the table */
+        /*  margin: 20px auto;  */ /* Center the table on the page */
+        border-collapse: collapse; /* Remove gaps between table borders */
+        font-size: 14px; /* Smaller font size for compactness */
+    }
+
+    table, th, td {
+        border: 1px solid #ccc; /* Apply a light border */
+    }
+
+    th, td {
+        padding: 8px 12px; /* Add padding for readability */
+        text-align: center; /* Align text to the left */
+    }
+
+    td {
+        text-align: center;
+        align-items: center;
+    }
+
+    th {
+        background-color: #f4f4f4; /* Light gray background for headers */
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9; /* Zebra striping for even rows */
+    }
+
+    h1 {
+        text-align: center; /* Center the title */
+        font-size: 18px; /* Reduce font size for smaller title */
+    }
+
+    caption {
+        caption-side: top;
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+
+    /* Apply to all text inputs in the page */
+    input[type="text"] {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.95rem;
+        height: 35px;
+        border-radius: 0.25rem;
+        border: 1px solid #ccc;
+    }
+
+        /* Optional focus effect */
+        input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.5);
+        }
+        .input-group-text{
+         height: 35px;
+        }
+</style>
+<div style="margin-left:20px;">
+    <form asp-action="UpdatePriceDetails" asp-controller="Costing" method="post">
+        <div class="row">
+            <h5> Price Bid</h5>
+            <div class="col-md-2">
+                <label class="smaller-font">Enquiry Code</label>
+                @*  @Html.TextBoxFor(c => c.SalesNO, new { @id = "txtEnquiryCode", @class = "form-control smaller-font smaller-height", style = "width:120px;border:1px solid" }) *@
+                <input type="text" id="txtEnquiryCode" class="form-control smaller-font smaller-height" style="width:120px;border:1px solid" />
+            </div>
+
+            <div class="col-md-1" style="padding-top:20px;">
+                <button type="button" id="searchbtn" class="btn btn-primary rounded-pill" style="width:100px;">Search</button>
+            </div>
+        </div>
+        <div id="priceBID" style="display:none;margin-top:20px;">
+            <table id="labour">
+            </table>
+            <br />
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Weight</th>
+                        <th>Rate/Percentage</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="text-align:center">
+                        <td>RM</td>
+                        <td style="text-align:center"><label>-</label></td>
+                        <td style="text-align:center"><label>-</label></td>
+                        <td>@Html.TextBoxFor(m => m.PriceOfRM, new { @id = "txtPriceOfRM" })</td>
+                    </tr>
+                    <tr style="text-align:center">
+                        <td>BO</td>
+                        <td style="text-align:center"><label>-</label></td>
+                        <td style="text-align:center"><label>-</label></td>
+                        <td>@Html.TextBoxFor(m => m.PriceOfBO, new { @id = "txtPriceOfBO" })</td>
+                    </tr>
+                    <tr style="text-align:center">
+                        <td>Labour</td>
+                        <td style="text-align:center"><label>-</label></td>
+                        <td style="text-align:center"><label>-</label></td>
+                        @*  <td><input type="text" id="txtLabour" /></td>
+                        <td><input type="text" id="txtRate" /></td>
+ *@
+                        <td>@Html.TextBoxFor(m => m.LabourCost, new { @id = "labourCost" })</td>
+                    </tr>
+              
+                        <tr>
+                        <td>E&amp;C</td>
+                        <td>
+                            <input type="text" id="txtEnC" class="form-control" />
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" id="txtEnCRate" class="form-control" />
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.EAndCCost, new { @id = "txtEnCCost", @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>P&amp;F</td>
+                        <td><input type="text" id="txtPnF"  class="form-control" /></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" id="txtPnFRate"  class="form-control"/>
+                            <span class="input-group-text">%</span>
+                             </div>
+                        </td>
+                        <td>@Html.TextBoxFor(m => m.PandFCost, new { @id = "txtPnFCost" })</td>
+
+                    </tr>
+                    <tr style="text-align:center">
+                        <td>Freight</td>
+                        <td><label>-</label></td>
+                        <td><label>-</label></td>
+                        @* <td><input type="text" id="txtFreight" /></td> *@
+                        <td>@Html.TextBoxFor(m => m.FreightCost, new { @id = "txtFreight" })</td>
+                    </tr>
+                    <tr style="text-align:center">
+                        <td>Basic Cost</td>
+                        <td><label>-</label></td>
+                        <td><label>-</label></td>
+                        <td>@Html.TextBoxFor(m => m.BasicCost, new { @id = "txtBasicCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>Best Price</td>
+                        <td><label>-</label></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" id="txtCalBestprice"  class="form-control"/ />
+                            <span class="input-group-text">%</span>
+
+                            </div>
+                           
+                            </td>
+                        <td>@Html.TextBoxFor(m => m.BestPrice, new { @id = "txtBestPrice" })</td>
+                    </tr>
+                    <tr>
+                        <td>Insurance</td>
+                        <td><input type="text" id="txtInsurance" /></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" id="txtInsuranceRate" class="form-control"/>
+                            <span class="input-group-text">%</span>
+
+                            </div>
+                            
+                        </td>
+                        <td>@Html.TextBoxFor(m => m.Insurance, new { @id = "txtInsuranceCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>Commercial Factor</td>
+                        <td><input type="text" id="txtCommercialFactor" /></td>
+                        <td>
+                             <div class="input-group">
+                            <input type="text" id="txtCommercialFactorRate" class="form-control" />
+                             <span class="input-group-text">%</span>
+
+                            </div>
+                        </td>
+                        <td>@Html.TextBoxFor(m => m.CommercialFactor, new { @id = "txtCommercialFactorCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>Incentive Factor</td>
+                        <td><input type="text" id="txtIncentiveFactor" /></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" id="txtIncentiveFactorRate" class="form-control" /> 
+                            <span class="input-group-text">%</span>
+
+                            </div>
+                            </td>
+                        <td>@Html.TextBoxFor(m => m.IncentiveFactor, new { @id = "txtIncentiveFactorCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>TPC / Negotiation</td>
+                        <td><input type="text" id="txtTPC" /></td>
+                        <td>
+                             <div class="input-group">
+                            <input type="text" id="txtTPCRate" class="form-control"/>
+                             <span class="input-group-text">%</span>
+
+                            </div>
+                        </td>
+                        <td>@Html.TextBoxFor(m => m.TPCCost, new { @id = "txtTPCCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>Design Charges</td>
+                        <td><input type="text" id="txtDesignCharges" /></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" id="txtDesignChargesRate" class="form-control"/>
+                            <span class="input-group-text">%</span>
+
+                            </div>
+                        </td>
+                        
+                        <td>@Html.TextBoxFor(m => m.DesignChargesCost, new { @id = "txtDesignChargesCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>TVC</td>
+                        <td><input type="text" id="txtTVC" /></td>
+                        <td><input type="text" id="txtTVCRate" /></td>
+                        @* <td><input type="text" value="0" id="txtTVCCost" /></td> *@
+                        <td>@Html.TextBoxFor(m => m.TVCCost, new { @id = "txtTVCCost" })</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PO VALUE</strong></td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" /></td>
+                        @*   <td><input type="text" value="0" id="txtPOValueCost" /></td> *@
+                        <td>@Html.TextBoxFor(m => m.POVALUE, new { @id = "txtPOValueCost" })</td>
+                    </tr>
+                    <tr>
+                        <td>Throughput value</td>
+                        <td><input type="text" class="form-control" id="txtThroughputValue" /></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" class="form-control" id="txtThroughputValueRate" />
+                            <span class="input-group-text">%</span>
+
+                            </div>
+                            
+                        </td>
+                        @* <td>@Html.TextBoxFor(m => m.Throughputvalue, new { @id = "txtThroughputValueCost" })</td> *@
+                    </tr>
+                    <tr>
+                        <td>Overheads</td>
+                        <td><input type="text" class="form-control" id="txtOverheads" /></td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" class="form-control" id="txtOverheadsRate" />
+                              <span class="input-group-text">%</span>
+                             </div>
+                        </td>
+                        @* <td>@Html.TextBoxFor(m => m.Overheads, new { @id = "txtOverheadsCost" })</td> *@
+                    </tr>
+                    <tr>
+                        <td>Net Margin</td>
+                        <td><input type="text" class="form-control" id="txtNetMargin" /></td>
+                        <td></td>
+                        <td><input type="text" class="form-control" /></td>
+
+                    </tr>
+                    <tr>
+                        <td>Delivery Supply period</td>
+                        <td><input type="text" class="form-control" placeholder="12-14 weeks" /></td>
+                        <td><input type="text" class="form-control" /></td>
+                        <td><input type="text" class="form-control" /></td>
+
+                    </tr>
+                    <tr>
+                        <td>E&amp;C period</td>
+                        <td><input type="text" class="form-control" placeholder="4-6 weeks" /></td>
+                        <td><input type="text" class="form-control" /></td>
+                        <td><input type="text" class="form-control" /></td>
+
+                    </tr>
+                   <tr>
+    <td colspan="4" style="background-color: #f2f2f2; text-align: center;"><strong>Payment Terms</strong></td>
+</tr>
+<tr>
+    <td colspan="3" style="text-align:right;"><strong>Remaining %:</strong></td>
+    <td>
+        <input type="text" id="txtPaymentRemaining" readonly style="background-color:#eee;" />
+    </td>
+</tr>
+                    <tr>
+                        <td>ADVANCE</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" id="txtAdvance" class="form-control" />
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" id="txtAdvanceValueCost" /></td>
+                    </tr>
+                    <tr>
+                        <td>DAP</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control " id="txtDAP" />
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" id="txtDAPCost" /></td>
+                    </tr>
+                    <tr>
+                        <td>SUPPLY BEFORE DISPATCH</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="txtSUPPLYBEFOREDISPATCH" />
+                                <span class="input-group-text">%</span>
+
+                            </div>
+                        </td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" id="txtSUPPLYBEFOREDISPATCHCost" /></td>
+                    </tr>
+                    <tr>
+                        <td>SUPPLY AFTER DISPATCH</td>
+
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="txtSUPPLYAFTERDISPATCH" />
+                                <span class="input-group-text">%</span>
+
+                            </div>
+                        </td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" id="txtSUPPLYAFTERDISPATCHCost" /></td>
+                    </tr>
+                    <tr>
+                        <td>INSTALLATION</td>
+                        <td>
+                            <div class="input-group">
+                            <input type="text" class="form-control" id="txtInstalation" />
+                            <span class="input-group-text">%</span>
+                            </div>
+                        </td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" id="txtInstalationCost" /></td>
+                    </tr>
+                    <tr>
+                        <td>COMMISSIONING</td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="txtCOMMISSIONING" />
+                                <span class="input-group-text">%</span>
+
+                            </div>
+
+                        </td>
+                        <td><input type="text" /></td>
+                        <td><input type="text" id="txtCOMMISSIONINGCost" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row" id="divPriceBIdEnabled" style="display:none;">
+            <div class="col-md-3">
+                <div class="form-check mt-3">
+                    @Html.CheckBoxFor(m => m.ConfirmPriceBID, new { @id = "approvePriceBid", @class = "form-check-input" })
+                    <label class="form-check-label" for="approvePriceBid">Approve Price Bid</label>
+                </div>
+            </div>
+            <div class="col-md-3" style="margin-top:20px;">
+                <button type="submit" class="btn btn-success rounded-pill" id="saveButton" style="width:100px">Save</button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+
+@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+<script>
+    $(document).ready(function () {
+       $('#searchbtn').on('click', function () {
+            $('#divPriceBIdEnabled').show();
+            const enquiryCode = $('#txtEnquiryCode').val().trim();
+
+            if (enquiryCode !== "") {
+                $.ajax({
+                    url: '/Costing/FetchPriceBIDData',
+                    type: 'POST',
+                    data: { enquiryCode: enquiryCode },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#priceBID').show();
+
+                            // Clear existing rows in the second table (labour)
+                            $('#labour tbody').empty();
+
+                            // const weight = response.totalWeights;
+                            // $("#txtLabour").val(weight);
+
+                            // Dynamically add rows from the first table data to the second table
+                            response.data.forEach(function (item) {
+                                const rowMaterialPrice = Math.round(item.priceOfRM); // Format the number
+                                const boughtOutPrice = Math.round(item.priceOfBO); // Format the number
+                                $("#txtPriceOfRM").val(rowMaterialPrice);
+                                $("#txtPriceOfBO").val(boughtOutPrice);
+
+                            });
+
+                            calculateLabourCost();
+                             calculateEnCCost();
+                            calculateTotalCost();
+                            calculateTotalBasicCost();
+                            CalculateBestPrice();
+                            CalculateThroughputValueCost();
+                            CalculateRateOfOverheads();
+                            CalculateAdvancecost();
+                             CalculateDAPcost();
+                             CalculateSupplybeforecost();
+                              CalculateSupplyAftercost();
+                        } else {
+                            alert(response.message);
+                        }txtCommercialFactorRate
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching data.');
+                    }
+                });
+            } else {
+                alert('Please enter an Enquiry Code.');
+            }
+        });
+
+         $('#txtPriceOfRM').on('input', function () {
+
+            calculateLabourCost();
+        });
+        // Event delegation for dynamically added inputs (#txtRawM, #txtBO)
+        $(document).on('input', '#txtPriceOfRM, #txtPriceOfBO, #labourCost', function () {
+
+            calculateTotalCost();
+        });
+       $('#txtEnCRate').on('input', function () {
+
+            calculateEnCCost();
+        });
+         $('#txtPnFRate').on('input', function () {
+
+            calculatePnFCost();
+        });
+
+        $('#txtPriceOfRM, #txtPriceOfBO, #labourCost,#txtEnCCost,#txtPnFCost,#txtFreight,#txtEnCRate,#txtPnFRate').on('input', function () {
+           calculateTotalBasicCost();
+           CalculateBestPrice();
+        });
+        $('#txtCalBestprice').on('input', function () {
+           CalculateBestPrice();
+        });
+        $('#txtInsuranceRate').on('input', function () {
+            CalculateInsuranceCost();
+        });
+        $('#txtCommercialFactorRate').on('input', function () {
+            CalculateCommercialFactorCost();
+        });
+
+        $('txtBestPrice,#txtIncentiveFactorRate').on('input', function () {
+            CalculateIncentiveFactorCost();
+        });
+
+        $('#txtBasicCost,#txtTPCRate').on('input', function () {
+            CalculateTCPCost();
+        });
+
+        $('#txtDesignCharges,#txtDesignChargesRate').on('input', function () {
+            CalculateDesignChangesCost();
+        });
+
+        $('#txtTPCRate,#txtIncentiveFactorRate,#txtCommercialFactorRate,#txtDesignChargesRate').on('input', function () {
+
+            CalculateTVCCost();
+            CalculatePOValueCost();
+        });
+
+
+        $('#txtTVCCost, #txtPOValueCost').on('input', function () {
+            CalculateThroughputValueCost();
+        });
+
+         $('#txtOverheads').on('input', function () {
+
+            CalculateRateOfOverheads();
+        });
+         $('#txtOverheads,txtThroughputValue').on('input', function () {
+           CalculateNetMarginCost();
+        });
+        $(' #txtAdvance').on('input', function () {
+           CalculateAdvancecost();
+        });
+        $(' #txtDAP').on('input', function () {
+           CalculateDAPcost();
+        });
+        $(' #txtSUPPLYBEFOREDISPATCH').on('input', function () {
+           CalculateSupplybeforecost();
+        });
+        $(' #txtSUPPLYAFTERDISPATCH').on('input', function () {
+           CalculateSupplyAftercost();
+        });
+        $('#txtInstalation').on('input', function () {
+           CalculateInstalationcost();
+        });
+        $('#txtInstalation').on('input', function () {
+           CalculateInstalationcost();
+        });
+
+         $('#txtCOMMISSIONING').on('input', function () {
+           CalculateCOMMISSIONINGcost();
+        });
+
+
+        // Function to calculate total cost
+        function calculateTotalCost() {
+            var labour = parseFloat($("#labourCost").val()) || 0;
+            var RM = parseFloat($("#txtPriceOfRM").val()) || 0;
+            var BO = parseFloat($("#txtPriceOfBO").val()) || 0;
+            var cost = labour + RM + BO;
+            var roundedCost = Math.round(cost); // Round to nearest whole number
+            var designCharges=Math.round(labour+RM);
+            $("#txtEnC").val(roundedCost);
+            $("#txtPnF").val(roundedCost);
+            $("#txtDesignCharges").val(designCharges);
+            calculateEnCCost();
+            calculatePnFCost();
+        }
+
+
+         function calculateLabourCost(){
+            var RMCost=parseFloat($("#txtPriceOfRM").val()) || 0;
+            var labour=Math.round((RMCost*25)/80);
+             $("#labourCost").val(labour);
+        }
+        function calculateEnCCost(){
+            var EnC = parseFloat($("#txtEnC").val()) || 0;
+            var rate = parseFloat($("#txtEnCRate").val()) || 0;
+            var totalCostWithRate = EnC * (rate/100);
+            $("#txtEnCCost").val(Math.round(totalCostWithRate));
+        }
+         function calculatePnFCost(){
+            var PnF = parseFloat($("#txtPnF").val()) || 0;
+            var ratePnF = parseFloat($("#txtPnFRate").val()) || 0;
+            var totalCostWithRate = PnF * (ratePnF/100);
+            $("#txtPnFCost").val(Math.round(totalCostWithRate));
+        }
+
+        function calculateTotalBasicCost(){
+            var RMCost=parseFloat($("#txtPriceOfRM").val()) || 0;
+            var BOCost=parseFloat($("#txtPriceOfBO").val()) || 0;
+             var labourcost= parseFloat($("#labourCost").val()) || 0;
+             var EnCCost = parseFloat($("#txtEnCCost").val()) || 0;
+             var PnFCost = parseFloat($("#txtPnFCost").val()) || 0;
+             var FreightCost = parseFloat($("#txtFreight").val()) || 0;
+             var totalsum=RMCost+BOCost+labourcost+EnCCost+PnFCost+FreightCost;
+             $("#txtBasicCost").val(totalsum);
+             $("#txtTPC").val(totalsum);
+
+        }
+        
+        function CalculateBestPrice(){
+            var basicCost = parseFloat($("#txtBasicCost").val()) || 0;
+            var valueInPercentage = parseFloat($("#txtCalBestprice").val()) || 0;
+           // Calculate BestPrice as percentage of basicCost
+             var BestPrice = basicCost * (valueInPercentage / 100);
+             $("#txtBestPrice").val(BestPrice);
+             $("#txtInsurance").val(BestPrice);
+             $("#txtCommercialFactor").val(BestPrice);
+             $("#txtIncentiveFactor").val(BestPrice);
+
+        }
+        function CalculateInsuranceCost(){
+            var bestprice = parseFloat($("#txtBestPrice").val()) || 0;
+            var insuranceRate = parseFloat($("#txtInsuranceRate").val()) || 0;
+            var Price = Math.round(bestprice * (insuranceRate/100));
+             $("#txtInsuranceCost").val(Price);
+        }
+
+        function CalculateCommercialFactorCost(){
+            var bestprice = parseFloat($("#txtBestPrice").val()) || 0;
+            var CommercialFactorRate = parseFloat($("#txtCommercialFactorRate").val()) || 0;
+            var Price = Math.round(bestprice * (CommercialFactorRate/100));
+             $("#txtCommercialFactorCost").val(Price);
+        }
+        function CalculateIncentiveFactorCost(){
+            var bestprice = parseFloat($("#txtBestPrice").val()) || 0;
+
+            var IncentiveFactorRate = parseFloat($("#txtIncentiveFactorRate").val()) || 0;
+            var Price = Math.round(bestprice * (IncentiveFactorRate/100));
+             $("#txtIncentiveFactorCost").val(Price);
+        }
+        function CalculateTCPCost(){
+            var basicCost = parseFloat($("#txtBasicCost").val()) || 0;
+            var tPCRate = parseFloat($("#txtTPCRate").val()) || 0;
+            var Price = Math.round(basicCost * (tPCRate/100));
+            $("#txtTPCCost").val(Price);
+        }
+        function CalculateDesignChangesCost(){
+            var Design = parseFloat($("#txtDesignCharges").val()) || 0;//Addition of RM+BO+labourcost value
+            var designChargesRate = parseFloat($("#txtDesignChargesRate").val())||0;
+            var Designcost = Math.round(Design * (designChargesRate/100));
+            $("#txtDesignChargesCost").val(Designcost);
+        }
+        function CalculateTVCCost(){
+
+            var basicCost = parseFloat($("#txtBasicCost").val()) || 0;
+            var insuranceCost = parseFloat($("#txtInsuranceCost").val()) || 0;
+            var commercialFactorCost = parseFloat($("#txtCommercialFactorCost").val()) || 0;
+            var incentiveFactorCost = parseFloat($("#txtIncentiveFactorCost").val()) || 0;
+            var tPCRateCost = parseFloat($("#txtTPCCost").val()) || 0;
+            var designChargesCost = parseFloat($("#txtDesignChargesCost").val()) || 0;
+
+            // Calculate the total value
+            var priceofTVC = Math.round(
+                basicCost +
+                insuranceCost +
+                commercialFactorCost +
+                incentiveFactorCost +
+                tPCRateCost +
+                designChargesCost
+            );
+
+            // Set the calculated value in the target input
+            $("#txtTVCCost").val(priceofTVC);
+            CalculateThroughputValueCost();
+        }
+
+        function CalculateThroughputValueCost() {
+            var tVCCost = parseFloat($("#txtTVCCost").val()) || 0;
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var BestPrice = Math.round(pOValueCost - tVCCost);
+            $("#txtThroughputValue").val(BestPrice);
+            CalculateRateOFThroughputValue();
+           // CalculateRateOfOverheads();
+        }
+        function CalculateNetMarginCost(){
+            var overheads = parseFloat($("#txtOverheads").val()) || 0;
+            var throughputValue = parseFloat($("#txtThroughputValue").val()) || 0;
+            var BestPrice=Math.round(throughputValue-overheads);
+             $("#txtNetMargin").val(BestPrice);
+        }
+
+        function CalculatePOValueCost() {
+            var bestCost = parseFloat($("#txtBestPrice").val()) || 0;
+            var insuranceCost = parseFloat($("#txtInsuranceCost").val()) || 0;
+            var commercialFactorCost = parseFloat($("#txtCommercialFactorCost").val()) || 0;
+            var incentiveFactorCost = parseFloat($("#txtIncentiveFactorCost").val()) || 0;
+            var TPCCost = parseFloat($("#txtTPCCost").val()) || 0;
+            var priceofPO = Math.round(bestCost + insuranceCost + commercialFactorCost + incentiveFactorCost + TPCCost);
+            $("#txtPOValueCost").val(priceofPO);
+            CalculateRateOFThroughputValue();
+        }
+        function CalculateRateOFThroughputValue() {
+        // Parse input values
+        var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+        var throughput = parseFloat($("#txtThroughputValue").val()) || 0;
+
+        // Avoid division by zero
+        if (pOValueCost > 0) {
+            // Calculate percentage
+            var percentage = (throughput / pOValueCost) * 100;
+
+            // Display result in the textbox as a percentage with 2 decimal places
+            $("#txtThroughputValueRate").val(percentage.toFixed(2));
+        } else {
+            // If PO Value Cost is zero, clear the result or show 0%
+            $("#txtThroughputValueRate").val("0");
+        }
+    }
+    function CalculateRateOfOverheads() {
+        // Parse input values
+        var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+        var overheads = parseFloat($("#txtOverheads").val()) || 0;
+
+        // Avoid division by zero
+        if (pOValueCost > 0) {
+            // Calculate percentage
+            var percentage = (overheads / pOValueCost) * 100;
+
+            // Display result in the textbox as a percentage with 2 decimal places
+            $("#txtOverheadsRate").val(percentage.toFixed(2));
+        } else {
+            // If PO Value Cost is zero, clear the result or show 0%
+            $("#txtOverheadsRate").val("0");
+        }
+    }
+        function CalculateAdvancecost(){
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var advancePercentage = parseFloat($("#txtAdvance").val()) || 0;
+            var advanceDecimal = advancePercentage / 100;
+            var advanceValueCost = pOValueCost * advanceDecimal;
+            $("#txtAdvanceValueCost").val(advanceValueCost.toFixed(2));
+        }
+
+
+        function CalculateDAPcost(){
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var DAPPercentage = parseFloat($("#txtDAP").val()) || 0;
+            var DAPDecimal = DAPPercentage / 100;
+            var advanceValueCost = pOValueCost * DAPDecimal;
+            $("#txtDAPCost").val(advanceValueCost.toFixed(2));
+        }
+        function CalculateSupplybeforecost(){
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var SUPPLYPercentage = parseFloat($("#txtSUPPLYBEFOREDISPATCH").val()) || 0;
+            var SUPPLYDecimal = SUPPLYPercentage / 100;
+            var SUPPLYDecimalValueCost = pOValueCost * SUPPLYDecimal;
+            $("#txtSUPPLYBEFOREDISPATCHCost").val(SUPPLYDecimalValueCost.toFixed(2));
+        }
+        function CalculateSupplyAftercost(){
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var SUPPLYPercentage = parseFloat($("#txtSUPPLYAFTERDISPATCH").val()) || 0;
+            var SUPPLYDecimal = SUPPLYPercentage / 100;
+            var SUPPLYDecimalValueCost = pOValueCost * SUPPLYDecimal;
+            $("#txtSUPPLYAFTERDISPATCHCost").val(SUPPLYDecimalValueCost.toFixed(2));
+        }
+        function CalculateInstalationcost(){
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var instalationPercentage = parseFloat($("#txtInstalation").val()) || 0;
+            var InstalationDecimal = instalationPercentage / 100;
+            var InstalationDecimalValueCost = pOValueCost * InstalationDecimal;
+            $("#txtInstalationCost").val(InstalationDecimalValueCost.toFixed(2));
+        }
+         function CalculateCOMMISSIONINGcost(){
+            var pOValueCost = parseFloat($("#txtPOValueCost").val()) || 0;
+            var COMMISSIONINGPercentage = parseFloat($("#txtCOMMISSIONING").val()) || 0;
+            var COMMISSIONINGDecimal = COMMISSIONINGPercentage / 100;
+            var COMMISSIONINGDecimalCost = pOValueCost * COMMISSIONINGDecimal;
+            $("#txtCOMMISSIONINGCost").val(COMMISSIONINGDecimalCost.toFixed(2));
+        }
+
+// function updatePaymentRemaining() {
+//         let totalEntered = 0;
+
+//         // Select all Payment Terms percentage inputs
+//         let paymentInputs = $('#priceBID input[id$="Advance"], #priceBID input[id$="DAP"], #priceBID input[id$="SUPPLYBEFOREDISPATCH"], #priceBID input[id$="SUPPLYAFTERDISPATCH"], #priceBID input[id$="Instalation"], #priceBID input[id$="COMMISSIONING"]');
+
+//         // Sum values (treat empty as 0)
+//         paymentInputs.each(function(){
+//             let val = parseFloat($(this).val()) || 0;
+//             totalEntered += val;
+//         });
+
+//         // Calculate remaining
+//         let remaining = 100 - totalEntered;
+//         $('#txtPaymentRemaining').val(remaining);
+
+//         // Change color based on total
+//         if(totalEntered === 100){
+//             $('#txtPaymentRemaining').css('background-color', '#28a745'); // green
+//             $('#txtPaymentRemaining').css('color', 'white');
+//         }
+//         else if(totalEntered < 100){
+//             $('#txtPaymentRemaining').css('background-color', '#ffc107'); // orange
+//             $('#txtPaymentRemaining').css('color', 'black');
+//         }
+//         else {
+//             $('#txtPaymentRemaining').css('background-color', '#dc3545'); // red
+//             $('#txtPaymentRemaining').css('color', 'white');
+//             alert("Total percentage cannot exceed 100%");
+//             // Optionally, clear the last entered value
+//             $(this).val('');
+//         }
+//     }
+
+//     // Trigger calculation on input change
+//     $('#priceBID input[id$="Advance"], #priceBID input[id$="DAP"], #priceBID input[id$="SUPPLYBEFOREDISPATCH"], #priceBID input[id$="SUPPLYAFTERDISPATCH"], #priceBID input[id$="Instalation"], #priceBID input[id$="COMMISSIONING"]').on('input', function() {
+//         updatePaymentRemaining();
+//     });
+
+//     // Initialize remaining as 100%
+//     $('#txtPaymentRemaining').val(100);
+//     $('#txtPaymentRemaining').css('background-color', '#ffc107'); // orange initially
+ function getTotalPayment() {
+        let total = 0;
+        $('#priceBID input[id$="Advance"], #priceBID input[id$="DAP"], #priceBID input[id$="SUPPLYBEFOREDISPATCH"], #priceBID input[id$="SUPPLYAFTERDISPATCH"], #priceBID input[id$="Instalation"], #priceBID input[id$="COMMISSIONING"]').each(function(){
+            let val = parseFloat($(this).val()) || 0;
+            total += val;
+        });
+        return total;
+    }
+
+    function updatePaymentRemaining() {
+        let totalEntered = getTotalPayment();
+        let remaining = 100 - totalEntered;
+        $('#txtPaymentRemaining').val(remaining);
+
+        // Color logic
+        if(totalEntered === 100){
+            $('#txtPaymentRemaining').css({'background-color':'#28a745','color':'white'}); // green
+        }
+        else if(totalEntered < 100){
+            $('#txtPaymentRemaining').css({'background-color':'#ffc107','color':'black'}); // orange
+        }
+        else {
+            $('#txtPaymentRemaining').css({'background-color':'#dc3545','color':'white'}); // red
+            alert("Total percentage cannot exceed 100%");
+        }
+    }
+
+    // Trigger update on input
+    $('#priceBID input[id$="Advance"], #priceBID input[id$="DAP"], #priceBID input[id$="SUPPLYBEFOREDISPATCH"], #priceBID input[id$="SUPPLYAFTERDISPATCH"], #priceBID input[id$="Instalation"], #priceBID input[id$="COMMISSIONING"]').on('input', function() {
+        updatePaymentRemaining();
+    });
+
+    // Intercept form submission
+    $('form').on('submit', function(e){
+        let total = getTotalPayment();
+        if(total !== 100){
+            e.preventDefault(); // prevent submission
+            alert("Total Payment Terms percentage must be exactly 100% to save!");
+        }
+    });
+
+    // Initialize remaining
+    $('#txtPaymentRemaining').val(100).css({'background-color':'#ffc107','color':'black'});
+
+
+
+    });
+</script>
+<script>
+    const checkbox = document.getElementById("approvePriceBid");
+    const saveButton = document.getElementById("saveButton");
+
+    checkbox.addEventListener("change", function () {
+        if (this.checked) {
+            const userConfirmed = confirm("Do you want to approve this Price Bid?");
+            if (userConfirmed) {
+                saveButton.disabled = false; // Enable the button if user confirms
+            } else {
+                this.checked = false; // Uncheck the checkbox if user cancels
+                saveButton.disabled = true; // Keep the button disabled
+            }
+        } else {
+            saveButton.disabled = true; // Disable the button if unchecked
+        }
+    });
+</script>
+

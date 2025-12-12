@@ -27,6 +27,7 @@ namespace Bullows.Repositories.Repositories
         public CostingRepository costingRepository { get; private set; }
         public BendSectionRepository bendSectionRepository { get; private set; }
         public SettingDetailsRepository settingDetailsRepository { get; private set; }
+        public ExceptionHandlerRepository exceptionHandlerRepository { get; private set; }
 
         public UnitOfWorks(BullowsDbContext context, IHttpContextAccessor httpContextAccessor)
         {
@@ -43,6 +44,7 @@ namespace Bullows.Repositories.Repositories
             this.costingRepository= new CostingRepository(this._DbContext, httpContextAccessor);
             this.bendSectionRepository= new BendSectionRepository(this._DbContext, httpContextAccessor);
             this.settingDetailsRepository= new SettingDetailsRepository(this._DbContext, httpContextAccessor);
+            this.exceptionHandlerRepository = new ExceptionHandlerRepository(this._DbContext, httpContextAccessor);
         }
         public async Task Commit()
         {

@@ -64,14 +64,11 @@ namespace Bullows.Controllers
 
         [HttpPost]
         public IActionResult SaveProject(ProjectModel model, int Flag, Projects objtbl)
-        {
-            
+        {          
             int flag = 0;
             flag = SaveFlag;
             PID = _uow.projectRepository.Save(model, flag, objtbl);
-            SaveFlag = 1;
-           
-
+            SaveFlag = 1;          
             return RedirectToAction("Project");
         }
         public IActionResult Delete(int id =0)

@@ -29,16 +29,20 @@
     }
 
     .container {
-        max-width: 800px;
+        max-width: 1200px;
         padding: 0;
         text-align: left;
-        margin-left: 0;
+        margin-left: 5px;
     }
-
+/* 
     .table-sm th, .table-sm td {
         padding: 0.3rem;
     }
-
+ */
+ .table-md th, .table-md td {
+    padding: 0.55rem 0.75rem; /* Medium padding */
+    font-size: 0.9rem;        /* Slightly smaller text */
+}
     .heading {
         background-color: lightslategray;
         color: white;
@@ -67,11 +71,27 @@
     }
 </style>
 @*  BoughtOutCalculations *@
-<div class="container" style="margin-top:5px;">
+<div class="row">
+    <h6> BO Calculations</h6>
+<div class="col-md-3 ">
+    <label class="smaller-font">Enquiry Code</label>
+
+        <input type="text" asp-for="EnquiryCode" id="txtEnquiryCode" class="form-control smaller-font smaller-height" style="width:120px;" />
+   
+</div>
+    <div class="col-md-2" style="padding-top:15px;">
+        <button type="button" id="searchbtn" class="btn btn-primary rounded-pill" style="width:100px;">Search</button>
+    </div>
+</div>
+
+<div id="BOCalculationsForm">
+
+
+<div class="container" style="margin-top:15px;">
 
     <h6 id="BoughtOutCalculations" style="cursor:pointer;" class="heading">Bought Out Calculations   <span id="arrowIcon" class="arrow">▼</span></h6>
     <div id="BaughtOutGrid" class="table-responsive grid" style="width:100%; max-height:500px;display:none;">
-        <table id="filteredTable" class="table table-sm table-bordered compact-table" style="width:100%;">
+        <table id="filteredTable" class="table table-md table-bordered compact-table" style="width:100%;">
             <thead class="webgrid-header" style="background-color:grey; font-size:12px;">
                 <tr>
                     <th style="padding:10px;">Sr.No.</th>
@@ -179,7 +199,7 @@
                         double Rounding = item.CapacityofBlowerRoundOf;
                         if (item.CapacityofBlowerRoundOf == 0)
                             Rounding = item.CapacityofBlowerinH;
-                            // 1st Row: Centrifugal Blower
+                        // 1st Row: Centrifugal Blower
                         <tr>
                             <td style="padding:10px;">@i</td>
                             <td style="padding:10px;">Centrifugal Blower</td>
@@ -267,7 +287,7 @@
     </div>
 </div>
 @* exhaustduct *@
-<div class="container" style="margin-top:15px; text-align:left;">
+@* <div class="container" style="margin-top:15px; text-align:left;">
     <h6 id="exhaustduct" style="cursor:pointer;" class="heading">Exhaust Duct <span id="arrowIcon" class="arrow">▼</span></h6>
     <div id="exhaustDuctGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
         <table id="exhaustDuctTable" class="table table-sm table-bordered compact-table" style="width:100%;">
@@ -275,85 +295,102 @@
                 <tr>
                     <th style="padding:5px;">Sr.No.</th>
                     <th style="padding:5px;">Item</th>
-                    <th style="padding:5px;">Set(Nos)</th>
-                    <th style="padding:5px;">Weight/Duct(Kg)</th>
+                    <th style="padding:5px;">Duct Width</th>
+                    <th style="padding:5px;">Duct Height</th>
+                    <th style="padding:5px;">Duct Thickness</th>
+                    <th style="padding:5px;">Duct Length</th>
+                    <th style="padding:5px;">Quantity</th>
+                    <th style="padding:5px;">Rate</th>
                     <th style="padding:5px;"> Total Weight(Kg)</th>
                     <th style="padding:5px;">Cost</th>
                 </tr>
             </thead>
             <tbody style="font-size:12px;">
-                <tr>
-                    <td style="padding:5px;">1</td>
-                    <td style="padding:5px;">Horizontal Duct</td>
-                    <td>
-                        <input type="text" class="txtSetDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">2</td>
-                    <td style="padding:5px;">Vertical stright Duct</td>
-                    <td>
-                        <input type="text" class="txtSetDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
+                @if (Model.ExhaustDuctDetails == null)
+                {
+                    <tr><td colspan="6" style="padding:5px;">No Data Available</td></tr>
+                }
+                else
+                {
+                    int i = 0;
+                    foreach (var item in Model.ExhaustDuctDetails)
+                    {
+                        i++;
+                        <tr>
+                            <td style="padding:10px;">@i</td>
+                            <td style="padding:10px;">
+                                <input type="text" id="txtBendType_@i"
+                                       class="form-control smaller-font smaller-height bendtype-input"
+                                       style="width:80px; height:25px;"
+                                       value="@item.BendType" />
+                            </td>
+                            <td style="padding:10px;">
+                                <input type="text" id="txtDuctWidth_@i"
+                                       class="form-control smaller-font smaller-height ductwidth-input"
+                                       style="width:80px; height:25px;"
+                                       value="@item.DuctWidth" />
+                            </td>
 
-                    <td style="padding:5px;">3</td>
-                    <td style="padding:5px;">90 Deg Bend Duct</td>
-                    <td>
-                        <input type="text" class="txtSetDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
 
-                    <td style="padding:5px;">4</td>
-                    <td style="padding:5px;"> 135 deg Bend Duct</td>
-                    <td>
-                        <input type="text" class="txtSetDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostDuct form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
+                            <td style="padding:10px;">
+                                <input type="text" id="txtDuctheight_@i"
+                                       class="form-control smaller-font smaller-height ductheight-input"
+                                       style="width:80px; height:25px;"
+                                       value="@item.DuctHeight" />
+                            </td>
+
+                            <!-- Rate TextBox -->
+                            <td style="padding:10px;">
+                                <input type="text" id="txtDuctThickness_@i"
+                                       class="form-control smaller-font smaller-height ductthickness-input"
+                                       style="width:80px; height:25px;"
+                                       value="@item.DuctThickness" />
+                            </td>
+                            <td style="padding:10px;">
+                                <input type="text" id="txtDuctLength_@i"
+                                       class="form-control smaller-font smaller-height ductlength-input"
+                                       style="width:80px; height:25px;"
+                                       value="@item.DuctLength" />
+                            </td>
+
+                            <!-- Quantity TextBox -->
+                            <td style="padding:10px;">
+                                <input type="text" id="txtLightQuantity_@i"
+                                       class="form-control smaller-font smaller-height quantity-input"
+                                       style="width:80px; height:25px;"
+                                       value="1" />
+                            </td>
+                            <!-- Rate TextBox -->
+                            <td style="padding:10px;">
+                                <input type="text" id="txtDuctRate_@i"
+                                       class="form-control smaller-font smaller-height rate-input"
+                                       style="width:80px; height:25px;" />
+                            </td>
+
+                            <td style="padding:10px;">
+                                <input type="text" id="txtWeight_@i"
+                                       class="form-control smaller-font smaller-height weight-input"
+                                       style="width:80px; height:25px;"
+                                       value="@item.DuctWeight" />
+                            </td>
+                            <!-- Cost TextBox -->
+                            <td style="padding:10px;">
+                                <input type="text" id="txtDuctCost_@i"
+                                       class="form-control smaller-font smaller-height cost-input"
+                                       style="width:80px; height:25px;"
+                                       value="0"
+                                       readonly />
+                            </td>
+                        </tr>
+                    }
+                }
             </tbody>
+
         </table>
     </div>
 </div>
-@* Scafolding for Ducting *@
-<div class="container" style="margin-top:15px; text-align:left;">
+ *@@* Scafolding for Ducting *@
+@* <div class="container" style="margin-top:15px; text-align:left;">
     <h6 id="ScaffoldingFor" style="cursor:pointer;" class="heading">Scafolding for Ducting  <span id="arrowIcon" class="arrow">▼</span></h6>
     <div id="ScaffoldingForGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
         <table id="ScaffoldingForTable" class="table table-sm table-bordered compact-table" style="width:100%;">
@@ -387,9 +424,9 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> *@
 @* Exhaust Ducting Stiffener & Structure *@
-<div class="container" style="margin-top:15px; text-align:left;">
+@* <div class="container" style="margin-top:15px; text-align:left;">
     <h6 id="exhaustductingstiffener" style="cursor:pointer;" class="heading">Exhaust Ducting Stiffener & Structure <span id="arrowIcon" class="arrow">▼</span></h6>
     <div id="exhaustductingstiffenerGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
         <table id="exhaustductingstiffenerTable" class="table table-sm table-bordered compact-table" style="width:100%;">
@@ -399,7 +436,7 @@
                     <th style="padding:5px;">Item</th>
                     <th style="padding:5px;">Set(Nos)</th>
                     <th style="padding:5px;">Weight(Kg)</th>
-                    <th style="padding:5px;"> Total Weight(Kg)</th>
+                    <th style="padding:5px;">Total Weight(Kg)</th>
                     <th style="padding:5px;">Cost</th>
                 </tr>
             </thead>
@@ -439,9 +476,9 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> *@
 @* Exhaust Planum Duct *@
-<div class="container" style="margin-top:15px; text-align:left;">
+@* <div class="container" style="margin-top:15px; text-align:left;">
     <h6 id="exhaustPlanumDuct" style="cursor:pointer;" class="heading">Exhaust Planum Duct <span id="arrowIcon" class="arrow">▼</span></h6>
     <div id="exhaustPlanumDuctGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
         <table id="exhaustPlanumDuctTable" class="table table-sm table-bordered compact-table" style="width:100%;">
@@ -475,125 +512,10 @@
             </tbody>
         </table>
     </div>
-</div>
-@*  Wet Scrubber Structure *@
-<div class="container" style="margin-top:15px; text-align:left;">
-    <h6 id="WetScrubberStructure" style="cursor:pointer;" class="heading">Wet Scrubber Structure <span id="arrowIcon" class="arrow">▼</span></h6>
-    <div id="WetScrubberStructureGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
-        <table id="WetScrubberStructureTable" class="table table-sm table-bordered compact-table" style="width:100%;">
-            <thead class="webgrid-header" style="background-color:grey; font-size:12px;">
-                <tr>
-                    <th style="padding:5px;">Sr.No.</th>
-                    <th style="padding:5px;">Item</th>
-                    <th style="padding:5px;">Set(Nos)</th>
-                    <th style="padding:5px;">Weight(Kg)</th>
-                    <th style="padding:5px;"> Total Weight(Kg)</th>
-                    <th style="padding:5px;">Cost</th>
-                </tr>
-            </thead>
-            <tbody style="font-size:12px;">
-                <tr>
-                    <td style="padding:5px;">1</td>
-                    <td style="padding:5px;">Vertical Stright Duct</td>
-                    <td>
-                        <input type="text" class="txtSetWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">2</td>
-                    <td style="padding:5px;">Horizontal duct</td>
-                    <td>
-                        <input type="text" class="txtSetWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">3</td>
-                    <td style="padding:5px;">Cross bracing</td>
-                    <td>
-                        <input type="text" class="txtSetWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">4</td>
-                    <td style="padding:5px;">Ladder</td>
-                    <td>
-                        <input type="text" class="txtSetWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">5</td>
-                    <td style="padding:5px;">Operator Platform</td>
-                    <td>
-                        <input type="text" class="txtSetWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">6</td>
-                    <td style="padding:5px;">safety railing</td>
-                    <td>
-                        <input type="text" class="txtSetWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeightWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostWetScrubber form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+</div> *@
+
 @*  Transformation Duct - Squre to Round *@
-<div class="container" style="margin-top:15px; text-align:left;">
+@* <div class="container" style="margin-top:15px; text-align:left;">
     <h6 id="TransformationDuct" style="cursor:pointer;" class="heading">Transformation Duct - Squre to Round <span id="arrowIcon" class="arrow">▼</span></h6>
     <div id="TransformationDuctGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
         <table id="TransformationDuctTable" class="table table-sm table-bordered compact-table" style="width:100%;">
@@ -627,7 +549,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> *@
 @* Paint arrested filter *@
 <div class="container" style="margin-top:15px; text-align:left;">
     <h6 id="Paintarrestedfilter" style="cursor:pointer;" class="heading">Paint arrested filter <span id="arrowIcon" class="arrow">▼</span></h6>
@@ -641,28 +563,14 @@
                     <th style="padding:10px;">Width</th>
                     <th style="padding:10px;">Height</th>
                     <th style="padding:10px;">Rate</th>
+                    <th style="padding:10px;">Weight</th>
                     <th style="padding:10px;">Quantity</th>
                     <th style="padding:10px;">Cost</th>
                 </tr>
 
             </thead>
             <tbody style="font-size:12px;">
-                @* <tr>
-                <td style="padding:5px;">1</td>
-                <td style="padding:5px;">Paint arrested filter frame</td>
-                <td>
-                <input type="text" class="txtSetPaintarrestedfilter form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                </td>
-                <td>
-                <input type="text" class="txtWeightPaintarrestedfilter form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                </td>
-                <td>
-                <input type="text" class="txtTotalWeightPaintarrestedfilter form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                </td>
-                <td>
-                <input type="text" class="txtCostPaintarrestedfilter form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                </td>
-                </tr> *@
+
 
                 @if (Model.FrameDetails == null)
                 {
@@ -697,7 +605,10 @@
 
                             @*   <td class="rate" style="padding:5px;">@item.Rate</td> *@
                             <td style="padding:10px;">
-                                <input type="text" id="txtRate_@i" class="form-control smaller-font smaller-height quantity-input" style="width:80px; height:25px;" name="rate[@i]" value="@item.Rate" data-index="@i" />
+                                <input type="text" id="txtRate_@i" class="form-control smaller-font smaller-height rate-input" style="width:80px; height:25px;" name="rate[@i]" value="@item.Rate" data-index="@i" />
+                            </td>
+                            <td style="padding:10px;">
+                                <input type="text" id="txtWeight_@i" class="form-control smaller-font smaller-height weight-input" style="width:80px; height:25px;" name="weight[@i]" value="@item.filterWeight" data-index="@i" />
                             </td>
                             <td style="padding:10px;">
                                 <input type="text" id="txtQuantity_@i" class="form-control smaller-font smaller-height quantity-input" style="width:80px; height:25px;" name="quantity[@i]" value="@item.Quantity" data-index="@i" />
@@ -712,191 +623,132 @@
         </table>
     </div>
 </div>
-@* Metal Baffel *@
-<div class="container" style="margin-top:15px; text-align:left;">
-    <h6 id="MetalBaffel" style="cursor:pointer;" class="heading">Metal Baffel <span id="arrowIcon" class="arrow">▼</span></h6>
-    <div id="MetalBaffelGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
-        <table id="MetalBaffelTable" class="table table-sm table-bordered compact-table" style="width:100%;">
-            <thead class="webgrid-header" style="background-color:grey; font-size:12px;">
-                <tr>
-                    <th style="padding:10px;">Sr.No.</th>
-                    <th style="padding:10px;">Item</th>
-                    <th style="padding:10px;">Width</th>
-                    <th style="padding:10px;">Height</th>
-                    <th style="padding:10px;">Rate</th>
-                    <th style="padding:10px;">Quantity</th>
-                    <th style="padding:10px;">Cost</th>
-                </tr>
-            </thead>
-            <tbody style="font-size:12px;">
-                <tr>
-                    @* <td style="padding:5px;">1</td>
-                    <td style="padding:5px;">Metal Baffel Frame</td>
-                    <td>
-                    <input type="text" class="txtSetMetalBaffel form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                    <input type="text" class="txtWeightMetalBaffel form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                    <input type="text" class="txtTotalWeighMetalBaffel form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                    <input type="text" class="txtCostMetalBaffel form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                    *@
-                    @if (Model.FrameDetails == null)
-                    {
-                    <tr><td colspan="6" style="padding:5px;">No Data Available</td></tr>
-                    }
-                    else
-                    {
-                        int i = 0;
-                        foreach (var item in Model.FrameDetails)
-                        {
-                            i++;
-                        <tr>
-                            <td style="padding:10px;">@i</td>
-                            <td class="rate" style="padding:5px;">Metal Baffel Frame</td>
-                            <!-- Width TextBox -->
-                            <td style="padding:10px;">
-                                <input type="text" id="txtBaffelWidth_@i" class="form-control smaller-font smaller-height width-input"
-                                       style="width:80px; height:25px;"
-                                       name="width[@i]"
-                                       value="@item.Width"
-                                       data-index="@i" />
-                            </td>
 
-                            <!-- Height TextBox -->
-                            <td style="padding:10px;">
-                                <input type="text" id="txtBaffelHeight_@i" class="form-control smaller-font smaller-height height-input"
-                                       style="width:80px; height:25px;"
-                                       name="height[@i]"
-                                       value="@item.Height"
-                                       data-index="@i" />
-                            </td>
 
-                                @*   <td class="rate" style="padding:5px;">@item.Rate</td> *@
-                            <td style="padding:10px;">
-                                <input type="text" id="txtBaffelRate_@i" class="form-control smaller-font smaller-height quantity-input" style="width:80px; height:25px;" name="rate[@i]" value="@item.Rate" data-index="@i" />
-                            </td>
-                            <td style="padding:10px;">
-                                <input type="text" id="txtBaffelQuantity_@i" class="form-control smaller-font smaller-height quantity-input" style="width:80px; height:25px;" name="quantity[@i]" value="@item.Quantity" data-index="@i" />
-                            </td>
-                            <td style="padding:10px;">
-                                <input type="text" id="txtBaffelCost_@i" class="form-control smaller-font smaller-height cost-input" style="width:80px; height:25px;" name="cost[@i]" value="@item.Cost" readonly />
-                            </td>
-                        </tr>
-                        }
-                    }
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-@* Ceiling Filters Frame *@
+
 <div class="container" style="margin-top:15px; text-align:left;">
-    <h6 id="CeilingFiltersFrame" style="cursor:pointer;" class="heading">Ceiling Filters Frame <span id="arrowIcon" class="arrow">▼</span></h6>
-    <div id="CeilingFiltersFrameGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
-        <table id="CeilingFiltersFrameTable" class="table table-sm table-bordered compact-table" style="width:100%;">
-            <thead class="webgrid-header" style="background-color:grey; font-size:12px;">
-                <tr>
-                    <th style="padding:5px;">Sr.No.</th>
-                    <th style="padding:5px;">Item</th>
-                    <th style="padding:5px;">Set(Nos)</th>
-                    <th style="padding:5px;">Weight(Kg)</th>
-                    <th style="padding:5px;"> Total Weight(Kg)</th>
-                    <th style="padding:5px;">Cost</th>
-                </tr>
-            </thead>
-            <tbody style="font-size:12px;">
-                <tr>
-                    <td style="padding:5px;">1</td>
-                    <td style="padding:5px;">Ceiling Filters Frame</td>
-                    <td>
-                        <input type="text" class="txtSetCeilingFiltersFrame form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightCeilingFiltersFrame form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeighCeilingFiltersFrame form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostCeilingFiltersFrame form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <form asp-action="savePriceDetails" asp-controller="Costing" method="post">
+        <div class="row">
+                <!-- Hidden field for EnquiryCode -->
+                <input type="hidden" asp-for="EnquiryCode" id="hiddenEnquiryCode" />
+        <div class="col-md-4">
+            <label for="totalPriceOfFrame">Total Cost of Panels</label>
+                    @Html.TextBoxFor(m => m.TotalPriceOfPanels, new { @class= "form-control smaller-font smaller-height", @id = "totalPriceOfPanels", style = "width:150px;" })
+        </div>
+        <div class="col-md-4">
+            <label for="totalPriceOfFrame">Total Cost of Frame</label>
+                    @Html.TextBoxFor(m => m.TotalPriceOfFrame, new { @class = "form-control smaller-font smaller-height", @id = "totalPriceOfFrame", style = "width:150px;" })
+        </div>
+       
     </div>
-</div>
-@* Blower Resting Structure *@
-<div class="container" style="margin-top:15px; text-align:left;">
-    <h6 id="BlowerRestingStructure" style="cursor:pointer;" class="heading">Blower Resting Structure <span id="arrowIcon" class="arrow">▼</span></h6>
-    <div id="BlowerRestingStructureGrid" class="table-responsive grid" style="width:100%; max-height:300px; display:none;">
-        <table id="BlowerRestingStructureTable" class="table table-sm table-bordered compact-table" style="width:100%;">
-            <thead class="webgrid-header" style="background-color:grey; font-size:12px;">
-                <tr>
-                    <th style="padding:5px;">Sr.No.</th>
-                    <th style="padding:5px;">Item</th>
-                    <th style="padding:5px;">Set(Nos)</th>
-                    <th style="padding:5px;">Weight(Kg)</th>
-                    <th style="padding:5px;"> Total Weight(Kg)</th>
-                    <th style="padding:5px;">Cost</th>
-                </tr>
-            </thead>
-            <tbody style="font-size:12px;">
-                <tr>
-                    <td style="padding:5px;">1</td>
-                    <td style="padding:5px;">Vertical Structure</td>
-                    <td>
-                        <input type="text" class="txtSetBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeighBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostCeilingBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:5px;">2</td>
-                    <td style="padding:5px;">Horizontal Structure</td>
-                    <td>
-                        <input type="text" class="txtSetBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtWeightBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtTotalWeighBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" />
-                    </td>
-                    <td>
-                        <input type="text" class="txtCostCeilingBlowerRestingStructure form-control smaller-font smaller-height quantity-input" style="width:100px;padding:10px" readonly />
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <br/>
+    <div class="row">
+        <div class="col-md-4">
+                <label for="totalPriceOfFrame">Cost of Raw Materials</label>
+                    @Html.TextBoxFor(m => m.RowMaterials, new { @class = "form-control smaller-font smaller-height", @id = "totalPriceOfRM", style = "width:150px;" })
+        </div>
+        <div class="col-md-4">
+                <label for="totalPriceOfFrame">Cost of Bought Out</label>
+                    @Html.TextBoxFor(m => m.BoughtOut, new { @class = "form-control smaller-font smaller-height", @id = "totalPriceOfBO", style = "width:150px;" })
+        </div>
+           
     </div>
+    <div class="row">
+            <div class="col-md-4">
+                <div class="form-check mt-3">
+                    @Html.CheckBoxFor(m => m.IsPriceBidApproved, new { @id = "approvePriceBid", @class = "form-check-input" })
+                    <label class="form-check-label" for="approvePriceBid">Approve Price Bid</label>
+                </div>
+            </div>
+            <div class="col-md-4" style="margin-top:10px;">
+                <button type="submit" class="btn btn-success rounded-pill" id="saveButton" style="width:100px">Save</button>
+            </div>
+
+    </div>
+    </form>
 </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
-        $('.quantity-input').on('input', function () {
-            var index = $(this).data('index');
-            var rate = parseFloat($('#filteredTable tr').eq(index).find('.rate').text());
-            var quantity = parseFloat($(this).val());
-            var costField = $('#txtCost_' + index);
+        $(document).on('click', '#searchbtn', function () {
+        // Get values from the textboxes
+        var enquiryCode = $('#txtEnquiryCode').val();
 
-            if (!isNaN(rate) && !isNaN(quantity)) {
-                costField.val((rate * quantity).toFixed(2));
-            } else {
-                costField.val('');
-            }
+        // Redirect with query string parameters
+        window.location.href = '@Url.Action("BOCalculations", "Costing")' +
+            '?enquiryCode=' + encodeURIComponent(enquiryCode);
+    });
+            // Attach event listeners to Rate and Quantity inputs
+            $('#BaughtOutGrid, #exhaustSystemGrid').find('.rate-input, .quantity-input').on('input', function () {
+                // Find the closest row to the changed input
+                var $row = $(this).closest('tr');
+
+                // Get the Rate and Quantity input fields in the same row
+                var $rateInput = $row.find('.rate-input');
+                var $quantityInput = $row.find('.quantity-input');
+                var $costInput = $row.find('.cost-input');
+
+                // Parse the Rate and Quantity values
+                var rate = parseFloat($rateInput.val()) || 0;
+                var quantity = parseFloat($quantityInput.val()) || 0;
+
+                // Calculate Cost
+                var cost = (rate * quantity).toFixed(2);
+
+                // Update the Cost input field
+                $costInput.val(cost);
+                calculateTotalPrice();
+            });
+        // Function to calculate the total price from both grids
+        function calculateTotalPrice() {
+            var totalPrice = 0;
+
+            // Iterate over all cost-input fields in both grids
+            $('#BaughtOutGrid, #exhaustSystemGrid').find('.cost-input').each(function () {
+                var cost = parseFloat($(this).val()) || 0;
+                totalPrice += cost;
+            });
+
+            // Update the total price textbox
+            $('#totalPriceOfBO').val(totalPrice.toFixed(2));
+        }
+
+        // Attach event listeners to Rate and Quantity inputs
+        $('#exhaustDuctGrid, #PaintarrestedfilterGrid, #MetalBaffelGrid').find('.rate-input, .weight-input').on('input', function () {
+            // Find the closest row to the changed input
+            var $row = $(this).closest('tr');
+
+            // Get the Rate and Quantity input fields in the same row
+            var $rateInput = $row.find('.rate-input');
+            var $quantityInput = $row.find('.weight-input');
+            var $costInput = $row.find('.cost-input');
+
+            // Parse the Rate and Quantity values
+            var rate = parseFloat($rateInput.val()) || 0;
+            var quantity = parseFloat($quantityInput.val()) || 0;
+
+            // Calculate Cost
+            var cost = (rate * quantity).toFixed(2);
+
+            // Update the Cost input field
+            $costInput.val(cost);
+            calculateTotalCostForDucts();
         });
+
+        // Function to calculate the total cost for exhaust duct grids
+        function calculateTotalCostForDucts() {
+            var totalDuctCost = 0;
+
+            // Iterate over all cost-input fields in these grids
+            $('#exhaustDuctGrid, #PaintarrestedfilterGrid, #MetalBaffelGrid').find('.cost-input').each(function () {
+                var cost = parseFloat($(this).val()) || 0;
+                totalDuctCost += cost;
+            });
+
+            // Update the total cost textbox
+            $('#totalPriceOfRM').val(totalDuctCost.toFixed(2));
+        }
 
         $('#exhaustSystemHeading').on('click', function () {
             $('#exhaustSystemGrid').toggle(); // Toggle visibility of the grid
@@ -972,8 +824,27 @@
         $('.txtSetDuct, .txtWeightDuct,.txtCostDuct').on('input', function () {
             calculateTotalWeight();
         });
+        
 
+  
 
+</script>
+<script>
+    const checkbox = document.getElementById("approvePriceBid");
+    const saveButton = document.getElementById("saveButton");
+
+    checkbox.addEventListener("change", function () {
+        if (this.checked) {
+            const userConfirmed = confirm("Do you want to approve this Price Bid?");
+            if (userConfirmed) {
+                saveButton.disabled = false; // Enable the button if user confirms
+            } else {
+                this.checked = false; // Uncheck the checkbox if user cancels
+                saveButton.disabled = true; // Keep the button disabled
+            }
+        } else {
+            saveButton.disabled = true; // Disable the button if unchecked
+        }
     });
 </script>
 

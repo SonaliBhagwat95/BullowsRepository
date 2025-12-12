@@ -1,14 +1,8 @@
 ﻿using Bullows.Database;
 using Bullows.Model;
 using Microsoft.AspNetCore.Http;
-
 using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Bullows.Repositories.Repositories
 {
@@ -37,7 +31,7 @@ namespace Bullows.Repositories.Repositories
         {
             return _DbContext.EnquiryMasters.FirstOrDefault(e => e.SalesNO == enquiryNo);
         }
-
+        
         public int SaveEnquiry(EnquiryModel model, EnquiryMaster tblobj, int flag)
         {
             try
@@ -50,14 +44,16 @@ namespace Bullows.Repositories.Repositories
                     tblobj.ProposalDate = model.ProposalDate;
                     tblobj.SalesNO = model.SalesNO;
                     tblobj.IsDeleted = false;
-                    tblobj.PaintBoothType = model.PaintBoothType; 
+                    tblobj.DraftType = model.DraftType != null ? model.DraftType : ""; 
+                    tblobj.SubTypeOfDraftType = model.SubTypeOfDraft != null ? model.SubTypeOfDraft : "";
                     tblobj.CreatedBy = Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0;
-                    tblobj.CreatedDate = DateTime.Now;
+                    //tblobj.CreatedDate = DateTime.Now;
                     tblobj.ModifiedBy = 1;
                     tblobj.ModifiedDate = DateTime.Now;
-                    //tblobj.CustomerID = CustomerId;
+                    tblobj.EnquiryID = model.EnquiryId;
                     tblobj.CustomerID = model.CustomerID;
                     tblobj.ComponentID = ComponentId;
+                    tblobj.PlenumHeight = model.HeightOfPlenum!=null? model.HeightOfPlenum:"";
                     _DbContext.Entry(tblobj).State=Microsoft.EntityFrameworkCore.EntityState.Modified;
                 }
                 else
@@ -66,14 +62,16 @@ namespace Bullows.Repositories.Repositories
                     tblobj.ProposalDate = model.ProposalDate;
                     tblobj.SalesNO = model.SalesNO;
                     tblobj.IsDeleted = false;
-                  
-                    tblobj.PaintBoothType = model.PaintBoothType;
+
+                    tblobj.DraftType = model.DraftType != null ? model.DraftType : "";
+                    tblobj.SubTypeOfDraftType = model.SubTypeOfDraft != null ? model.SubTypeOfDraft:"";
                     tblobj.CreatedBy = Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0;
                     tblobj.CreatedDate = DateTime.Now;
                     tblobj.ModifiedBy = 0;
                     // tblobj.ModifiedDate = DateTime.Now;
                     tblobj.CustomerID = model.CustomerID;
                     tblobj.ComponentID = ComponentId;
+                    tblobj.PlenumHeight = model.HeightOfPlenum != null ? model.HeightOfPlenum : "";
                     _DbContext.EnquiryMasters.Add(tblobj);
 
                 }
@@ -97,7 +95,11 @@ namespace Bullows.Repositories.Repositories
             MotorDetails obj = new MotorDetails();
             if(flag == 1)
             {
-
+                obj = new MotorDetails();
+                obj.MotorID = model.MotorID;
+                obj.EnquiryID = enquiryid;
+                obj.MotorTypes = model.MotorType;
+                _DbContext.Entry(obj).State=Microsoft.EntityFrameworkCore.EntityState.Modified;
             }
             else
             {
@@ -118,15 +120,14 @@ namespace Bullows.Repositories.Repositories
                 if (flag == 1)
                 {
                     tblobj = new ComponentTable();
+                    tblobj.ComponentID = model.ComponentID;
                     tblobj.Category = model.Category;
                     tblobj.Component = model.Component;
                     tblobj.IsDeleted = false;
                     tblobj.CreatedBy = Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0;
-                    tblobj.CreatedDate = DateTime.Now;
-                    tblobj.ModifiedBy = (int)(Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0); ;
-                    tblobj.ModifiedDate = DateTime.Now;
-                   // tblobj.Length = model.LengthSize;
-                   // tblobj.WidthSize = model.WidthSize;
+                    //tblobj.CreatedDate = DateTime.Now;
+                    tblobj.ModifiedBy = (int)(Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0); 
+                    tblobj.ModifiedDate = DateTime.Now;                 
                     tblobj.ComponentHandling = model.ComponentHandling;
                     if (model.Shape == "Rectangular" && model.Orientation == "Horizontal")
                     {
@@ -187,7 +188,7 @@ namespace Bullows.Repositories.Repositories
                     tblobj.Paint = model.Paint;
                     tblobj.Powder = model.Powder;
                     tblobj.DFT = model.DFT;
-                    tblobj.Conveyor = model.Conveyor;
+                    
                     tblobj.NoOfColors = model.NoOfColors;
                     tblobj.NoOfCoats = model.NoOfCoats;
                     tblobj.Shape = model.Shape;
@@ -197,9 +198,8 @@ namespace Bullows.Repositories.Repositories
                     tblobj.LoadingUnloading = model.LoadingUnloading;
                     tblobj.ConsumptionPerDay = model.Consumption;
                     tblobj.Viscosity = model.Viscosity;
-                    //tblobj.HeightSize = model.HeightSize;
                     tblobj.Weight = model.Weight;
-                   // tblobj.QtyperAssembly = 0;
+                    tblobj.Conveyor = model.Conveyor != null ? model.Conveyor : "NA";
                     tblobj.MaterialofConstruction = model.MaterialofConstruction;
                     tblobj.SurfaceArea = model.SurfaceArea;
                     tblobj.WallThickness = model.WallThickness;
@@ -208,7 +208,20 @@ namespace Bullows.Repositories.Repositories
                     tblobj.SpecificHeat = model.SpecificHeat;
                     tblobj.EffectiveWorking = model.EffectiveWorking;
                     tblobj.NumberofShifts = model.NumberofShifts;                  
-                    tblobj.Image_Path = model.Image_Path;                        
+                    tblobj.Image_Path = model.Image_Path;
+                    tblobj.ExtractionChamberHeight = model.ExtractionChamberHeight;
+                    tblobj.ComponentEntry = model.ComponentEntry == null ? "" : model.ComponentEntry;
+                    tblobj.DoorType = model.DoorType==null ? "":model.DoorType;
+                    if (model.DoorType == "Manual")
+                    {
+                        tblobj.DoorSubType = model.TypeOfOperationForManual == null ? "" : model.TypeOfOperationForManual;
+                    }
+                    else
+                    {
+                        tblobj.DoorSubType = model.TypeOfOperationForMotorised == null ? "" : model.TypeOfOperationForMotorised;
+                    }
+                    tblobj.TypeOfHingedDoor= model.TypeOfHingedDoor == null ? "" : model.TypeOfHingedDoor;
+                    tblobj.SideDoorLOcation = model.SideDoorLOcation == null ? "" : model.SideDoorLOcation;
                     _DbContext.Entry(tblobj).State=Microsoft.EntityFrameworkCore.EntityState.Modified;
                 }
                 else
@@ -278,12 +291,13 @@ namespace Bullows.Repositories.Repositories
                     
                     tblobj.Paint = model.Paint;
                     tblobj.Powder = model.Powder;
+                    tblobj.TypeOfPaint = model.TypeOfPaint == null ? " " : model.TypeOfPaint;
+                    tblobj.TypeOfPowder = model.TypeOfPowder == null ? " " : model.TypeOfPowder;
                     tblobj.DFT = model.DFT;
                     tblobj.Conveyor = model.Conveyor != null ? model.Conveyor :"NA" ;
                     tblobj.NoOfColors = model.NoOfColors;
                     tblobj.NoOfCoats = model.NoOfCoats;
-                    //tblobj.Pitch = model.Pitch;
-                    //tblobj.Speed = model.Speed;
+               
                     tblobj.LoadingUnloading = model.LoadingUnloading;
                     tblobj.ConsumptionPerDay = model.Consumption;
                     tblobj.Viscosity = model.Viscosity;
@@ -301,8 +315,21 @@ namespace Bullows.Repositories.Repositories
                     tblobj.EffectiveWorking = model.EffectiveWorking;
                     tblobj.NumberofShifts = model.NumberofShifts;
 
-                    tblobj.Image_Path = string.IsNullOrEmpty(model.Image_Path) ? "N/A" : model.Image_Path;
+                    tblobj.Image_Path = string.IsNullOrEmpty(model.Image_Path) ? "N/A" : Path.Combine(model.Image_Path);
+                    tblobj.ExtractionChamberHeight = model.ExtractionChamberHeight;
 
+                    tblobj.ComponentEntry = model.ComponentEntry==null?"": model.ComponentEntry;
+                    tblobj.DoorType = model.DoorType == null ? "" : model.DoorType;
+                    if (model.DoorType == "Manual")
+                    {
+                        tblobj.DoorSubType = model.TypeOfOperationForManual == null ? "" : model.TypeOfOperationForManual;
+                    }
+                    else
+                    {
+                        tblobj.DoorSubType = model.TypeOfOperationForMotorised == null ? "" : model.TypeOfOperationForMotorised;
+                    }
+                    tblobj.TypeOfHingedDoor = model.TypeOfHingedDoor == null ? "" : model.TypeOfHingedDoor;
+                    tblobj.SideDoorLOcation = model.SideDoorLOcation == null ? "" : model.SideDoorLOcation;
                     _DbContext.ComponentTables.Add(tblobj);
 
                 }
@@ -344,13 +371,14 @@ namespace Bullows.Repositories.Repositories
                         join Cust in _DbContext.CustomerMasters on e.CustomerID equals Cust.CustomerID
                         join contact in _DbContext.tblAddContactPersons on e.CustomerID equals contact.CustomerID
                         join comp in _DbContext.ComponentTables on e.ComponentID equals comp.ComponentID
+                        join m in _DbContext.MotorDetails on e.EnquiryID equals m.EnquiryID
                         where e.IsDeleted == false && e.EnquiryID == id
                         select new EnquiryModel()
                         {
                             EnquiryId = e.EnquiryID,
                             SalesNO = e.SalesNO,
-                            CompanyName = Cust.CompanyName,
-                            Component = comp.Component,
+                            CompanyName = Cust.CompanyName ?? string.Empty,
+                            Component = comp.Component ?? string.Empty,
                             ComponentID = comp.ComponentID,
                             CustomerID = Cust.CustomerID,
                             Category = comp.Category,
@@ -364,33 +392,45 @@ namespace Bullows.Repositories.Repositories
                             Conveyor=comp.Conveyor,
                             LoadingUnloading=comp.LoadingUnloading,
                             EmailId = contact.EmailId,
-                            Image_Path = comp.Image_Path,
+                            Image_Path = comp.Image_Path != null ? Path.Combine(comp.Image_Path) : string.Empty,
                             Viscosity = comp.Viscosity,
                             DFT = comp.DFT,
-                            PaintBoothType=e.PaintBoothType,
-                            Paint=comp.Paint,
+                            DraftType=e.DraftType ?? string.Empty,
+                            SubTypeOfDraft = e.SubTypeOfDraftType ?? string.Empty,
+                            Paint =comp.Paint,
                             Powder=comp.Powder,
                             NoOfCoats=comp.NoOfCoats,
                             NoOfColors=comp.NoOfColors,
                             SpecificHeat=comp.SpecificHeat,
                             Pitch=comp.Pitch,
-                            Speed=comp.Speed,   
-                            Shape=comp.Shape,
-                            OverheadConveyorSubTypes=comp.OverheadConveyorSubTypes,
-                            ConveyorNumber=comp.ConveyorNumber,
-                            Orientation =comp.Orientation,
+                            Speed=comp.Speed ,   
+                            Shape=comp.Shape ?? string.Empty,
+                            OverheadConveyorSubTypes=comp.OverheadConveyorSubTypes ?? string.Empty,
+                            ConveyorNumber=comp.ConveyorNumber ?? string.Empty,
+                            Orientation =comp.Orientation ?? string.Empty,
                             LengthSize = comp.Length,
                             WidthSize = comp.WidthSize,
                             HeightSize = comp.HeightSize,
-                            Weight = comp.Weight,
-                            
-                            MaterialofConstruction = comp.MaterialofConstruction,
+                            Weight = comp.Weight,                            
+                            MaterialofConstruction = comp.MaterialofConstruction ?? string.Empty,
                             SurfaceArea = comp.SurfaceArea,
                             WallThickness = comp.WallThickness,
                             ProductionRequirement = comp.ProductionRequirement,
                             Workingdays = comp.Workingdays,
                             NumberofShifts = comp.NumberofShifts,
-                            EffectiveWorking = comp.EffectiveWorking
+                            EffectiveWorking = comp.EffectiveWorking ,
+                            MotorType=m.MotorTypes ?? string.Empty,
+                            ComponentEntry=comp.ComponentEntry ?? string.Empty,
+                            DoorType=comp.DoorType ?? string.Empty,
+                            TypeOfOperationForManual=comp.DoorSubType,
+                            TypeOfOperationForMotorised=comp.DoorSubType,
+                            TypeOfPaint=comp.TypeOfPaint,
+                            TypeOfPowder=comp.TypeOfPowder,
+                            ExtractionChamberHeight =comp.ExtractionChamberHeight ?? string.Empty,
+                            HeightOfPlenum=e.PlenumHeight ?? string.Empty,
+                            SideDoorLOcation=comp.SideDoorLOcation ?? string.Empty,
+                            TypeOfHingedDoor=comp.TypeOfHingedDoor ?? string.Empty,
+                        
                         }).FirstOrDefault();
             return data;
         }
@@ -401,10 +441,8 @@ namespace Bullows.Repositories.Repositories
             tblobj.CustomerAddress = model.CustomerAddress;
             tblobj.Designation = model.Designation;
             tblobj.StateId = model.StateId;
-            //tblobj.DistrictId = model.DistrictId;
             tblobj.CityId = model.CityId;
             tblobj.Pin = model.Pin;
-            //tblobj.PAN = model.PAN;
             tblobj.CreatedBy = Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0;
             tblobj.CreatedDate = DateTime.Now;
             tblobj.IsDeleted = false;

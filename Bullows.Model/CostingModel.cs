@@ -11,6 +11,7 @@ namespace Bullows.Model
         public string  EnquiryCode { get; set; }
         public List<PaintBoothModel> DetailsList { get; set; } = new List<PaintBoothModel>();
         public List<PaintBoothModel> FilteredDetailsList { get; set; }
+        public List<PaintBoothModel> metalBaffles { get; set; }
         public double RMWeightOfPanels { get; set; }
         public double TotalWeightOfFrame { get; set; }
         public double TotalWeight { get; set; }
@@ -23,7 +24,7 @@ namespace Bullows.Model
         {
             return FilteredDetailsList.Any(f => f.EnquiryId == panel.EnquiryId &&
                                                 f.PanelPosition == panel.PanelPosition &&
-                                                f.EqualPanelWidthForD == panel.EqualPanelWidthForD &&
+                                                //f.EqualPanelWidthForD == panel.EqualPanelWidthForD &&
                                                 f.EqualPanelWidthByH == panel.EqualPanelWidthByH &&
                                                 f.SheetThickness == panel.SheetThickness &&
                                                 f.NoofPanels == panel.NoofPanels &&

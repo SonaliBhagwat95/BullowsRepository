@@ -111,17 +111,26 @@ namespace Bullows.Controllers
         }
         catch (Exception ex)
         {
-            // Handle any errors that may occur
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+                _uow.exceptionHandlerRepository.SaveException("PanelInputController", "SavePanelInput", ex.Message);
+                // Handle any errors that may occur
+                return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
 
         public JsonResult GetPanelInputs(int projectId)
         {
-            var panelInputs = _uow.projectRepository.FillPanelInputsDropDown(projectId);
-            var panelInputIds = panelInputs.Select(pi => pi.PanelInputID).ToList();
-            return Json(panelInputIds);
+            try
+            {
+                var panelInputs = _uow.projectRepository.FillPanelInputsDropDown(projectId);
+                var panelInputIds = panelInputs.Select(pi => pi.PanelInputID).ToList();
+                return Json(panelInputIds);
+            }
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("PanelInputController", "GetPanelInputs", ex.Message);
+                throw;
+            }
         }      
 
     }

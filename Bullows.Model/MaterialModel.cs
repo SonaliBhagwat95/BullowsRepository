@@ -23,6 +23,7 @@ namespace Bullows.Model
         public int FID { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public double filterWeight { get; set; }
 
     }
 }

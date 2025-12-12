@@ -16,7 +16,6 @@ namespace Bullows.Database
         [ForeignKey("ProjectID")]
         public int ProjectID { get; set; }
 
-        //public string PanelInputName { get; set; }
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public double PanelWidth { get; set; }
@@ -38,15 +37,9 @@ namespace Bullows.Database
         public double PitchDistance { get; set; }
         [Required]
         [Column(TypeName = "decimal(18,2)")]
-        public double SlotDimentions { get; set; }
-       
+        public double SlotDimentions { get; set; }       
         public int NoofPanels { get; set; }
         public bool IsDeleted { get; set; }
 
-    }
-   
-    
-
-    
-
+    } 
 }

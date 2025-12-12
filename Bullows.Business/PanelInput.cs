@@ -30,9 +30,7 @@ namespace bullows.business
         public double StandardBend1 { get; set; }
         public double StandardBend2 { get; set; }
         public double PitchDistance { get; set; }
-        public int NoofPanels { get; set; }
-        //devregion devregion { get; set; }
-
+        public int NoofPanels { get; set; }       
         public int[] shroudarr;
         private int[] Panelinputs;
         public int[] stiff;
@@ -202,7 +200,11 @@ namespace bullows.business
             #region Development
             StandardBend1 = model.StandardBend1 - model.SheetThickness;
             StandardBend2 = model.StandardBend2 - (model.SheetThickness * 2);
-
+            int bendlineLength = 50;
+            if (model.PanelWidth > 1000)
+                bendlineLength = 160;
+            else
+                bendlineLength = 110;
             const string Dim = "Dimension";
             docdrawing.Layers.Add(new Layer(Dim, Color.CornflowerBlue));
             Plane verticalPlane = Plane.XY;
@@ -213,8 +215,8 @@ namespace bullows.business
             //Add InnerRectangle for Left Bottom
             LinearPath Innerrectangleleft = new LinearPath(new Point3D[]
             {
-                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), 0),
-                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2))+50, 0)
+                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)+10, 0),
+                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2))+bendlineLength, 0)
             });
 
             Layer mylayer = new Layer("bendlayer");
@@ -225,8 +227,8 @@ namespace bullows.business
             //for innerRectangle Right Bottom
             LinearPath InnerrectangleRightBottom = new LinearPath(new Point3D[]
             {
-                new Point3D(((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness), 0),
-                new Point3D((((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness))-50, 0),
+                new Point3D(((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness)-10, 0),
+                new Point3D((((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness))-bendlineLength, 0),
             });
             InnerrectangleRightBottom.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleRightBottom);
@@ -235,52 +237,52 @@ namespace bullows.business
             //Add InnerRectangle for Left Top
             LinearPath InnerrectangleleftTop = new LinearPath(new Point3D[]
             {
-                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2),  model.PanelHeight - 2 * model.SheetThickness),
-                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)+50), ( model.PanelHeight - 2 * model.SheetThickness))
+                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)+10,  model.PanelHeight - 2 * model.SheetThickness),
+                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)+bendlineLength), ( model.PanelHeight - 2 * model.SheetThickness))
             });
             InnerrectangleleftTop.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleleftTop);
             //for innerRectangle Right Top
             LinearPath InnerrectangleRightTop = new LinearPath(new Point3D[]
             {
-                new Point3D(((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness),  model.PanelHeight - 2 * model.SheetThickness),
-                new Point3D((((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness))-50,  model.PanelHeight - 2 * model.SheetThickness),
+                new Point3D(((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness)-10,  model.PanelHeight - 2 * model.SheetThickness),
+                new Point3D((((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness))-bendlineLength,  model.PanelHeight - 2 * model.SheetThickness),
             });
             InnerrectangleRightTop.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleRightTop);
             #endregion
             #region Inner Rectangle Left
-            //left bottom
+            // inner rectangle left bottom
             LinearPath InnerrectangleleftSide = new LinearPath(new Point3D[]
             {
-                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), 0),
-                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)), 50)
+                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), 10),
+                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)), bendlineLength)
             });
             InnerrectangleleftSide.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleleftSide);
-            //legt Top
+            // inner rectangle left Top
             LinearPath InnerrectangleleftSideTop = new LinearPath(new Point3D[]
             {
-                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), (model.PanelHeight - 2 * model.SheetThickness)),
-                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)),((model.PanelHeight - 2 * model.SheetThickness)-50) )
+                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), (model.PanelHeight - 2 * model.SheetThickness)-10),
+                  new Point3D((model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)),((model.PanelHeight - 2 * model.SheetThickness)-bendlineLength) )
             });
             InnerrectangleleftSideTop.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleleftSideTop);
             #endregion
             #region Inner Rectangle Right
-            //left bottom
+            //  inner rectangle Rightside bottom
             LinearPath InnerrectangleRightSide = new LinearPath(new Point3D[]
             {
-                 new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)), 0),
-                  new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)), 50),
+                 new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)), 10),
+                  new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)), bendlineLength),
             });
             InnerrectangleRightSide.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleRightSide);
-            //legt Top
+            //left Top
             LinearPath InnerrectangleRightSideTop = new LinearPath(new Point3D[]
             {
-                 new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)), (model.PanelHeight - 2 * model.SheetThickness)),
-                  new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)),((model.PanelHeight - 2 * model.SheetThickness)-50) )
+                 new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)), (model.PanelHeight - 2 * model.SheetThickness)-10),
+                  new Point3D((model.PanelWidth*2 + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)-(2*model.SheetThickness)),((model.PanelHeight - 2 * model.SheetThickness)-bendlineLength) )
             });
             InnerrectangleRightSideTop.LayerName = "bendlayer";
             docdrawing.Entities.Add(InnerrectangleRightSideTop);
@@ -291,15 +293,15 @@ namespace bullows.business
             //for bendline right side
             LinearPath bendlineright = new LinearPath(new Point3D[]
              {
-                 new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,0),
-                  new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,50),
+                 new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,10),
+                  new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,bendlineLength),
             });
             bendlineright.LayerName = "bendlayer";
             docdrawing.Entities.Add(bendlineright);
             LinearPath bendlineright1 = new LinearPath(new Point3D[]
             {
-                 new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,(model.PanelHeight - 2 * model.SheetThickness)),
-                 new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,(model.PanelHeight - 2 * model.SheetThickness)-50),
+                 new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,(model.PanelHeight - 2 * model.SheetThickness)-10),
+                 new Point3D((model.PanelWidth*2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+(StandardBend2))-2*model.SheetThickness,(model.PanelHeight - 2 * model.SheetThickness)-bendlineLength),
 
            });
             bendlineright1.LayerName = "bendlayer";
@@ -309,15 +311,15 @@ namespace bullows.business
             //for bendline right side
             LinearPath bendlineLeft = new LinearPath(new Point3D[]
              {
-                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),0),
-                  new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),50),
+                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),10),
+                  new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),bendlineLength),
             });
             bendlineLeft.LayerName = "bendlayer";
             docdrawing.Entities.Add(bendlineLeft);
             LinearPath bendlineLeft1 = new LinearPath(new Point3D[]
             {
-                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),(model.PanelHeight - 2 * model.SheetThickness)),
-                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),(model.PanelHeight - 2 * model.SheetThickness)-50)
+                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),(model.PanelHeight - 2 * model.SheetThickness)-10),
+                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)-(StandardBend2)),(model.PanelHeight - 2 * model.SheetThickness)-bendlineLength)
 
            });
             bendlineLeft1.LayerName = "bendlayer";
@@ -327,26 +329,25 @@ namespace bullows.business
             //for bendline Bottom side
             LinearPath bendlineBottom = new LinearPath(new Point3D[]
              {
-                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)),-(StandardBend2)),
-                  new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+50),-(StandardBend2)),
+                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))+10,-(StandardBend2)),
+                  new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+bendlineLength),-(StandardBend2)),
             });
             bendlineBottom.LayerName = "bendlayer";
             docdrawing.Entities.Add(bendlineBottom);
             LinearPath bendlineBottom1 = new LinearPath(new Point3D[]
             {
-                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)),(model.PanelHeight - 2 * model.SheetThickness)+(StandardBend2)),
-                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+50),(model.PanelHeight - 2 * model.SheetThickness)+StandardBend2)
-
+                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))+10,(model.PanelHeight - 2 * model.SheetThickness)+(StandardBend2)),
+                 new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)+bendlineLength),(model.PanelHeight - 2 * model.SheetThickness)+StandardBend2)
            });
             bendlineBottom1.LayerName = "bendlayer";
             docdrawing.Entities.Add(bendlineBottom1);
 
             #region Dimentions
-            double x = (((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2))) + ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) + 50))) / 2;
+            double x = (((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2))) + ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) + bendlineLength))) / 2;
             LinearDim bendlineBottom1Dim = new LinearDim(Plane.XY,
-            new Point3D((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)), (model.PanelHeight - 2 * model.SheetThickness) + (StandardBend2)),
-                 new Point3D((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) + 50), (model.PanelHeight - 2 * model.SheetThickness) + StandardBend2),
-                new Point3D(x, (model.PanelHeight - 2 * model.SheetThickness) + (StandardBend2) + 50), 10);
+            new Point3D((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2))+10, (model.PanelHeight - 2 * model.SheetThickness) + (StandardBend2)),
+                 new Point3D((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) + bendlineLength), (model.PanelHeight - 2 * model.SheetThickness) + StandardBend2),
+                new Point3D(x, (model.PanelHeight - 2 * model.SheetThickness) + (StandardBend2) + bendlineLength), 10);
             docdrawing.Entities.Add(bendlineBottom1Dim, Dim);
             #endregion
             #endregion
@@ -354,16 +355,16 @@ namespace bullows.business
             //for bendline Bottom side
             LinearPath bendlineBottomRight = new LinearPath(new Point3D[]
              {
-                  new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness),-(StandardBend2)),
-              new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness)-50,-(StandardBend2)),
+                  new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness)-10,-(StandardBend2)),
+              new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness)-bendlineLength,-(StandardBend2)),
             });
             bendlineBottomRight.LayerName = "bendlayer";
             docdrawing.Entities.Add(bendlineBottomRight);
 
             LinearPath bendlineBottomRightTop = new LinearPath(new Point3D[]
             {
-                new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness),(model.PanelHeight - 2 * model.SheetThickness)+(StandardBend2)),
-                new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness)-50,(model.PanelHeight - 2 * model.SheetThickness)+StandardBend2)
+                new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness)-10,(model.PanelHeight - 2 * model.SheetThickness)+(StandardBend2)),
+                new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-2*model.SheetThickness)-bendlineLength,(model.PanelHeight - 2 * model.SheetThickness)+StandardBend2)
 
             });
             bendlineBottomRightTop.LayerName = "bendlayer";
@@ -371,16 +372,13 @@ namespace bullows.business
             #endregion
             #region Outer Bottom Line
             // //for bottom
-
             LinearPath linearBottom = new LinearPath(new Point3D[]
             {
-                 new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), 0),
+                  new Point3D(model.PanelWidth + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2), 0),
                   new Point3D((model.PanelWidth)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2)),-(StandardBend2)),
                   new Point3D(((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2))+(StandardBend1),-(StandardBend2+StandardBend1)),
                   new Point3D(((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - ((- model.SheetThickness)+StandardBend1),-(StandardBend1+StandardBend2)),
-
-
-                   new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-(2*model.SheetThickness)),-(StandardBend2)),
+                  new Point3D(((model.PanelWidth * 2)+((model.PanelWidth/2+model.PanelWidth/2)*(0.2))-(2*model.SheetThickness)),-(StandardBend2)),
                   new Point3D(((model.PanelWidth*2) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * 0.2)) - (2 * model.SheetThickness),0),
             });
             docdrawing.Entities.Add(linearBottom, Color.White);
@@ -549,65 +547,162 @@ namespace bullows.business
             {
                 throw new ArgumentException("Slot dimensions must be numeric values.");
             }
-            //  CreateSlots(model);
-            //creating holes on vertical direction 
-            double divisionresult = model.PanelHeight / model.PitchDistance;
-            int wholenumberpart = (int)Math.Floor(divisionresult);
 
-            // calculate the remaining space after creating whole slots
-            double multipliedresult = (wholenumberpart) * model.PitchDistance;
-            double samespacedivide = model.PanelHeight - multipliedresult;
+            #region holes on PanelHeight
+            ////creating holes on vertical direction 
+            //double PanelHeightSheetThickness = model.PanelHeight - 2 * model.SheetThickness;
+            ////double divisionresult = model.PanelHeight / model.PitchDistance;
+            //double divisionresult = PanelHeightSheetThickness / model.PitchDistance;
 
-            // create slots and add them to the drawing
-            for (int i = 0; i <= wholenumberpart; i++)
+            //int wholenumberpart = (int)Math.Floor(divisionresult);
+
+            //// calculate the remaining space after creating whole slots
+            //double multipliedresult = (wholenumberpart) * model.PitchDistance;
+            //double samespacedivide = PanelHeightSheetThickness - multipliedresult;
+
+            //// create slots and add them to the drawing
+            //for (int i = 0; i <= wholenumberpart; i++)
+            //{
+            //    double centerz;
+            //    if (i == 0)
+            //        centerz = samespacedivide / 2;
+            //    else
+
+            //        centerz = samespacedivide / 2 + (i) * model.PitchDistance;
+            //    // create a slot
+            //    devregion slot = devregion.CreateSlot(Plane.XY, (model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) - (model.StandardBend2 / 2)), centerz, (slotLength - slotWidth), slotWidth / 2, 1.5708);
+
+            //    devregion slot1 = devregion.CreateSlot(Plane.XY, (model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) - (model.StandardBend2 / 2) + (model.PanelWidth + model.StandardBend2)), centerz, (slotLength - slotWidth), slotWidth / 2, 1.5708);
+            //    slot.Translate(0, 0, samespacedivide / 2);
+            //    slot.Color = Color.Yellow;
+            //    // add the slot to the drawing
+            //    docdrawing.Entities.Add(slot, Color.White);
+            //    docdrawing.Entities.Add(slot1, Color.White);
+            //} 
+           
+            double PanelHeightSheetThickness = model.PanelHeight - 2 * model.SheetThickness;
+            double divisionresult = PanelHeightSheetThickness / model.PitchDistance;
+
+            // Get the number of holes
+            int wholenumberpart = (int)Math.Round(divisionresult);
+
+            // Calculate remaining space and distribute evenly at start & end
+            double multipliedresult = (wholenumberpart - 1) * model.PitchDistance;
+            double samespacedivide = (PanelHeightSheetThickness - multipliedresult) / 2;
+
+            // **Shift first hole by 1mm closer**
+            samespacedivide -= 1;
+
+            // Create slots and add them to the drawing
+            for (int i = 0; i < wholenumberpart; i++)
             {
-                double centerz;
-                if (i == 0)
-                    centerz = samespacedivide / 2;
-                else
+                double centerz = samespacedivide + (i * model.PitchDistance);
 
-                    centerz = samespacedivide / 2 + (i) * model.PitchDistance;
-                // create a slot
-                devregion slot = devregion.CreateSlot(Plane.XY, (model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) - (model.StandardBend2 / 2)), centerz, (slotLength - slotWidth), slotWidth / 2, 1.5708);
+                // Create first slot
+                devregion slot = devregion.CreateSlot(Plane.XY,
+                    (model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) - (model.StandardBend2 / 2)),
+                    centerz,
+                    (slotLength - slotWidth),
+                    slotWidth / 2,
+                    1.5708);
 
-                devregion slot1 = devregion.CreateSlot(Plane.XY, (model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) - (model.StandardBend2 / 2) + (model.PanelWidth + model.StandardBend2)), centerz, (slotLength - slotWidth), slotWidth / 2, 1.5708);
-                slot.Translate(0, 0, samespacedivide / 2);
+                // Create second slot
+                devregion slot1 = devregion.CreateSlot(Plane.XY,
+                    (model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2) - (model.StandardBend2 / 2) + (model.PanelWidth + model.StandardBend2)),
+                    centerz,
+                    (slotLength - slotWidth),
+                    slotWidth / 2,
+                    1.5708);
+
                 slot.Color = Color.Yellow;
-                // add the slot to the drawing
+
+                // Add slots to drawing
                 docdrawing.Entities.Add(slot, Color.White);
                 docdrawing.Entities.Add(slot1, Color.White);
             }
+            #endregion
+            #region Holes in PanelWidth
+            ////create slots on width
+            //double PanelWidthSheetThickness = model.PanelWidth - 2 * model.SheetThickness;
 
+            //double divisionresult1 = PanelWidthSheetThickness / model.PitchDistance;
+            //int wholenumberpart1 = (int)Math.Floor(divisionresult1);
 
-            //create slots on width
-            double divisionresult1 = model.PanelWidth / model.PitchDistance;
+            //// calculate the remaining space after creating whole slots
+            //double multipliedresult1 = wholenumberpart1 * model.PitchDistance;
+            //double samespacedivide1 = PanelWidthSheetThickness - multipliedresult1;
+            //samespacedivide1 -= 1;
+            //// create slots and add them to the drawing
+            //for (int i = 0; i <= wholenumberpart1; i++)
+            //{
+            //    double centery;
+            //    centery = samespacedivide1 + (i * model.PitchDistance);
+            //    //if (i == 0)
+            //    //    centery = samespacedivide1 / 2;
+            //    //else
+            //    //centery = /*(PanelWidth) - (((i + 0) * PitchDistance) - (samespacedivide1 / 2));*/
+            //    //centery = samespacedivide1 / 2 + (i) * model.PitchDistance;
+
+            //    // create a slot
+            //    devregion slot2 = devregion.CreateSlot(Plane.XY, ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centery), (-model.StandardBend2 / 2), (slotLength - slotWidth), slotWidth / 2, 0);
+
+            //    devregion slot3 = devregion.CreateSlot(Plane.XY, ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centery), (model.PanelHeight + model.StandardBend2 / 2), (slotLength - slotWidth), slotWidth / 2, 0);
+            //    slot2.Translate(0, 0, samespacedivide1 / 2);
+            //    slot2.Color = Color.Yellow;
+            //    // add the slot to the drawing
+            //    docdrawing.Entities.Add(slot2, Color.White);
+            //    docdrawing.Entities.Add(slot3, Color.White);
+            //} 
+
+            // Calculate available panel width excluding sheet thickness
+            double PanelWidthSheetThickness = model.PanelWidth - 2 * model.SheetThickness;
+
+            // Calculate number of holes that fit within the panel width
+            double divisionresult1 = PanelWidthSheetThickness / model.PitchDistance;
             int wholenumberpart1 = (int)Math.Floor(divisionresult1);
 
-            // calculate the remaining space after creating whole slots
+            // Calculate the total occupied space by the slots
             double multipliedresult1 = wholenumberpart1 * model.PitchDistance;
-            double samespacedivide1 = model.PanelWidth - multipliedresult1;
 
-            // create slots and add them to the drawing
+            // Calculate the remaining space to distribute evenly
+            double samespacedivide1 = (PanelWidthSheetThickness - multipliedresult1)/2;
+
+            // Adjust first slot position by shifting it 1mm closer
+            samespacedivide1 -= 1;
+
+            // Loop through each hole position and create slots
             for (int i = 0; i <= wholenumberpart1; i++)
             {
-                double centery;
-                if (i == 0)
-                    centery = samespacedivide1 / 2;
-                else
-                    //centery = /*(PanelWidth) - (((i + 0) * PitchDistance) - (samespacedivide1 / 2));*/
-                    centery = samespacedivide1 / 2 + (i) * model.PitchDistance;
+                // Calculate the Y-coordinate for slot placement
+                double centery = samespacedivide1 + (i * model.PitchDistance);
 
-                // create a slot
-                devregion slot2 = devregion.CreateSlot(Plane.XY, ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centery), (-model.StandardBend2 / 2), (slotLength - slotWidth), slotWidth / 2, 0);
+                // Create slot at the bottom of the panel
+                devregion slot2 = devregion.CreateSlot(Plane.XY,
+                    ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centery),
+                    (-model.StandardBend2 / 2),
+                    (slotLength - slotWidth),
+                    slotWidth / 2,
+                    0);
 
-                devregion slot3 = devregion.CreateSlot(Plane.XY, ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centery), (model.PanelHeight + model.StandardBend2 / 2), (slotLength - slotWidth), slotWidth / 2, 0);
+                // Create slot at the top of the panel
+                devregion slot3 = devregion.CreateSlot(Plane.XY,
+                    ((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centery),
+                    (model.PanelHeight + model.StandardBend2 / 2),
+                    (slotLength - slotWidth),
+                    slotWidth / 2,
+                    0);
+
+                // Adjust slot position for equal spacing
                 slot2.Translate(0, 0, samespacedivide1 / 2);
+
+                // Set color for visualization
                 slot2.Color = Color.Yellow;
-                // add the slot to the drawing
+
+                // Add slots to the drawing
                 docdrawing.Entities.Add(slot2, Color.White);
                 docdrawing.Entities.Add(slot3, Color.White);
             }
-
+            #endregion
             #region Dimension
             double centerz1 = samespacedivide1 / 2 + (2) * model.PitchDistance;
             double centerz2 = samespacedivide1 / 2 + (3) * model.PitchDistance;
@@ -615,7 +710,7 @@ namespace bullows.business
             LinearDim slotsDim = new LinearDim(Plane.XY,
               new Point3D(((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centerz1), (-model.StandardBend2 / 2)),
                new Point3D(((model.PanelWidth) + ((model.PanelWidth / 2 + model.PanelWidth / 2) * (0.2)) + centerz2), (-model.StandardBend2 / 2)),
-              new Point3D(x, (-model.StandardBend2 / 2) + 50), 20);
+              new Point3D(x, (-model.StandardBend2 / 2) + bendlineLength), 20);
 
             docdrawing.Entities.Add(slotsDim, Dim);
             #endregion

@@ -27,44 +27,58 @@ namespace Bullows.Controllers
 
         public IActionResult Customer(int id, EnquiryModel model)
         {
-           
-            ViewBag.GridCustomer = _uow.CustomerMasterRepository.GetAllCustomer();
-            var stateList = new Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList(_uow.CustomerMasterRepository.FillStateDropDown(), "StateId", "State");
-            ViewBag.State = stateList;
 
-          
-            
-
-            if (id > 0)
+            try
             {
+                ViewBag.GridCustomer = _uow.CustomerMasterRepository.GetAllCustomer();
+                var stateList = new Microsoft.AspNetCore.Mvc.Rendering.MultiSelectList(_uow.CustomerMasterRepository.FillStateDropDown(), "StateId", "State");
+                ViewBag.State = stateList;
 
+                if (id > 0)
+                {
+
+                }
+                else
+                {
+                    SetPanelHeading("CustomerMaster Details");
+                    SaveFlag = 0;
+                    if (CID == 1)
+                        SetSuccessMessage("CustomerDetails has been saved successfully");
+                    else if (CID == 2)
+                        SetErrorMessage("CustomerDetails has been deleted successfully");
+                    else if (CID < 0)
+                        SetErrorMessage("Something went wrong while saving CustomerDetails");
+                    CID = 0;
+
+                }
+                ViewBag.ActivePage = "Customer";
+                return View();
             }
-            else
+            catch (Exception ex)
             {
-                SetPanelHeading("CustomerMaster Details");
-                SaveFlag = 0;
-                if (CID == 1)
-                    SetSuccessMessage("CustomerDetails has been saved successfully");
-                else if (CID == 2)
-                    SetErrorMessage("CustomerDetails has been deleted successfully");
-                else if (CID < 0)
-                    SetErrorMessage("Something went wrong while saving CustomerDetails");
-                CID = 0;
+                _uow.exceptionHandlerRepository.SaveException("CustomerController", "Customer", ex.Message);
 
+                return View();
             }
-            ViewBag.ActivePage = "Customer";
-            return View();
         }
         public IActionResult SaveCustomerDetails(tblAddContactPerson tbl, EnquiryModel model, CustomerMaster tblobj, int flag, int selectedStateId,int selectedCityId)
         {
-            flag = SaveFlag;
-            model.StateId = selectedStateId;
-            model.CityId = selectedCityId;
-            CID = _uow.CustomerMasterRepository.saveCustomerDetails(model, tblobj, flag);
-            CID = _uow.CustomerMasterRepository.SaveAddPerson(tbl, model);
-            // ViewBag.Grid = _uow.CustomerMasterRepository.GetContacts();
-            SaveFlag = 1;
-            return RedirectToAction("Customer");
+            try
+            {
+                flag = SaveFlag;
+                model.StateId = selectedStateId;
+                model.CityId = selectedCityId;
+                CID = _uow.CustomerMasterRepository.saveCustomerDetails(model, tblobj, flag);
+                CID = _uow.CustomerMasterRepository.SaveAddPerson(tbl, model);
+                SaveFlag = 1;
+                return RedirectToAction("Customer");
+            }
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("CustomerController", "SaveCustomerDetails", ex.Message);
+                return RedirectToAction("Customer");
+
+            }
         }
 
         public IActionResult GetCitiesByState(int stateId)

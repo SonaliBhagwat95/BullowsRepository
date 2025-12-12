@@ -3,6 +3,7 @@ using Bullows.Business;
 using Bullows.Database;
 using Bullows.Repositories.Contracts;
 using Bullows.Repositories.Repositories;
+using Bullows.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,12 +29,12 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWorks>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<PaintBoothDesign>(); // Register PaintBoothDesign
-
+builder.Services.AddScoped<PaintBoothService>(); // Register PaintBoothService
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "UserLoginCookie";
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.IdleTimeout = TimeSpan.FromHours(3);
     options.Cookie.IsEssential = true;
 });
 
@@ -52,7 +53,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseForwardedHeaders();
 

@@ -1,9 +1,9 @@
-﻿
-using Bullows.Business;
+﻿using Bullows.Business;
 using Bullows.Database;
 using Bullows.Model;
 using Bullows.Repositories.Contracts;
 using Bullows.Repositories.Repositories;
+using Bullows.Service;
 using devDept.Eyeshot;
 using devDept.Eyeshot.Entities;
 using devDept.Eyeshot.Translators;
@@ -16,18 +16,21 @@ using DesignDocument = devDept.Eyeshot.DesignDocument;
 
 namespace Bullows.Controllers
 {
-
     public class PaintBoothController : BaseController
     {
         static int PaintID = 0; static int SaveFlag = 0;
         private readonly UnitOfWorks _uow;
         private readonly ISession Session;
         private readonly BullowsDbContext _context;
-        public PaintBoothController(IUnitOfWork uow, IHttpContextAccessor httpContextAccessor, BullowsDbContext context) : base(httpContextAccessor)
+        private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public PaintBoothController(IUnitOfWork uow, IHttpContextAccessor httpContextAccessor, BullowsDbContext context, IConfiguration configuration) : base(httpContextAccessor)
         {
             this._uow = uow as UnitOfWorks;
             this.Session = httpContextAccessor.HttpContext.Session;
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
         public IActionResult PaintBooth(int id)
         {
@@ -81,8 +84,8 @@ namespace Bullows.Controllers
             }
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public Microsoft.AspNetCore.Mvc.JsonResult SearchEnquiryCode(string enquiryCode)
+        [HttpPost]
+        public JsonResult SearchEnquiryCode(string enquiryCode)
         {
             var results = _uow.settingDetailsRepository.SearchEnquiryCodes(enquiryCode);
             if (results == null || !results.Any())
@@ -99,43 +102,36 @@ namespace Bullows.Controllers
             var paintBoothModel = _uow.PaintBoothRepository.GetSettingDetailsByCode(enquiryCode);
             return Json(new { settings = paintBoothModel.Settings });
         }
-        #region Save Paintbooth Details
+
         public static Dictionary<string, List<DesignDocument>> designdictionary = new();
         public static List<string> AllFilesPath = new List<string>();
         public static List<string> developmentpath = new List<string>();
-        static double smallPanelWidthforH;
-        static double totalPanelsforD;
-        static int noOfPanelsforH;
-        static int noOfPanelsforD;
-        static double smallPanelWidthforD, smallPanelWidthForBackSide;
-        static double W;
-        static double smallPanelWidthforW;
-        static int noOfPanelsforW, noOfPanelsForBackSide;
-        static double totalPanelsforW, TotalBackPanels; static double totalPanelsforH; static string motorTypes = "";
+       
         static PaintBoothModel paintBoothModel = new PaintBoothModel();
-
-
+        static int noofFiltersInW = 0; static int noofFiltersInD = 0; static int XdistanceInW = 0;
         List<string> filePaths = new List<string>();
-
+        List<DesignDocument> standardFrameDrawing = new List<DesignDocument>();
         double yOffset = 0;
-        #region DesignDocument List
-        List<DesignDocument> rightSideDrawings = new List<DesignDocument>();
-        List<DesignDocument> leftSideDrawings = new List<DesignDocument>();
-        List<DesignDocument> TopAssembly = new List<DesignDocument>();
-        List<DesignDocument> BaseDrawings = new List<DesignDocument>();
-        List<DesignDocument> TopFrameDrawing = new List<DesignDocument>();
-        List<DesignDocument> TopAssemblyYAxis = new List<DesignDocument>();
-        List<DesignDocument> FilterDrawings = new List<DesignDocument>();
-        List<DesignDocument> ViewsDrawing = new List<DesignDocument>();
-        List<DesignDocument> loftDrawing = new List<DesignDocument>();
-        List<DesignDocument> standardFrameDrawing= new List<DesignDocument>();
+
         public IActionResult SavePaintBoothDetails(PaintBoothModel model, PanelInputModel pmodel, int flag, EnquiryModel enquiry, int motorCatalogID)
         {
             try
             {
                 HttpContext.Session.SetString("SalesNo", enquiry.SalesNO);
                 string EnquiryNo = HttpContext.Session.GetString("SalesNo");
+                HttpContext.Session.SetInt32("PaintboothDepth", (int)(double)model.D);
+                HttpContext.Session.SetInt32("PaintboothHeight", (int)(double)model.H);
+                HttpContext.Session.SetInt32("PaintboothWidth", (int)(double)model.W);
+                HttpContext.Session.SetInt32("D3Panel", (int)(double)model.D3);
+                int PlenumHeight = 0;
+                string SubTypeofDraft = _uow.PaintBoothRepository.FetchSubTypeOfDraft(EnquiryNo);
+                if (SubTypeofDraft == "3")
+                {
+                    PlenumHeight = int.Parse(_uow.PaintBoothRepository.FetchPlenumHeight(EnquiryNo));
+                    HttpContext.Session.SetInt32("PlenumHeight", PlenumHeight);
 
+                }
+                
                 if (model.MotorCatalogID.HasValue)
                 {
                     int selectedMotorId = model.MotorCatalogID.Value;
@@ -149,8 +145,13 @@ namespace Bullows.Controllers
                 {
                     return BadRequest("EnquiryID not found in session.");
                 }
-               // motorTypes =EnquiryController.MotorTypesval;//save this value in MotorDetails table 
                 _uow.PaintBoothRepository.SaveMotorDeatils((int)enquiryId, motorCatalogID);
+                var PaintBoothTypefromEnquiry = _uow.PaintBoothRepository.FetchPaintBoothType(model.SalesNO);
+                decimal RatedOutputHP = _uow.PaintBoothRepository.FetchRatedOutputHP((int)model.MotorCatalogID);
+                string MotorTypes = _uow.PaintBoothRepository.GetMotorTypes((int)model.MotorCatalogID);
+                model.RatedOutputHP = RatedOutputHP;
+                model.MotorTypes = MotorTypes;
+                HttpContext.Session.SetString("DraftSubType", PaintBoothTypefromEnquiry);
 
                 var paintBoothModel = _uow.PaintBoothRepository.GetSettingDetailsByCode(EnquiryNo);
                 if (paintBoothModel.Settings.Count == 0)
@@ -162,7 +163,7 @@ namespace Bullows.Controllers
                 var setting = paintBoothModel.Settings.First();
 
                 // Create and populate the PaintBoothDesign object
-                PaintBoothDesign panel = new PaintBoothDesign(_context)
+                PaintBoothDesign panel = new PaintBoothDesign(_context, _configuration)
                 {
                     SheetThickness = setting.SheetThickness, // Use setting values
                     SettingStandardBend1 = setting.StandardBend1,
@@ -187,204 +188,6 @@ namespace Bullows.Controllers
                 HttpContext.Session.SetInt32("settingPanelWidth", (int)setting.PanelWidth);
                 HttpContext.Session.SetInt32("settingPanelHeight", (int)setting.PanelHeight);
 
-                #region  D
-                if (model.PanelTypes == "1")
-                {
-                    var panelSizeMappings = new Dictionary<string, string>
-                        {
-                        { "1", "1" },
-                        { "2", "1.5" },
-                        { "3", "2" },
-                        { "4", "2.5" },
-                        { "5", "3" },
-                        { "6", "3.5" },
-                        { "7", "4" },
-                        { "8", "4.5" },
-                        { "9", "5" },
-                        { "10", "5.5" },
-                        { "11", "6" },
-                        { "12", "6.5" },
-                        { "13", "7" },
-                        { "14", "7.5" }
-                        };
-                    panel.PanelWidth = setting.PanelWidth;
-
-                    //noOfPanelsforD = (int)model.PanelsizeforD;
-                    string selectedValue = model.PanelsizeforD;
-                    string correspondingText = "";
-
-                    // Attempt to find the corresponding text value
-                    if (panelSizeMappings.TryGetValue(selectedValue, out correspondingText))
-                    {
-                        // Use the correspondingText as needed in your logic
-                        model.PanelsizeforD = correspondingText;
-                        double panelSizeDouble = double.Parse(model.PanelsizeforD);
-                        noOfPanelsforD = (int)Math.Floor(panelSizeDouble);
-                        totalPanelsforD = noOfPanelsforD;
-                    }
-                    else
-                    {
-                        // Handle case where value is not found in the mapping, if necessary
-                        model.PanelsizeforD = "Invalid selection"; // Example fallback
-                    }
-
-                    if (model.PanelsizeforD.ToString().Contains("."))
-                    {
-                        smallPanelWidthforD = model.HalfPanelswidthforD;
-                    }
-                    else
-                    {
-                        // Default logic if it's not a decimal value
-                        smallPanelWidthforD = 0;
-                    }
-
-                }
-                else
-                {
-                    panel.PanelWidth = setting.PanelWidth;
-                    totalPanelsforD = model.D / setting.PanelWidth;
-                    noOfPanelsforD = (int)Math.Floor(totalPanelsforD);
-                    smallPanelWidthforD = model.D - (noOfPanelsforD * setting.PanelWidth);
-                    if (model.MakeItEqual == true)
-                    {
-                        noOfPanelsforD = model.TotalPanels;
-                        panel.PanelWidth = model.EqualPanelWidthForD;
-                        smallPanelWidthforD = 0;
-                    }
-                }
-
-                #endregion
-                #region W
-                if (model.PanelTypesforW == "1")
-                {
-                    var panelSizeMappingsforW = new Dictionary<string, string>
-                        {
-                        { "1", "1" },
-                        { "2", "1.5" },
-                        { "3", "2" },
-                        { "4", "2.5" },
-                        { "5", "3" },
-                        { "6", "3.5" },
-                        { "7", "4" },
-                        { "8", "4.5" },
-                        { "9", "5" },
-                        { "10", "5.5" },
-                        { "11", "6" },
-                        { "12", "6.5" },
-                        { "13", "7" },
-                        { "14", "7.5" }
-                        };
-                    panel.PanelLength = setting.PanelHeight;
-                    string selectedValue = model.PanelsizeforW;
-                    string correspondingText = "";
-
-                    // Attempt to find the corresponding text value
-                    if (panelSizeMappingsforW.TryGetValue(selectedValue, out correspondingText))
-                    {
-                        // Use the correspondingText as needed in your logic
-                        model.PanelsizeforW = correspondingText;
-                        double panelSizeDouble = double.Parse(model.PanelsizeforW);
-                        noOfPanelsforW = (int)Math.Floor(panelSizeDouble);
-                        totalPanelsforW = noOfPanelsforW;
-                    }
-                    else
-                    {
-                        // Handle case where value is not found in the mapping, if necessary
-                        model.PanelsizeforW = "Invalid selection"; // Example fallback
-                    }
-
-                    if (model.PanelsizeforW.ToString().Contains("."))
-                    {
-                        smallPanelWidthforW = model.HalfPanelsHeightforW;
-                    }
-                    else
-                    {
-                        // Default logic if it's not a decimal value
-                        smallPanelWidthforW = 0;
-                    }
-
-                }
-                else
-                {
-                    panel.PanelLength = setting.PanelHeight;
-                    totalPanelsforW = model.W / setting.PanelHeight;
-                    noOfPanelsforW = (int)Math.Floor(totalPanelsforW);
-                    smallPanelWidthforW = model.W - (noOfPanelsforW * setting.PanelHeight);
-                    if (model.MakeItEqualByW == true)
-                    {
-                        noOfPanelsforW = model.TotalPanelsByW;
-                        panel.PanelLength = model.EqualPanelWidthByW;
-                        smallPanelWidthforW = 0;
-                    }
-                }
-
-                #endregion
-                #region H
-                if (model.PanelTypesforH == "1")
-                {
-                    var panelSizeMappingsforH = new Dictionary<string, string>
-                        {
-                        { "1", "1" },
-                        { "2", "1.5" },
-                        { "3", "2" },
-                        { "4", "2.5" },
-                        { "5", "3" },
-                        { "6", "3.5" },
-                        { "7", "4" },
-                        { "8", "4.5" },
-                        { "9", "5" },
-                        { "10", "5.5" },
-                        { "11", "6" },
-                        { "12", "6.5" },
-                        { "13", "7" },
-                        { "14", "7.5" }
-                        };
-                    panel.PanelHeight = setting.PanelHeight;
-                    string selectedValue = model.PanelsizeforH;
-                    string correspondingText = "";
-
-                    // Attempt to find the corresponding text value
-                    if (panelSizeMappingsforH.TryGetValue(selectedValue, out correspondingText))
-                    {
-                        // Use the correspondingText as needed in your logic
-                        model.PanelsizeforH = correspondingText;
-                        double panelSizeDouble = double.Parse(model.PanelsizeforH);
-                        noOfPanelsforH = (int)Math.Floor(panelSizeDouble);
-                        totalPanelsforH = noOfPanelsforH;
-                    }
-                    else
-                    {
-                        // Handle case where value is not found in the mapping, if necessary
-                        model.PanelsizeforH = "Invalid selection"; // Example fallback
-                    }
-
-                    if (model.PanelsizeforH.ToString().Contains("."))
-                    {
-                        smallPanelWidthforH = model.HalfPanelsHeightforH;
-                    }
-                    else
-                    {
-                        // Default logic if it's not a decimal value
-                        smallPanelWidthforH = 0;
-                    }
-
-                }
-                else
-                {
-                    panel.PanelHeight = setting.PanelHeight;
-                    totalPanelsforH = model.H / setting.PanelHeight;
-                    noOfPanelsforH = (int)Math.Floor(totalPanelsforH);
-                    smallPanelWidthforH = model.H - (noOfPanelsforH * setting.PanelHeight);
-
-                    if (model.MakeItEqualByH == true)
-                    {
-                        noOfPanelsforH = model.TotalPanelsByH;
-                        panel.PanelHeight = model.EqualPanelWidthByH;
-                        smallPanelWidthforH = 0;
-                    }
-                }
-
-                #endregion
                 string selectedLocation = model.ServiceDoorLocation;
 
                 // Check if the record already exists
@@ -392,352 +195,64 @@ namespace Bullows.Controllers
                 {
                     PaintID = _uow.PaintBoothRepository.SavePaintBooth(model, pmodel, flag, enquiry);
                 }
-                double yOffset = 0;
-                double PanelWidthTemp = panel.PanelWidth;
-                double PanelLengthTemp = panel.PanelLength;
-                double PanelHeightTemp = panel.PanelHeight;
-                #region D * H left right
-                int i = 0;
-                for (i = 0; i < 2; i++)
-                {
-                    if (i == 0)
+                int componentID = _uow.PaintBoothRepository.FetchComponentId((int)enquiryId);
+                double ExtractionC_Height = int.Parse(_uow.PaintBoothRepository.FetchExtractionHeight(componentID));
+
+                ComponentEntryDetails DoorType = null; string SideDoorLOcation = "";
+                DoorType = _uow.PaintBoothRepository.FetchDoorType(componentID);
+                SideDoorLOcation = _uow.PaintBoothRepository.FetchSideDoorLocation(componentID);
+
+                #region All Panels methods
+                PaintBoothService service = new PaintBoothService(_uow, _httpContextAccessor, _context, _configuration);
+               
+                    
+                    if (!DoorType.ComponentEntry.Contains("Side") || DoorType.ComponentEntry == "")
                     {
-                        panel.PanelLength = 0;
+                        service.LeftRightPanels(model, panel);
                     }
                     else
                     {
-                        if (model.PanelTypesforW == "1")
-                        {
-                            panel.PanelLength = model.PanelHeightforW;
-                        }
-                        else
-                            panel.PanelLength = model.W;
+                        model.PanelWidth = setting.PanelWidth;
+                        model.PanelHeight = setting.PanelHeight;
+                        service.LeftRightPanelsForSideDoor(model, panel, SideDoorLOcation);
                     }
-
-
-                    List<DesignDocument> documents = new List<DesignDocument>();
-
-
-                    for (int k = 0; k < noOfPanelsforH; k++)
-                    {
-                        for (int j = 0; j < noOfPanelsforD; j++)
-                        {
-                            PaintBoothclass panelDrawingPath = panel.PanelsInPaintBooth(j + 1, yOffset, pmodel, model, i);
-                            documents.Add(panelDrawingPath.drawing);
-
-                            filePaths.Add(panelDrawingPath.lstpath);
-
-
-                        }
-                        if (smallPanelWidthforD > 0)
-                        {
-                            panel.PanelWidth = smallPanelWidthforD;
-                            PaintBoothclass smallPanelDrawingPath = panel.PanelsInPaintBooth(noOfPanelsforD + 1, yOffset, pmodel, model, i);
-                            documents.Add(smallPanelDrawingPath.drawing);
-                            filePaths.Add(smallPanelDrawingPath.lstpath);
-
-                            // developmentfilePaths.Add(smallPanelDrawingPath.developmentpath);
-                            panel.PanelWidth = PanelWidthTemp;
-
-                        }
-                        selectedLocation = model.ServiceDoorLocation;
-                        PaintBoothclass panelDrawingPathD3 = panel.D3Panels(k + 1, i, selectedLocation, model);
-                        documents.Add(panelDrawingPathD3.drawing);
-                        filePaths.Add(panelDrawingPathD3.lstpath);
-                        // developmentfilePaths.Add(panelDrawingPathD3.developmentpath);
-
-                    }
-                    if (smallPanelWidthforH > 0)
-                    {
-                        panel.PanelHeight = smallPanelWidthforH;
-
-                        for (int j = 0; j < noOfPanelsforD; j++)
-                        {
-                            PaintBoothclass panelDrawingPath = panel.PanelsInPaintBooth(j + 1, yOffset, pmodel, model, i);
-                            documents.Add(panelDrawingPath.drawing);
-
-                            filePaths.Add(panelDrawingPath.lstpath);
-                            //  developmentfilePaths.Add(panelDrawingPath.developmentpath);
-
-                        }
-                        if (smallPanelWidthforD > 0)
-                        {
-                            panel.PanelWidth = smallPanelWidthforD;
-                            PaintBoothclass smallPanelDrawingPath = panel.PanelsInPaintBooth(noOfPanelsforD + 1, yOffset, pmodel, model, i);
-
-                            documents.Add(smallPanelDrawingPath.drawing);
-
-                            filePaths.Add(smallPanelDrawingPath.lstpath);
-                            //  developmentfilePaths.Add(smallPanelDrawingPath.developmentpath);
-                            panel.PanelWidth = PanelWidthTemp;
-
-                        }
-                        selectedLocation = "";
-                        PaintBoothclass panelDrawingPathD3 = panel.D3Panels(noOfPanelsforH + 1, i, selectedLocation, model);
-                        documents.Add(panelDrawingPathD3.drawing);
-                        filePaths.Add(panelDrawingPathD3.lstpath);
-                        //  developmentfilePaths.Add(panelDrawingPathD3.developmentpath);
-
-                        panel.PanelHeight = PanelHeightTemp;
-                    }
-                    if (i == 0)
-                    {
-                        rightSideDrawings.AddRange(documents);
-
-                    }
-                    else if (i == 1)
-                    {
-                        leftSideDrawings.AddRange(documents);
-
-
-                    }
-                }
-                panel.PanelLength = PanelLengthTemp;
-                #endregion
-
-                //panel.PanelHeight = model.H1 + model.Height + model.H2;
-                if (model.PanelTypesforH == "1")
-                    panel.PanelHeight = model.PanelHeightforH;
-                else
-                    panel.PanelHeight = model.H;
-                // panel.PanelHeight = setting.PanelHeight;
-
-                //PaintBoothclass loft = panel.CreateLoft( model);
-                //string filepathforLoft =loft.lstpath;
-
-                #region W*D Top 
-                List<DesignDocument> docdrawing = new List<DesignDocument>();
-                List<string> Topsidepath = new List<string>();
-                for (i = 0; i < noOfPanelsforW; i++)
-                {
-                    for (int k = 0; k < noOfPanelsforD; k++)
-                    {
-                        PaintBoothclass Topside = panel.TopSidePanels(k + 1, pmodel, model);
-                        docdrawing.Add(Topside.drawing);
-                        Topsidepath.Add(Topside.lstpath);
-                        //developmentfilePaths.Add(Topside.developmentpath);
-                    }
-                    if (smallPanelWidthforD > 0)
-                    {
-                        panel.PanelWidth = smallPanelWidthforD;
-                        PaintBoothclass Topside = panel.TopSidePanels(noOfPanelsforW + 1, pmodel, model);
-                        docdrawing.Add(Topside.drawing);
-                        Topsidepath.Add(Topside.lstpath);
-                        // developmentfilePaths.Add(Topside.developmentpath);
-
-                        panel.PanelWidth = PanelWidthTemp;
-                    }
-                }
-                if (smallPanelWidthforW > 0)
-                {
-                    panel.PanelLength = smallPanelWidthforW;
-                    for (int k = 0; k < noOfPanelsforD; k++)
-                    {
-                        PaintBoothclass Topside = panel.TopSidePanels(k + 1, pmodel, model);
-                        docdrawing.Add(Topside.drawing);
-                        Topsidepath.Add(Topside.lstpath);
-                    }
-                    if (smallPanelWidthforD > 0)
-                    {
-                        panel.PanelWidth = smallPanelWidthforD;
-                        PaintBoothclass Topside = panel.TopSidePanels(noOfPanelsforW + 1, pmodel, model);
-                        docdrawing.Add(Topside.drawing);
-                        Topsidepath.Add(Topside.lstpath);
-                        //  developmentfilePaths.Add(Topside.developmentpath);
-
-                        panel.PanelWidth = PanelWidthTemp;
-                    }
-                    panel.PanelLength = PanelLengthTemp;
-                }
-
-                TopAssembly.AddRange(docdrawing);
-                #endregion
-                #region Total BackPanels
-                double BackLengthTemp = 0;
-                if (model.PanelTypes == "1")
-                {
-                    model.W = model.PanelHeightforW;
-                    panel.BackPanelLength = setting.PanelWidth;
-                    BackLengthTemp = panel.BackPanelLength;
-                    TotalBackPanels = model.W / setting.PanelWidth;
-                    noOfPanelsForBackSide = (int)Math.Floor(TotalBackPanels);
-                    smallPanelWidthForBackSide = 0;
-                    panel.PanelHeight = PanelHeightTemp;
-
-                }
-                else
-                {
-                    // model.W = model.W;
-                    panel.BackPanelLength = setting.PanelWidth;
-                    BackLengthTemp = panel.BackPanelLength;
-                    TotalBackPanels = model.W / setting.PanelWidth;
-                    noOfPanelsForBackSide = (int)Math.Floor(TotalBackPanels);
-                    smallPanelWidthForBackSide = model.W - (noOfPanelsForBackSide * setting.PanelWidth);
-                    panel.PanelHeight = PanelHeightTemp;
-                }
-
-                #endregion
-
-                #region W * H back 
-                List<DesignDocument> backDrawingList = new List<DesignDocument>();
-                for (int k = 0; k < noOfPanelsforH; k++)
-                {
-                    for (int j = 0; j < noOfPanelsForBackSide; j++)
-                    {
-                        PaintBoothclass panelDrawingPath = panel.BackPanels(model);
-                        backDrawingList.Add(panelDrawingPath.drawing);
-                        filePaths.Add(panelDrawingPath.lstpath);
-                    }
-                    if (smallPanelWidthForBackSide > 0)
-                    {
-                        panel.BackPanelLength = smallPanelWidthForBackSide;
-                        PaintBoothclass smallPanelDrawingPath = panel.BackPanels(model);
-                        backDrawingList.Add(smallPanelDrawingPath.drawing);
-                        panel.BackPanelLength = BackLengthTemp;
-                    }
-                }
-                if (smallPanelWidthforH > 0)
-                {
-                    panel.PanelHeight = smallPanelWidthforH;
-
-                    for (int j = 0; j < noOfPanelsForBackSide; j++)
-                    {
-                        PaintBoothclass panelDrawingPath = panel.BackPanels(model);
-                        backDrawingList.Add(panelDrawingPath.drawing);
-                        filePaths.Add(panelDrawingPath.lstpath);
-                    }
-                    if (smallPanelWidthForBackSide > 0)
-                    {
-                        panel.BackPanelLength = smallPanelWidthForBackSide;
-                        PaintBoothclass smallPanelDrawingPath = panel.BackPanels(model);
-                        backDrawingList.Add(smallPanelDrawingPath.drawing);
-                        panel.BackPanelLength = BackLengthTemp;
-                    }
-                    panel.PanelHeight = model.H;
-                }
-                #endregion
-                #region BaseStructure
-                if (model.MakeItEqualByW)
-                {
-                    panel.W = Math.Floor(model.EqualPanelWidthByW);
-                }
-                else
-                {
-                    panel.W = model.W;
-                }
-                PaintBoothclass basestructure = panel.BaseStructure(pmodel, model);
-                List<DesignDocument> basedrawing = new List<DesignDocument>();
-                List<string> basepath = new List<string>();
-                basedrawing.Add(basestructure.drawing);
-                basepath.Add(basestructure.lstpath);
-                BaseDrawings.AddRange(basedrawing);
-                DesignDocument BaseDrawingAss = BaseStructure(basedrawing, 0);
-
-                string BaseFilePath = "C:/Bullows/Paintbooth_Drawing";
-
-                if (!Directory.Exists(BaseFilePath))
-                    Directory.CreateDirectory(BaseFilePath);
-                string BaseDwgFilePath = BaseFilePath + "/BaseStructure_Drawing.dwg";
-                WriteAutodeskParams Basedwg = new WriteAutodeskParams(BaseDrawingAss);
-                WriteAutodesk dwgWriterBase = new WriteAutodesk(Basedwg, BaseDwgFilePath);
-                dwgWriterBase.DoWork();
-
-
-                #endregion
-
-                List<PaintBoothclass> filterFrames = panel.OuterFilterFrame(model);
-                List<DesignDocument> filterDrawings = new List<DesignDocument>();
-                List<string> filterPaths = new List<string>();
-                foreach (PaintBoothclass filterFrame in filterFrames)
-                {
-                    filterDrawings.Add(filterFrame.drawing);
-                    filterPaths.Add(filterFrame.lstpath);
-                }
-
-                // Optionally, if you have an existing list named FilterDrawings, you can add all drawings at once
-                FilterDrawings.AddRange(filterDrawings);
-
-
-                #region TotalAssembly
-
-                #region TopFrameStructure               
-                PaintBoothclass Topstructure = panel.TopStructureFrame(pmodel, model);
-                List<DesignDocument> TopStructuredrawing = new List<DesignDocument>();
-                List<string> TopFramepath = new List<string>();
-                TopStructuredrawing.Add(Topstructure.drawing);
-                TopFramepath.Add(Topstructure.lstpath);
-                TopFrameDrawing.AddRange(TopStructuredrawing);
-                DesignDocument TopDrawingAss = TopStructure(TopStructuredrawing, 0);
-                string TopFrameDwgFilePath = BaseFilePath + "/TopStructure_Drawing.dwg";
-                WriteAutodeskParams topframedwg = new WriteAutodeskParams(TopDrawingAss);
-                WriteAutodesk dwgWritertopframe = new WriteAutodesk(topframedwg, TopFrameDwgFilePath);
-                dwgWritertopframe.DoWork();
-
-
-                #endregion
-
-
-                #region RightSide                
-                DesignDocument rightSideAssembly = RightSideWallAssembly(rightSideDrawings, 0, setting.PanelHeight, model);
-                string rightSideDwgFilePath = BaseFilePath + "/RightPanel.dwg";
-                WriteAutodeskParams autoRight = new WriteAutodeskParams(rightSideAssembly);
-                WriteAutodesk dwgWriterRight = new WriteAutodesk(autoRight, rightSideDwgFilePath);
-                dwgWriterRight.DoWork();
-
-                PaintBoothclass loft = panel.CreateLoft(model);
-                string filepathforLoft = loft.lstpath;
-                DesignDocument loftdrawing = new DesignDocument();
-                loftdrawing = loft.drawing;
-                WriteAutodeskParams loftdw = new WriteAutodeskParams(loftdrawing);
-                WriteAutodesk dwgWriterloft = new WriteAutodesk(loftdw, filepathforLoft);
-                dwgWriterloft.DoWork();
-                loftDrawing.Add(loftdrawing);
-
-
-                
-                #endregion
-                #region LeftSide
-                // Create and save LeftSideWallAssembly
-                DesignDocument leftSideAssembly = LeftSideWallAssembly(leftSideDrawings, 0);
-                string leftSideDwgFilePath = BaseFilePath + "/LeftPanel.dwg";
-                WriteAutodeskParams autoLeft = new WriteAutodeskParams(leftSideAssembly);
-                WriteAutodesk dwgWriterLeft = new WriteAutodesk(autoLeft, leftSideDwgFilePath);
-                dwgWriterLeft.DoWork();
-                #endregion
-                #region TopDrawing
-                DesignDocument TopDrawing = TopWallAssembly(TopAssembly, 0);
-                string TopDwgFilePath = "C:/Bullows/Paintbooth_Drawing/TopPanel.dwg";
-                WriteAutodeskParams Topdwg = new WriteAutodeskParams(TopDrawing);
-                WriteAutodesk dwgWriterTop = new WriteAutodesk(Topdwg, TopDwgFilePath);
-                dwgWriterTop.DoWork();
-                #endregion
-                #region BackPanels
-                DesignDocument BackPanelsDrawing = BackPanelsAssembly(backDrawingList, 0);
-                string BackPanelsDwgFilePath = "C:/Bullows/Paintbooth_Drawing/RearPanel.dwg";
-                WriteAutodeskParams backdwg = new WriteAutodeskParams(BackPanelsDrawing);
-                WriteAutodesk back = new WriteAutodesk(backdwg, BackPanelsDwgFilePath);
-                back.DoWork();
-
-                #endregion
                 
 
-                #region Added value in Dictionary
-                designdictionary = new();
-                designdictionary.Add("rightSideDrawings", rightSideDrawings);
-                designdictionary.Add("leftSideDrawings", leftSideDrawings);
-                designdictionary.Add("TopAssembly", TopAssembly);
-                designdictionary.Add("BaseDrawings", BaseDrawings);
-                designdictionary.Add("TopStructuredrawing", TopStructuredrawing);
-                designdictionary.Add("backDrawingList", backDrawingList);
-                designdictionary.Add("FilterDrawings", FilterDrawings);
-                designdictionary.Add("ViewsDrawing", ViewsDrawing);
-                designdictionary.Add("loftdrawing", loftDrawing);
-                //designdictionary.Add("standardFrameDrawing", standardFrameDrawing);
+                service.TopPanels(model, panel);
+                service.D3Panels(model, panel, ExtractionC_Height);
+                
+                service.CreateLoft(model, panel, ExtractionC_Height);
+                service.backPanels(model, panel, ExtractionC_Height);
+                if (PaintBoothTypefromEnquiry == "3")
+                {
+                    service.FASPanelsFrontAndBack(model, panel, PlenumHeight);
+                    service.FASPanelsRightAndLeft(model, panel, PlenumHeight);
+                    service.FASPanelsForTop(model, panel, PlenumHeight);
+                }
+                service.FiltersAndBaffles(model, panel, ExtractionC_Height);
 
-                //designdictionary.Add("bendLayer", additionalLayerDrawing);
+                service.TopStructureFrame(model, panel);
+                service.BaseStructureFrame(model, panel);
+                double SameSpaceBetweenDoors = 0;
+                if (PaintBoothTypefromEnquiry != "1")
+                {
+                    if (DoorType.ComponentEntry == "Side")
+                    {
+                        service.FrontPanels(model, panel);
+                    }
+                    else
+                    {
+                        SameSpaceBetweenDoors = service.FrontDoorsType(model, panel);
+                    }
+                }
                 #endregion
                 #region WriteFile
-                DesignDocument combinedDrawing = CombineAssemblies2(designdictionary, setting.PanelHeight, setting.PanelWidth);
+                string BaseFilePath = "C:/Bullows/Paintbooth_Drawing";
+                if (!Directory.Exists(BaseFilePath))
+                {
+                    Directory.CreateDirectory(BaseFilePath);
+                }
+                DesignDocument combinedDrawing = CombineAssemblies2(service.designdictionary, setting.PanelHeight, setting.PanelWidth, PaintBoothTypefromEnquiry, ExtractionC_Height, SameSpaceBetweenDoors);
 
                 string combinedDwgFilePath = BaseFilePath + "/GA3D.dwg";
                 WriteAutodeskParams autoCombined = new WriteAutodeskParams(combinedDrawing);
@@ -759,7 +274,7 @@ namespace Bullows.Controllers
                 #region Views
                 //Added Views here
                 DesignDocument designDocument = combinedDrawing;
-                
+
                 PaintBoothclass paintBoothClass = panel.detailsdrawing(designDocument, model);
 
                 PaintBoothclass standardframe = panel.StandardFrameWithoutDrawing(2, EnquiryNo);
@@ -771,377 +286,752 @@ namespace Bullows.Controllers
                 WriteAutodesk dwgWriterframe = new WriteAutodesk(framedw, filepathforstandardframe);
                 dwgWriterframe.DoWork();
                 standardFrameDrawing.Add(standardframedrawing);
-
                 #endregion
+
                 AllFilesPath = new List<string>(filePaths)
                 {
-                    rightSideDwgFilePath,
-                    leftSideDwgFilePath,
-                    TopDwgFilePath,
-                    BaseDwgFilePath,
                     combinedDwgFilePath,
-                    TopFrameDwgFilePath,
-                    BackPanelsDwgFilePath,
-                    StepFilePath,
                     pdfFilePath,
-                   filepathforLoft,
-                   filepathforstandardframe
-
+                   //filepathforLoft,
+                   //filepathforstandardframe,
                 };
                 AllFilesPath.Add(paintBoothClass.lstpath);
-               // AllFilesPath.Add(standardframe.lstpath);
-                #endregion
+
 
                 return RedirectToAction("FilterFrameCalculations", model);
 
             }
             catch (Exception ex)
             {
+                _uow.exceptionHandlerRepository.SaveException("PaintBoothController", "SavePaintBoothDetails", ex.Message);
                 return Json(new { success = false, message = ex.Message });
             }
         }
-        private DesignDocument RightSideWallAssembly(List<DesignDocument> drawings, double yOffset, double panelheight, PaintBoothModel model)
+
+        private DesignDocument CombineAssemblies2(Dictionary<string, List<DesignDocument>> designDocument, double panelheight, double panelWidth, string DraftSubType, double extractionCHeight, double SameSpaceBetweenDoors)
         {
-            PanelInputModel p = new PanelInputModel();
-
-
-            var assemblyDrawing = new DesignDocument();
-            assemblyDrawing.Units = linearUnitsType.Millimeters;
-            Layer mylayer = new Layer("bendlayer");
-            mylayer.Color = Color.FromArgb(165, 82, 165);
-            assemblyDrawing.Layers.Add(mylayer);
-
-            double currentXOffset = 0, Woffset = 0;
-
-            int i = 0;
-            int TotalPanelOfH = 0;
-
-            foreach (var drawing in drawings)
+            try
             {
 
-                if (smallPanelWidthforH > 0)
-                    TotalPanelOfH = noOfPanelsforH + 1;
+                int? settingPanelWidth = HttpContext.Session.GetInt32("settingPanelWidth");
+                int? settingPanelHeight = HttpContext.Session.GetInt32("settingPanelHeight");
+                double? PaintboothHeight = HttpContext.Session.GetInt32("PaintboothHeight");
+                double? PaintboothWidth = HttpContext.Session.GetInt32("PaintboothWidth");
+                double? PaintBoothDepth = HttpContext.Session.GetInt32("PaintboothDepth");
+                //int? PlenumHeight=  HttpContext.Session.GetInt32("PlenumHeight");
 
-                if (i == TotalPanelOfH)
+                double? D3Panel = HttpContext.Session.GetInt32("D3Panel");
+
+                var combinedDrawing = new DesignDocument();
+                Layer mylayer = new Layer("bendlayer");
+                Layer OuterDoorFrame = new Layer("OuterDoorFrame",Color.Gray);
+                Layer OuterRectangleLayer = new Layer("OuterRectangleLayer", Color.BlueViolet);
+                mylayer.Color = Color.FromArgb(165, 82, 165);
+                combinedDrawing.Layers.Add(mylayer);
+                combinedDrawing.Layers.Add(OuterDoorFrame);
+                combinedDrawing.Layers.Add(OuterRectangleLayer);
+
+                combinedDrawing.Units = linearUnitsType.Millimeters;
+
+                foreach (var kvp in designDocument)
                 {
-                    currentXOffset = 0;
-                    Woffset = panelheight;
-
-                }
-                Block blk = new Block("Block_" + Guid.NewGuid());
-
-                blk.Entities.AddRange(drawing.Entities);
-                assemblyDrawing.Blocks.Add(blk);
-
-                double drawingWidth = CalculateDrawingWidth(drawing);
-                BlockReference blkReference = new BlockReference(currentXOffset, yOffset, Woffset, blk.Name, 0);
-                assemblyDrawing.Entities.Add(blkReference);
-
-                currentXOffset += drawingWidth;
-                i++;
-            }
-            return assemblyDrawing;
-        }
-        private DesignDocument TopWallAssembly(List<DesignDocument> Docdrawing, double yOffset)
-        {
-            var assemblyDrawing = new DesignDocument();
-            Layer mylayer = new Layer("bendlayer");
-            mylayer.Color = Color.FromArgb(165, 82, 165);
-            assemblyDrawing.Layers.Add(mylayer);
-            assemblyDrawing.Units = linearUnitsType.Millimeters;
-
-            double currentXOffset = 0;
-
-            foreach (var drawing in Docdrawing)
-            {
-
-                Block blk = new Block("Block_" + Guid.NewGuid());
-
-                blk.Entities.AddRange(drawing.Entities);
-                assemblyDrawing.Blocks.Add(blk);
-
-                double drawingWidth = CalculateDrawingWidth(drawing);
-                BlockReference blkReference = new BlockReference(currentXOffset, yOffset, 0, blk.Name, 0);
-                assemblyDrawing.Entities.Add(blkReference);
-
-                currentXOffset += drawingWidth;
-            }
-            return assemblyDrawing;
-        }
-        private DesignDocument BackPanelsAssembly(List<DesignDocument> YAxisdrawing, double yOffset)
-        {
-            var assemblyDrawing = new DesignDocument();
-            Layer mylayer = new Layer("bendlayer");
-            mylayer.Color = Color.FromArgb(165, 82, 165);
-            assemblyDrawing.Layers.Add(mylayer);
-            assemblyDrawing.Units = linearUnitsType.Millimeters;
-
-            double currentXOffset = 0;
-
-            foreach (var drawing in YAxisdrawing)
-            {
-
-                Block blk = new Block("Block_" + Guid.NewGuid());
-
-                blk.Entities.AddRange(drawing.Entities);
-                assemblyDrawing.Blocks.Add(blk);
-
-                double drawingWidth = CalculateDrawingWidth(drawing);
-                BlockReference blkReference = new BlockReference(currentXOffset, yOffset, 0, blk.Name, 0);
-                assemblyDrawing.Entities.Add(blkReference);
-
-                currentXOffset += drawingWidth;
-            }
-            return assemblyDrawing;
-        }
-        private DesignDocument BaseStructure(List<DesignDocument> basedrawing, double yOffset)
-        {
-            var assemblyDrawing = new DesignDocument();
-            assemblyDrawing.Units = linearUnitsType.Millimeters;
-
-            double currentXOffset = 0;
-
-            foreach (var drawing in basedrawing)
-            {
-
-                Block blk = new Block("Block_" + Guid.NewGuid());
-
-                blk.Entities.AddRange(drawing.Entities);
-                assemblyDrawing.Blocks.Add(blk);
-
-                double drawingWidth = CalculateDrawingWidth(drawing);
-                BlockReference blkReference = new BlockReference(currentXOffset, yOffset, 0, blk.Name, 0);
-                assemblyDrawing.Entities.Add(blkReference);
-
-                currentXOffset += drawingWidth;
-            }
-            return assemblyDrawing;
-        }
-        private DesignDocument TopStructure(List<DesignDocument> TopStructuredrawing, double yOffset)
-        {
-            var assemblyDrawing = new DesignDocument();
-            assemblyDrawing.Units = linearUnitsType.Millimeters;
-
-            double currentXOffset = 0;
-
-            foreach (var drawing in TopStructuredrawing)
-            {
-
-                Block blk = new Block("Block_" + Guid.NewGuid());
-
-                blk.Entities.AddRange(drawing.Entities);
-                assemblyDrawing.Blocks.Add(blk);
-
-                double drawingWidth = CalculateDrawingWidth(drawing);
-                BlockReference blkReference = new BlockReference(currentXOffset, yOffset, 0, blk.Name, 0);
-                assemblyDrawing.Entities.Add(blkReference);
-
-                currentXOffset += drawingWidth;
-            }
-            return assemblyDrawing;
-        }
-        private DesignDocument LeftSideWallAssembly(List<DesignDocument> drawings, double yOffset)
-        {
-            // Same as RightSideWallAssembly but with the yOffset parameter
-            var assemblyDrawing = new DesignDocument();
-            Layer mylayer = new Layer("bendlayer");
-            mylayer.Color = Color.FromArgb(165, 82, 165);
-            assemblyDrawing.Layers.Add(mylayer);
-            assemblyDrawing.Units = linearUnitsType.Millimeters;
-
-            double currentXOffset = 0;
-
-            foreach (var drawing in drawings)
-            {
-                Block blk = new Block("Block_" + Guid.NewGuid());
-                blk.Entities.AddRange(drawing.Entities);
-                assemblyDrawing.Blocks.Add(blk);
-
-                double drawingWidth = CalculateDrawingWidth(drawing);
-                BlockReference blkReference = new BlockReference(currentXOffset, yOffset, 0, blk.Name, 0);
-                assemblyDrawing.Entities.Add(blkReference);
-
-                currentXOffset += drawingWidth;
-            }
-            return assemblyDrawing;
-        }
-        private DesignDocument CombineAssemblies2(Dictionary<string, List<DesignDocument>> designDocument, double panelheight, double panelWidth)
-        {
-            int? settingPanelWidth = HttpContext.Session.GetInt32("settingPanelWidth");
-            int? settingPanelHeight = HttpContext.Session.GetInt32("settingPanelHeight");
-
-            var combinedDrawing = new DesignDocument();
-            Layer mylayer = new Layer("bendlayer");
-            mylayer.Color = Color.FromArgb(165, 82, 165);
-            combinedDrawing.Layers.Add(mylayer);
-            combinedDrawing.Units = linearUnitsType.Millimeters;
-
-            foreach (var kvp in designDocument)
-            {
-                if (kvp.Key == "rightSideDrawings" || kvp.Key == "leftSideDrawings")
-                {
-                    int panelcount = noOfPanelsforD;
-
-                    double zOffeset = paintBoothModel.EqualPanelWidthByH;
-                    if (Math.Ceiling(totalPanelsforD) == noOfPanelsforD + 1)
+                    if (kvp.Key == "rightSideDrawings" || kvp.Key == "leftSideDrawings")
                     {
+                        int panelcount = PaintBoothService.noOfPanelsforD;
 
-                        panelcount += 2;
+                        double zOffeset = 0;
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD + 1)
+                        {
+                            if (DraftSubType == "7" || DraftSubType == "5" || DraftSubType == "4" || DraftSubType == "6")
+                            {
+                                panelcount += 3;
+                            }
+                            else
+                            {
+                                // panelcount += 2;
+                                panelcount++;
+
+
+                            }
+                        }
+                        else if (Math.Floor(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD)
+                        {
+                            if (DraftSubType == "7" || DraftSubType == "5" || DraftSubType == "4" || DraftSubType == "6")
+                            {
+                                panelcount += 2;
+                            }
+                            else
+                            {
+                                panelcount++;
+                            }
+                        }
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforH) == PaintBoothService.noOfPanelsforH + 1)
+                        {
+                            //zOffeset = 2390;
+                            zOffeset = panelheight;
+
+                        }
+                        else
+                            zOffeset = panelheight;
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = 0,
+                            yOffset = 0,
+                            Zoffset = zOffeset,
+                            paintboothSide = "BottomRightLeftPanels"
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
+                    }//right and left panles
+                    else if (kvp.Key == "TopAssembly")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsforD;
+                        double xOffset = 0;
+                        double Yoffset = 0;
+                        if (Math.Floor(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD + 1)
+                        {
+
+                            panelcount++;
+                        }
+
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforW) == PaintBoothService.noOfPanelsforW + 1)
+                        {
+                            //Yoffset = 2390;
+                            Yoffset = panelheight;
+                            panelcount++;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.totalPanelsforW) == PaintBoothService.noOfPanelsforW)
+                        {
+                            //Yoffset = 2390;
+                            Yoffset = panelheight;
+
+                        }
+
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = DraftSubType == "5" || DraftSubType == "4" ? (double)D3Panel : 0,
+                            yOffset = Yoffset,
+                            Zoffset = 0,
+                            paintboothSide = kvp.Key
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
                     }
-                    else if (Math.Floor(totalPanelsforD) == noOfPanelsforD)
+                    else if (kvp.Key == "rightSideDoorDrawings" || kvp.Key == "leftSideDoorDrawings")
                     {
+                        //int panelcount = 2;
 
-                        panelcount++;
+                        //AssemblyValueModel assembly = new()
+                        //{
+                        //    combinedDrawing = combinedDrawing,
+                        //    drawings = kvp.Value,
+                        //    panelcount = panelcount,
+                        //    xoffset = 0,
+                        //    //yOffset = (double)(kvp.Key == "leftSideDoorDrawings" ? PaintboothWidth : 0),
+                        //    yOffset = 0,
+                        //    //Zoffset = zOffeset,
+                        //    paintboothSide = "rightSideDoorDrawings"
+                        //};
+                        //AddDrawingsToAssembly(assembly, panelWidth);
+
+                        //double smallPanelCount = PaintBoothService.smallPanelsWidthDoors > 0 ? 1 : 0;
+                        //int panelcount = (int)(PaintBoothService.noOfPanelsInSideDoor + smallPanelCount);
+                        //double zOffeset = 0;
+
+                        double smallPanelCount = PaintBoothService.smallPanelsWidthDoors > 0 ? 1 : 0;
+                        int panelcount = (int)(PaintBoothService.noOfPanelsInSideDoor + smallPanelCount);
+
+                        double zOffeset = 0;
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsInSideDoor + smallPanelCount)
+                        {
+                                panelcount++;
+                        }
+                        else if (Math.Floor(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsInSideDoor)
+                        {
+                                panelcount++;
+                        }
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforH) == PaintBoothService.noOfPanelsforH + 1)
+                        {
+                            //zOffeset = 2390;
+                            zOffeset = panelheight;
+
+                        }
+                        else
+                            zOffeset = panelheight;
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = 0,
+                            yOffset = 0,
+                            Zoffset=zOffeset,
+                            paintboothSide = "rightSideDoorDrawings"
+                        };
+                         //double panelWidthForSideDoors = PaintBoothService.RemainingSpanceinD < panelWidth ? PaintBoothService.RemainingSpanceinD : panelWidth;
+                        AddDrawingsToAssembly(assembly, panelWidth);
                     }
-                    if (Math.Ceiling(totalPanelsforH) == noOfPanelsforH + 1)
-                    {
-                        //zOffeset = 2390;
-                        zOffeset = panelheight;
 
+                    else if (kvp.Key == "rightSideDoorNearExtractionCDrawings" || kvp.Key == "leftSideDoorNearExtractionCDrawings")
+                    {
+                        double smallPanelCount = PaintBoothService.smallPanelsWidthDoors > 0 ? 1 : 0;
+                        int panelcount = (int)(PaintBoothService.noOfPanelsInSideDoor + smallPanelCount);
+
+                        double zOffeset = 0;
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsInSideDoor + smallPanelCount)
+                        {
+                            panelcount++;
+                        }
+                        else if (Math.Floor(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsInSideDoor)
+                        {
+                            panelcount++;
+                        }
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforH) == PaintBoothService.noOfPanelsforH + 1)
+                        {
+                            //zOffeset = 2390;
+                            zOffeset = panelheight;
+
+                        }
+                        else
+                            zOffeset = panelheight;
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = (double)PaintBoothDepth,
+                            yOffset = 0,
+                            Zoffset = zOffeset,
+                            paintboothSide = "rightAndLeftSideDoorNearExtractionCDrawings"
+                        };
+                        double xwidth = PaintBoothService.RemainingSpanceinD < panelWidth ? PaintBoothService.RemainingSpanceinD : panelWidth;
+                        assembly.xoffset = (double)PaintBoothDepth - xwidth;
+                        //panelWidth = PaintBoothService.RemainingSpanceinD < panelWidth ? PaintBoothService.RemainingSpanceinD : panelWidth;
+                        AddDrawingsToAssembly(assembly, panelWidth);
+                    }
+
+                    else if (kvp.Key == "D3PanelRightDrawings" || kvp.Key == "D3PanelLeftDrawings")
+                    {
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = 0,
+                            xoffset = (double)PaintBoothDepth,
+                            yOffset = 0,
+                            Zoffset = 0,
+                            paintboothSide = "D3BothSidePanels"
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                   
+                    else if (kvp.Key == "backDrawingList" || kvp.Key == "frontDrawingList")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsForBackSide;
+                        int Yoffset = 0;
+                        double zOffeset = 0;
+
+                        if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide + 1)
+                        {
+                            Yoffset = (int)panelWidth;
+                            panelcount++;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide)
+                        {
+                            Yoffset = (int)panelWidth;
+                        }
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforH) == PaintBoothService.noOfPanelsforH + 1)
+                        {
+                            zOffeset = panelheight;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.totalPanelsforH) == PaintBoothService.noOfPanelsforH)
+                        {
+                            zOffeset = panelheight;
+                        }
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = 0,
+                            yOffset = Yoffset,
+                            Zoffset = zOffeset,
+                            paintboothSide = "BackAndFrontPanels"
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "frontDoorsDrawingList")
+                    {
+                        int panelcount = 2;
+                        int Yoffset = 0;
+                        double zOffeset = 0;
+
+
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = 0,
+                            yOffset = Yoffset,
+                            Zoffset = zOffeset,
+                            paintboothSide = "frontDoorsDrawingList"
+                        };
+                        AddDrawingsToAssembly(assembly, SameSpaceBetweenDoors);
+                    }
+                    else if (kvp.Key == "backDrawingListBeforeExtractionC")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsForBackSide;
+                        int Yoffset = 0;
+                        double zOffeset = extractionCHeight;
+
+                        if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide + 1)
+                        {
+                            Yoffset = (int)panelWidth;
+                            panelcount++;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide)
+                        {
+                            Yoffset = (int)panelWidth;
+                        }
+                        //zOffeset = (double)PaintboothHeight;
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = (double)-D3Panel,
+                            yOffset = Yoffset,
+                            Zoffset = zOffeset,
+                            paintboothSide = "backDrawingListInTopSide"
+                        };
+                        //assembly.xoffset = DraftSubType == "3" ? 0 : assembly.xoffset;
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "FilterDrawings")
+                    {
+                        int yOffset = 600;//Filterframe and metal Baffle Width 600
+                        int zOffset = PaintBoothDesign.selectedBaffleHeight;//filterframe and Metal Baffle Height
+                        int panelCount = PaintBoothDesign.bafflePanelCount;
+                        //int panelCount = 1;
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelCount,
+                            xoffset = 0,
+                            yOffset = yOffset,
+                            Zoffset = zOffset,
+                            paintboothSide = "BackAndFrontPanels"
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "backDrawingListInTopSide")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsForBackSide;
+                        int Yoffset = 0;
+                        double zOffeset = paintBoothModel.EqualPanelWidthByH;
+
+                        if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide + 1)
+                        {
+                            Yoffset = (int)panelWidth;
+                            panelcount++;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide)
+                        {
+                            Yoffset = (int)panelWidth;
+                        }
+
+                        zOffeset = (double)PaintboothHeight;
+
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            //xoffset = (double)D3Panel,
+                            xoffset = 0,
+                            yOffset = Yoffset,
+                            Zoffset = zOffeset,
+                            paintboothSide = "backDrawingListInTopSide"
+                        };
+                        //assembly.xoffset = DraftSubType == "3" ? 0 : assembly.xoffset;
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "FrontDrawingListInTopSide")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsForBackSide;
+                        int Yoffset = 0;
+                        double zOffeset = paintBoothModel.EqualPanelWidthByH;
+
+                        if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide + 1)
+                        {
+                            Yoffset = (int)panelWidth;
+                            panelcount++;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.TotalBackPanels) == PaintBoothService.noOfPanelsForBackSide)
+                        {
+                            Yoffset = (int)panelWidth;
+                        }
+                        zOffeset = (double)PaintboothHeight;
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = (double)D3Panel,
+                            yOffset = Yoffset,
+                            Zoffset = zOffeset,
+                            paintboothSide = "FrontDrawingListInTopSide"
+                        };
+                        assembly.xoffset = DraftSubType == "3" ? 0 : assembly.xoffset;
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "LeftPanelsListInTopSideForFAS" || kvp.Key == "RightPanelsListInTopSideForFAS")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsforD;
+                        double zOffeset = 0;
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD + 1)
+                        {
+                            panelcount++;
+                        }
+                        else if (Math.Floor(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD)
+                        {
+                            panelcount++;
+                        }
+                        
+                        zOffeset = (double)PaintboothHeight;
+
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset = 0,
+                            yOffset = 0,
+                            Zoffset = zOffeset,
+                            paintboothSide = "TopRightLeftPanelsforFAS"
+                        };
+                       
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "TopAssemblyForFAS")
+                    {
+                        int panelcount = PaintBoothService.noOfPanelsforD;
+                        double xOffset = 0;
+                        double Yoffset = 0;
+                        if (Math.Floor(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD + 1)
+                        {
+
+                            panelcount++;
+                        }
+
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforW) == PaintBoothService.noOfPanelsforW + 1)
+                        {
+                            //Yoffset = 2390;
+                            Yoffset = panelheight;
+                            panelcount++;
+                        }
+                        else if (Math.Ceiling(PaintBoothService.totalPanelsforW) == PaintBoothService.noOfPanelsforW)
+                        {
+                            //Yoffset = 2390;
+                            Yoffset = panelheight;
+
+                        }
+
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = panelcount,
+                            xoffset =  0,
+                            yOffset = Yoffset,
+                            Zoffset = 0,
+                            paintboothSide = "TopAssemblyForFAS"
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
                     }
                     else
-                        zOffeset = panelheight;
-
-                    AddDrawingsToAssembly(combinedDrawing, kvp.Value, 0, zOffeset, panelcount);
+                    {
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = -1,
+                            xoffset = 0,
+                            yOffset = 0,
+                            Zoffset = 0
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
                 }
-                else if (kvp.Key == "TopAssembly")
-                {
-                    int panelcount = noOfPanelsforD;
-                    double Yoffset = paintBoothModel.EqualPanelWidthByW;
-                    if (Math.Floor(totalPanelsforD) == noOfPanelsforD + 1)
-                    {
-
-                        panelcount++;
-                    }
-
-                    if (Math.Ceiling(totalPanelsforW) == noOfPanelsforW + 1)
-                    {
-                        //Yoffset = 2390;
-                        Yoffset = panelheight;
-                        panelcount++;
-                    }
-                    else if (Math.Ceiling(totalPanelsforW) == noOfPanelsforW)
-                    {
-                        //Yoffset = 2390;
-                        Yoffset = panelheight;
-
-                    }
-
-
-                    AddDrawingsToAssembly(combinedDrawing, kvp.Value, Yoffset, 0, panelcount);
-
-                }
-                else if (kvp.Key == "backDrawingList")
-                {
-                    int panelcount = noOfPanelsForBackSide;
-                    int Yoffset = 0;
-                    double zOffeset = paintBoothModel.EqualPanelWidthByH;
-
-                    if (Math.Ceiling(TotalBackPanels) == noOfPanelsForBackSide + 1)
-                    {
-                        Yoffset = (int)panelWidth;
-                        panelcount++;
-                    }
-                    else if (Math.Ceiling(TotalBackPanels) == noOfPanelsForBackSide)
-                    {
-                        Yoffset = (int)panelWidth;
-                        // panelcount++;
-                    }
-                    if (Math.Ceiling(totalPanelsforH) == noOfPanelsforH + 1)
-                    {
-                        zOffeset = panelheight;
-                    }
-                    else if (Math.Ceiling(totalPanelsforH) == noOfPanelsforH)
-                    {
-
-
-                        zOffeset = panelheight;
-
-                    }
-
-                    AddDrawingsToAssembly(combinedDrawing, kvp.Value, Yoffset, zOffeset, panelcount);
-                }
-                else if (kvp.Key == "FilterDrawings")
-                {
-                    int yOffset = 600;//Filterframe and metal Baffle Width
-                    int zOffset = PaintBoothDesign.selectedBaffleHeight;//filterframe and Metal Baffle Height
-                    int panelCount = PaintBoothDesign.bafflePanelCount;
-                    AddDrawingsToAssembly(combinedDrawing, kvp.Value, yOffset, zOffset, panelCount);
-
-
-                }
-                else
-                    AddDrawingsToAssembly(combinedDrawing, kvp.Value, 0, 0, -1);
+                return combinedDrawing;
             }
-            return combinedDrawing;
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("PaintBoothController", "CombineAssemblies2", ex.Message);
+                throw;
+            }
         }
-        private void AddDrawingsToAssembly(DesignDocument combinedDrawing, List<DesignDocument> drawings, double yOffset, double Zoffset, int panelcount)
+        private void AddDrawingsToAssembly(AssemblyValueModel model, double DoorWidthForHinge)
+        {
+            try
+            {
+                double currentXOffset = 0;
+                int i = 0, j = 1;
+                double z = 0;
+                double y = 0;
+                double? PaintboothWidth = HttpContext.Session.GetInt32("PaintboothWidth");
+                double? D3Panel = HttpContext.Session.GetInt32("D3Panel");
+                double? PaintBoothDepth = HttpContext.Session.GetInt32("PaintboothDepth");
+
+                foreach (var drawing in model.drawings)
+                {
+                    string uniqueBlockName = "Block_" + Guid.NewGuid();
+
+                    if (model.paintboothSide == "BottomRightLeftPanels")//Right left panel
+                    {
+                        if (i == model.panelcount * j)
+                        {
+                            currentXOffset = 0;
+                            z = model.Zoffset * j;
+                            j++;
+                        }
+                    }
+
+                    else if (model.paintboothSide == "D3BothSidePanels")//Right left panel for type 5
+                    {
+                        currentXOffset = model.xoffset;
+                        //z = model.Zoffset;
+                    }
+                    //else if (model.paintboothSide == "TopRightLeftPanelsforType5" && i == 0)//Right left panel for type 5
+                    //{
+                    //    currentXOffset = model.xoffset;
+                    //    z = model.Zoffset;
+                    //}
+
+                    else if (model.paintboothSide == "frontDoorsDrawingList")//For Hinge door 
+                    {
+                        if (i == 0)
+                        {
+                            currentXOffset = 0;
+                            z = 0;
+                            y = 0;
+                        }
+                        else
+                            y = (double)PaintboothWidth - DoorWidthForHinge;
+
+                    }
+
+                    else if (model.paintboothSide == "rightSideDoorDrawings")//For Side door 
+                    {
+                        if (i == 0)
+                        {
+                            currentXOffset = 0;
+                        }
+                        //model.panelcount++;
+                        j = 1;
+                        model.panelcount = 1;
+                        if (i == model.panelcount * j)
+                        {
+                            currentXOffset = 0;
+                            z = 2390 * j;
+                            model.panelcount++;
+                        }
+
+                    }
+                    else if (model.paintboothSide == "rightAndLeftSideDoorNearExtractionCDrawings")//For Side door near Extraction Chamber 
+                    {
+                        if (i == 0)
+                        {
+                            //model.xoffset = (double)PaintBoothDepth;
+                            currentXOffset = model.xoffset;
+                            //currentXOffset = model.xoffset - 550;
+                        }
+                        else
+                            //currentXOffset = (double)PaintBoothDepth - (DoorWidthForHinge + PaintBoothService.smallPanelsWidthDoors);
+                        currentXOffset = model.xoffset;
+                        if (i == model.panelcount * j)
+                        {
+                            //currentXOffset = 0;
+                            currentXOffset = model.xoffset;
+                            z = 2390 * j;
+                            model.panelcount++;
+                        }
+                        y = model.yOffset;
+                    }
+
+
+
+
+                    else if (model.paintboothSide == "TopAssembly") //Top Panel
+                    {
+                        if (i == 0)
+                        {
+                            currentXOffset = model.xoffset;
+                        }
+                        if (i == model.panelcount * j)
+                        {
+                            currentXOffset = model.xoffset;
+                            y = model.yOffset * j;
+                            j++;
+                        }
+                    }
+                    else if (model.paintboothSide == "TopAssemblyForFAS") //Top Panel for FAS
+                    {
+                        if (i == 0)
+                        {
+                            currentXOffset = model.xoffset;
+                        }
+                        if (i == model.panelcount * j)
+                        {
+                            currentXOffset = model.xoffset;
+                            y = model.yOffset * j;
+                            j++;
+                        }
+                    }
+                    else if (model.paintboothSide == "BackAndFrontPanels")//Back panel
+                    {
+                        if (i == 0 || i == (model.panelcount * j) + 1)
+                        {
+                            y = 0;
+                        }
+                        else
+                            y += model.yOffset;
+
+                        if (i == model.panelcount * j)
+                        {
+
+                            z = model.Zoffset * j;
+                            y = 0;
+                            j++;
+                        }
+                        currentXOffset = 0;
+                    }
+
+                    else if (model.paintboothSide == "FrontDrawingListInTopSide")//Back panel and Front panels in Top
+                    {
+                        currentXOffset = model.xoffset;
+                        y = model.yOffset * i;
+                        z = model.Zoffset;
+                    }
+
+                    else if (model.paintboothSide == "backDrawingListInTopSide")//Back panel in Top
+                    {
+                        currentXOffset = model.xoffset;
+                        y = model.yOffset * i;
+                        z = model.Zoffset;
+                    }
+                    else if (model.paintboothSide == "TopRightLeftPanelsforFAS" && i == 0)//Right left panel for FAS
+                    {
+                        currentXOffset = model.xoffset;
+                        z = model.Zoffset;
+                    }
+
+                    //else if (model.paintboothSide == "Side Filters")
+                    else if (model.yOffset != 0 && model.Zoffset == -1)
+                    {
+                        y = model.yOffset * i;
+                        currentXOffset = 0;
+                    }
+                    Block blk = new Block(uniqueBlockName);
+                    blk.Entities.AddRange(drawing.Entities);
+                    model.combinedDrawing.Blocks.Add(blk);
+
+                    double drawingWidth = CalculateDrawingWidth(drawing);
+                    BlockReference blkReference = new BlockReference(currentXOffset, y, z, blk.Name, 0);
+                    model.combinedDrawing.Entities.Add(blkReference);
+
+                    currentXOffset += drawingWidth;
+                    i++;
+                }
+            }
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("PaintBoothController", "AddDrawingsToAssembly", ex.Message);
+                throw;
+            }
+
+        }
+        private void AddDrawingsToAssemblyForTopFilters(AssemblyValueModel model, string DraftSubType)
         {
             double currentXOffset = 0;
             int i = 0, j = 1;
             double z = 0;
             double y = 0;
-            foreach (var drawing in drawings)
+            double? D3Panel = HttpContext.Session.GetInt32("D3Panel");
+            foreach (var drawing in model.drawings)
             {
                 string uniqueBlockName = "Block_" + Guid.NewGuid();
-
-                if (Zoffset != 0 && yOffset == 0 && Zoffset != -1)//Right left panel
+                if (i == 0)
                 {
-                    if (i == panelcount * j)
+                    if (DraftSubType == "7" || DraftSubType == "5" || DraftSubType == "4" || DraftSubType == "6")
                     {
-                        currentXOffset = 0;
-                        z = Zoffset * j;
-                        j++;
-                    }
-                }
-                else if (yOffset != 0 && Zoffset == 0 && Zoffset != -1) //Top Panel
-                {
-
-                    if (i == panelcount * j)
-                    {
-                        currentXOffset = 0;
-                        //y = yOffset * i;
-                        y = yOffset * j;
-                        j++;
-                    }
-                }
-                else if (yOffset != 0 && Zoffset != 0 && Zoffset != -1)//Back panel
-                {
-                    if (i == 0 || i == (panelcount * j) + 1)
-                    {
-                        y = 0;
+                        currentXOffset = (double)D3Panel;
+                        y = XdistanceInW;
                     }
                     else
-                        y += yOffset;
-
-                    if (i == panelcount * j)
                     {
+                        currentXOffset = 0;
+                        y = XdistanceInW;
 
-                        z = Zoffset * j;
-                        y = 0;
-                        j++;
                     }
-                    currentXOffset = 0;
                 }
-                else if (yOffset != 0 && Zoffset == -1)
+                if (i == model.panelcount * j)
                 {
+                    if (DraftSubType == "7" || DraftSubType == "5" || DraftSubType == "4" || DraftSubType == "6")
+                    {
+                        currentXOffset = (double)D3Panel;
+                        y = (model.yOffset * j) + XdistanceInW;
 
-                    y = yOffset * i;
-                    currentXOffset = 0;
+                    }
+                    else
+                    {
+                        currentXOffset = 0;
+                        y = (model.yOffset * j) + XdistanceInW;
+                    }
+
+                    j++;
                 }
-
-
                 Block blk = new Block(uniqueBlockName);
                 blk.Entities.AddRange(drawing.Entities);
-                combinedDrawing.Blocks.Add(blk);
+                model.combinedDrawing.Blocks.Add(blk);
 
-                double drawingWidth = CalculateDrawingWidth(drawing);
+                double drawingWidth = CalculateDrawingWidthForTopFilters(drawing);
                 BlockReference blkReference = new BlockReference(currentXOffset, y, z, blk.Name, 0);
-                combinedDrawing.Entities.Add(blkReference);
+                model.combinedDrawing.Entities.Add(blkReference);
 
                 currentXOffset += drawingWidth;
                 i++;
             }
+        }
+        private double CalculateDrawingWidthForTopFilters(DesignDocument drawing)
+        {
+            if (drawing.Entities.Count == 0)
+                return 0;
+
+            double minX = double.MaxValue;
+            double maxX = double.MinValue;
+
+            foreach (Entity entity in drawing.Entities)
+            {
+                // Ensure the entity has bounding box data
+                if (entity.BoxMin != null && entity.BoxMax != null)
+                {
+                    minX = Math.Min(minX, entity.BoxMin.X);
+                    maxX = Math.Max(maxX, entity.BoxMax.X);
+                }
+            }
+
+            // Ensure valid bounds were found
+            if (minX == double.MaxValue || maxX == double.MinValue)
+                return 0;
+
+            return maxX - minX;
         }
         private double CalculateDrawingWidth(DesignDocument drawing)
         {
@@ -1152,15 +1042,13 @@ namespace Bullows.Controllers
             {
                 if (entity.BoxMin.X < minX) minX = entity.BoxMin.X;
                 else if (entity.BoxMax.X > maxX) maxX = entity.BoxMax.X;
-                
+
             }
 
             return maxX - minX;
         }
-        #endregion
         public IActionResult FilterFrameCalculations(double FilterArea, double w, double h, double d, int lights)
         {
-
             var model = new PaintBoothModel
             {
                 FilterArea = FilterArea,
@@ -1175,11 +1063,10 @@ namespace Bullows.Controllers
         }
         public IActionResult FilterFrameBox(PaintBoothModel model)
         {
-            PaintBoothDesign panel = new PaintBoothDesign(_context);
-
-
+            PaintBoothDesign panel = new PaintBoothDesign(_context, _configuration);
             int? settingPanelWidth = HttpContext.Session.GetInt32("settingPanelWidth");
             int? settingPanelHeight = HttpContext.Session.GetInt32("settingPanelHeight");
+            double? PaintboothHeight = HttpContext.Session.GetInt32("PaintboothHeight");
 
             double W = (double)settingPanelHeight;
             double H = model.H;
@@ -1194,13 +1081,14 @@ namespace Bullows.Controllers
             {
                 return RedirectToAction("PaintBooth");
             }
+            string PaintBoothTypefromEnquiry = HttpContext.Session.GetString("DraftSubType");
+            //string htmlfilepath = Path.Combine(BaseFilePath, "WebGL File");
 
-            DesignDocument combinedDrawing = CombineAssemblies2(designdictionary, PanelHeight, PanelWidth);
-            string BaseFilePath = "C:/Bullows/Paintbooth_Drawing";
-            string combinedDwgFilePath = BaseFilePath + "/GA3D_Drawing.dwg";
-            WriteAutodeskParams autoCombined = new WriteAutodeskParams(combinedDrawing);
-            WriteAutodesk dwgWriterCombined = new WriteAutodesk(autoCombined, combinedDwgFilePath);
-            dwgWriterCombined.DoWork();
+            //if (!Directory.Exists(htmlfilepath))
+            //    Directory.CreateDirectory(htmlfilepath);
+            //var wgl = new devDept.Eyeshot.Translators.WriteWebGL(combinedDrawing, Path.Combine(htmlfilepath, "Scanning.html"), 0.1, false, Color.LightGray);
+            //wgl.DoWork();
+            // ViewBag.FilePathScanning = Path.Combine("WebGL File",  "Scanning.html");
             string salesNo = HttpContext.Session.GetString("SalesNo");
 
             string zipFileName = $"{salesNo}.zip";
@@ -1212,6 +1100,8 @@ namespace Bullows.Controllers
             {
                 foreach (var filePath in AllFilesPath)
                 {
+                    if (string.IsNullOrWhiteSpace(filePath))
+                        continue;
                     zip.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
                 }
             }
@@ -1229,101 +1119,104 @@ namespace Bullows.Controllers
             var records = _uow.PaintBoothRepository.GetMotorDeatils(BlowerHpCalculation);
             return Json(records);
         }
-        //[HttpPost]
-        //public IActionResult GetEnquiryCodes(string term)
-        //{
-        //    var enquiryCodes = _uow.PaintBoothRepository.GetEnquiryCodes(term);
-        //    var result = new
-        //    {
-        //        success = enquiryCodes.Any(), 
-        //        results = enquiryCodes 
-        //    };
-        //    return Json(result);
-        //}
 
         public IActionResult GetPanelDetails()
         {
-            List<string> developmentfilePaths = new List<string>();
-            PaintBoothDesign panel = new PaintBoothDesign(_context);
-            string EnquiryCode = HttpContext.Session.GetString("SalesNo");
-            var details = _uow.PaintBoothRepository.GetPanelDetailsByCode(EnquiryCode);
-            List<PaintBoothclass> paintbooth = new List<PaintBoothclass>();
-            int j = 0;
-            foreach (var item in details)
+            try
             {
+                List<string> developmentfilePaths = new List<string>();
+                PaintBoothDesign panel = new PaintBoothDesign(_context, _configuration);
+                string EnquiryCode = HttpContext.Session.GetString("SalesNo");
+                var details = _uow.PaintBoothRepository.GetPanelDetailsByCode(EnquiryCode);
+                List<PaintBoothclass> paintbooth = new List<PaintBoothclass>();
+                int j = 0;
+                foreach (var item in details)
+                {
 
-                if (item.PanelPosition == "RightSide")
-                {
-                    panel.PanelWidth = item.StandardPanelWidthForD;
-                    panel.PanelHeight = item.PanelHeightforH;
-                    PaintBoothclass panels = panel.DevelopmentforRightLeftPanels(item, 0, j);
-                    paintbooth.Add(panels);
-                    developmentfilePaths.Add(panels.developmentpath);
-                }
-                else if (item.PanelPosition == "LeftSide")
-                {
-                    panel.PanelWidth = item.StandardPanelWidthForD;
-                    panel.PanelHeight = item.PanelHeightforH;
-                    PaintBoothclass panels = panel.DevelopmentforRightLeftPanels(item, 1, j);
-                    paintbooth.Add(panels);
-                    developmentfilePaths.Add(panels.developmentpath);
-                }
-                else if (item.PanelPosition == "D3Panels Right side")
-                {
-                    panel.D3 = item.StandardPanelWidthForD;
-                    panel.PanelHeight = item.PanelHeightforH;
-                    PaintBoothclass panels = panel.DevelopmentforD3Panels(item, 0, j);
-                    paintbooth.Add(panels);
-                    developmentfilePaths.Add(panels.developmentpath);
-                }
-                else if (item.PanelPosition == "D3Panels Left Side")
-                {
-                    panel.D3 = item.StandardPanelWidthForD;
-                    panel.PanelHeight = item.PanelHeightforH;
-                    PaintBoothclass panels = panel.DevelopmentforD3Panels(item, 1, j);
-                    paintbooth.Add(panels);
-                    developmentfilePaths.Add(panels.developmentpath);
-                }
-                else if (item.PanelPosition.Contains("TopPanels"))
-                {
-                    PaintBoothclass panels = panel.DevelopmentforTopPanels(item);
-                    paintbooth.Add(panels);
-                    developmentfilePaths.Add(panels.developmentpath);
-                }
-                else if (item.PanelPosition.Contains("BackPanels"))
-                {
-                    panel.PanelWidth = item.StandardPanelWidthForD;
-                    panel.PanelHeight = item.PanelHeightforH;
-                    PaintBoothclass panels = panel.DevelopmentforBackPanels(item, j);
-                    paintbooth.Add(panels);
-                    developmentfilePaths.Add(panels.developmentpath);
-                }
-                j++;
-            }
-            // Create ZIP folder with development files and allow download
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    foreach (var filePath in developmentfilePaths)
+                    if (item.PanelPosition == "RightSide")
                     {
-                        if (System.IO.File.Exists(filePath))
-                        {
-                            string fileName = Path.GetFileName(filePath);
-                            var zipEntry = zipArchive.CreateEntry(fileName, CompressionLevel.Optimal);
+                        panel.PanelWidth = item.StandardPanelWidthForD;
+                        panel.PanelHeight = item.PanelHeightforH;
+                        //PaintBoothclass panels = panel.DevelopmentforRightLeftPanels(item, 0, j);
+                        PaintBoothclass panels = panel.DevelopmentForAllPanels(item, 0, j);
 
-                            using (var entryStream = zipEntry.Open())
-                            using (var fileStream = System.IO.File.OpenRead(filePath))
+                        paintbooth.Add(panels);
+                        developmentfilePaths.Add(panels.developmentpath);
+                    }
+                    else if (item.PanelPosition == "LeftSide")
+                    {
+                        panel.PanelWidth = item.StandardPanelWidthForD;
+                        panel.PanelHeight = item.PanelHeightforH;
+                        PaintBoothclass panels = panel.DevelopmentForAllPanels(item, 1, j);
+                        paintbooth.Add(panels);
+                        developmentfilePaths.Add(panels.developmentpath);
+                    }
+                    else if (item.PanelPosition == "D3Panels Right side")
+                    {
+                        panel.PanelWidth = item.StandardPanelWidthForD;
+                        panel.PanelHeight = item.PanelHeightforH;
+                        //PaintBoothclass panels = panel.DevelopmentforD3Panels(item, 0, j);
+                        PaintBoothclass panels = panel.DevelopmentForAllPanels(item, 2, j);
+                        paintbooth.Add(panels);
+                        developmentfilePaths.Add(panels.developmentpath);
+                    }
+                    else if (item.PanelPosition == "D3Panels Left Side")
+                    {
+                        panel.PanelWidth = item.StandardPanelWidthForD;
+                        panel.PanelHeight = item.PanelHeightforH;
+                        //PaintBoothclass panels = panel.DevelopmentforD3Panels(item, 1, j);
+                        PaintBoothclass panels = panel.DevelopmentForAllPanels(item, 3, j);
+                        paintbooth.Add(panels);
+                        developmentfilePaths.Add(panels.developmentpath);
+                    }
+                    else if (item.PanelPosition.Contains("TopPanels"))
+                    {
+                        //PaintBoothclass panels = panel.DevelopmentforTopPanels(item);
+                        PaintBoothclass panels = panel.DevelopmentForAllPanels(item, 4, j);
+                        paintbooth.Add(panels);
+                        developmentfilePaths.Add(panels.developmentpath);
+                    }
+                    else if (item.PanelPosition.Contains("BackPanels"))
+                    {
+                        panel.PanelWidth = item.StandardPanelWidthForD;
+                        panel.PanelHeight = item.PanelHeightforH;
+                        //PaintBoothclass panels = panel.DevelopmentforBackPanels(item, j);
+                        PaintBoothclass panels = panel.DevelopmentForAllPanels(item, 5, j);
+                        paintbooth.Add(panels);
+                        developmentfilePaths.Add(panels.developmentpath);
+                    }
+                    j++;
+                }
+                // Create ZIP folder with development files and allow download
+                using (var memoryStream = new MemoryStream())
+                {
+                    using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    {
+                        foreach (var filePath in developmentfilePaths)
+                        {
+                            if (System.IO.File.Exists(filePath))
                             {
-                                fileStream.CopyTo(entryStream);
+                                string fileName = Path.GetFileName(filePath);
+                                var zipEntry = zipArchive.CreateEntry(fileName, CompressionLevel.Optimal);
+
+                                using (var entryStream = zipEntry.Open())
+                                using (var fileStream = System.IO.File.OpenRead(filePath))
+                                {
+                                    fileStream.CopyTo(entryStream);
+                                }
                             }
                         }
                     }
+                    string Developmentfile = $"Development_{EnquiryCode}.zip";
+                    return File(memoryStream.ToArray(), "application/zip", Developmentfile);
                 }
-                string Developmentfile = $"Development_{EnquiryCode}.zip";
-                return File(memoryStream.ToArray(), "application/zip", Developmentfile);
-            }
 
+            }
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("PaintBoothController", "GetPanelDetails", ex.Message);
+                throw;
+            }
 
         }
 
@@ -1344,7 +1237,18 @@ namespace Bullows.Controllers
             return Json(new { pressureDropDetails = model }); // Return the data as JSON
         }
     }
-    #endregion
 
+
+
+}
+public class AssemblyValueModel
+{
+    public DesignDocument combinedDrawing { get; set; }
+    public List<DesignDocument> drawings { get; set; }
+    public double xoffset { get; set; }
+    public double yOffset { get; set; }
+    public double Zoffset { get; set; }
+    public int panelcount { get; set; }
+    public string paintboothSide { get; set; }
 
 }

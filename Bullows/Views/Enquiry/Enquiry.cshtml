@@ -4,12 +4,10 @@
     Layout = "~/Views/Shared/_AuthMasterLayout.cshtml";
 }
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-
 <style>
     .smaller-font, .smaller-font input {
         font-size: smaller;
@@ -18,22 +16,44 @@
     .smaller-height {
         height: 30px;
     }
-</style>
 
+    .table-responsive {
+        position: relative;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .table thead th {
+        position: sticky;
+        top: 0;
+        background: gray !important;
+        z-index: 10;
+    }
+
+    
+</style>
+@if (TempData["ErrorText"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["ErrorText"]
+    </div>
+}
 <div class="divPanel">
     <form asp-action="SaveEnquiryDetails" asp-controller="Enquiry" method="post" data-ajax="true" data-ajax-update="divPanel" enctype="multipart/form-data">
         <div class="row cl-md-12 col-lg-12 col-sm-12 ">
             <div class="row">
-                @Html.HiddenFor(c=>c.EmailId)
-                @Html.HiddenFor(c=>c.CustomerID)
-                @Html.HiddenFor(c=>c.EnquiryId)
-                <div class="col-md-3">
+                @Html.HiddenFor(c => c.EmailId)
+                @Html.HiddenFor(c => c.CustomerID)
+                @Html.HiddenFor(c => c.EnquiryId)
+                @Html.HiddenFor(c => c.ComponentID)
+                @Html.HiddenFor(c => c.MotorID)
+                <div class="col-md-2">
                     <label class="smaller-font">Proposal Date</label>
-                    @Html.TextBoxFor(c => c.ProposalDate,"{0:yyyy-MM-dd}", new {@id="txtpdateid",@type="date", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
+                    @Html.TextBoxFor(c => c.ProposalDate, "{0:yyyy-MM-dd}", new { @id = "txtpdateid", @type = "date", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Enquiry NO</label>
-                    @Html.TextBoxFor(c => c.SalesNO, new {@id="txtsalesid", @class = "form-control smaller-font smaller-height", style = "width: 130px;"})
+                    @Html.TextBoxFor(c => c.SalesNO, new { @id = "txtsalesid", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                     <span id="enquiryNoValidationMessage" class="text-danger" style="display:none;">This Enquiry No is already in use, please enter another one.</span>
                 </div>
             </div>
@@ -42,33 +62,33 @@
         <h6>Company Details</h6>
         <div class=" cl-md-12 col-lg-12 col-sm-12 ">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Company Name</label>
-                    @Html.TextBoxFor(c => c.CompanyName, new{@id="txtcname",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.CompanyName, new { @id = "txtcname", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                     <div id="company-list" class="dropdown-menu" style="width: 130px; position: absolute; z-index: 1000;"></div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Address</label>
-                    @Html.TextBoxFor(c => c.CustomerAddress,new {@id="txtcadresss",@class = "form-control smaller-font smaller-height",style="width:130px", @readonly="readonly"})
+                    @Html.TextBoxFor(c => c.CustomerAddress, new { @id = "txtcadresss", @class = "form-control smaller-font smaller-height", style = "width:130px", @readonly = "readonly" })
                 </div>
             </div>
             <br />
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Contact Person</label>
-                    @Html.TextBoxFor(c=>c.Contactperson ,new {@id="txtContactPerson",@class="form-control smaller-font smaller-height",style="width:130px",@readonly="readonly"})
+                    @Html.TextBoxFor(c => c.Contactperson, new { @id = "txtContactPerson", @class = "form-control smaller-font smaller-height", style = "width:130px", @readonly = "readonly" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Designation</label>
-                    @Html.TextBoxFor(c => c.Designation,new {@id="txtdesignation",@class = "form-control smaller-font smaller-height",style="width:130px",@readonly="readonly"})
+                    @Html.TextBoxFor(c => c.Designation, new { @id = "txtdesignation", @class = "form-control smaller-font smaller-height", style = "width:130px", @readonly = "readonly" })
                 </div>
-                <div class="col-md-3">
-                    <label>Mobile No</label>
-                    @Html.TextBoxFor(c => c.MobileNo,new {@id="txtmobile",@class = "form-control smaller-font smaller-height",style="width:130px",@readonly="readonly"})
+                <div class="col-md-2">
+                    <label class="smaller-font">Mobile No</label>
+                    @Html.TextBoxFor(c => c.MobileNo, new { @id = "txtmobile", @class = "form-control smaller-font smaller-height", style = "width:130px", @readonly = "readonly" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Email ID</label>
-                    @Html.TextBoxFor(c => c.EmailId,new {@id="txtemail",@class = "form-control smaller-font smaller-height",style="width:130px",@readonly="readonly"})
+                    @Html.TextBoxFor(c => c.EmailId, new { @id = "txtemail", @class = "form-control smaller-font smaller-height", style = "width:130px", @readonly = "readonly" })
                 </div>
             </div>
         </div>
@@ -77,17 +97,17 @@
         <div class="cl-md-12 col-lg-12 col-sm-12">
             <div class="row">
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Component Name</label>
-                    @Html.TextBoxFor(c =>c.Component,new{@id="txtcomponent",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.Component, new { @id = "txtcomponent", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Construction</label>
-                    @Html.TextBoxFor(c =>c.MaterialofConstruction,new{@id="txtmoconSTD",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.MaterialofConstruction, new { @id = "txtmoconSTD", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
                 <div class="col-md-3">
                     <label class="smaller-font">Upload Drawings/Attachments</label>
-                    <input type="file" name="imageFile" id="imageFileInput" multiple onchange="handleFileUpload()" />
+                    <input type="file" value=@Model.Image_Path name="imageFile" id="imageFileInput" multiple onchange="handleFileUpload()" />
                 </div>
 
                 <!-- Modal to Show Uploaded Files -->
@@ -118,7 +138,7 @@
             </div>
             <br />
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Shape</label>
                     @Html.DropDownListFor(c => c.Shape, new List<SelectListItem>
                     {
@@ -126,7 +146,7 @@
                     new SelectListItem { Text = "Circular", Value ="Circular" },
                     }, "--Select--", new { @id = "drpShape", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Orientation</label>
                     @Html.DropDownListFor(c => c.Orientation, new List<SelectListItem>
                     {
@@ -135,57 +155,47 @@
                     }, "--Select--", new { @id = "drpOrientation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
             </div><br />
-            <div class="row" id="rectangular-section"  style="display:none;">
-                           
-                <div class="col-md-4">
+            <div class="row" id="rectangular-section" style="display:none;">
+
+                <div class="col-md-2">
                     <div class="form-group">
-                        <label class="smaller-font">Depth(mm)</label>
+                        <label class="smaller-font">MAX Depth(mm)-W</label>
                         @Html.TextBoxFor(c => c.LengthSize, new { @id = "txtLengthSize", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                     </div><br />
                     <div class="form-group">
-                        <label class="smaller-font">Width(mm)</label>
+                        <label class="smaller-font">MAX Width(mm)-L</label>
                         @Html.TextBoxFor(c => c.WidthSize, new { @id = "txtWidthSize", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                     </div><br />
                     <div class="form-group">
-                        <label class="smaller-font">Height(mm)</label>
+                        <label class="smaller-font">MAX Height(mm)</label>
                         @Html.TextBoxFor(c => c.HeightSize, new { @id = "txtHeightSize", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                     </div>
                 </div>
-               
                 <div class="col-md-8">
                     <div class="row">
-                        <div class="col-md-6" >
+                        <div class="col-md-6">
                             <div class="form-group" id="Horizontalrectangle">
                                 <img src="~/img/Rectangular.PNG" alt="Rectangular" style="width:250px;height:200px;">
                             </div>
                             <div class="form-group" id="verticalrectangle">
                                 <img src="~/img/VerticalRectangular.PNG" alt="VerticalRectangular" style="width:250px;height:200px;">
                             </div>
-                        </div>                   
-                     </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            </div>
-          @*   Circular shape *@
-            <div id="circular-section" class="row" style="display:none;">               
+            @*   Circular shape *@
+            <div id="circular-section" class="row" style="display:none;">
                 <div class="col-md-4">
                     <div class="col-md-3">
-                        <label class="smaller-font">Diameter(mm)</label>
+                        <label class="smaller-font">MAX Diameter(mm)</label>
                         @Html.TextBoxFor(c => c.Diameter, new { @id = "txtDiameter", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
-                    </div><br/>
+                    </div><br />
                     <div class="col-md-3">
-                        <label class="smaller-font">Height(mm)</label>
+                        <label class="smaller-font">MAX Height(mm)</label>
                         @Html.TextBoxFor(c => c.CircularHeightSize, new { @id = "txtHeightSizeCircular", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                     </div>
                 </div>
-                @* <div class="col-md-6">
-                    <div class="col-md-3" id="VerticalCircle">
-                        <img src="~/img/Circular.PNG" alt="Circular" style="width:190px;height:150px;">
-                    </div>
-                    <div class="form-group" id="HorizonatalCircle">
-                        <img src="~/img/HorizontalCircular.PNG" alt="HorizonatalCircle" style="width:250px;height:200px;">
-                    </div>
-                </div> *@
-
                 <div class="col-md-6">
                     <div class="form-group" id="VerticalCircle">
                         <img src="~/img/Circular.PNG" alt="Vertical Circular" style="width:190px;height:150px;">
@@ -194,180 +204,336 @@
                         <img src="~/img/HorizontalCircular.PNG" alt="Horizontal Circular" style="width:190px;height:150px;">
                     </div>
                 </div>
-            </div>                    
+            </div>
             <br />
             <div class="row">
-                <div class="col-md-3">
-                    <label class="smaller-font">Weight(kg)</label>
-                    @Html.TextBoxFor(c =>c.Weight,new{@id="txtWeight",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                <div class="col-md-2">
+                    <label class="smaller-font">MAX Weight(kg)</label>
+                    @Html.TextBoxFor(c => c.Weight, new { @id = "txtWeight", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Surface Area(Sq.mtr)</label>
-                    @Html.TextBoxFor(c =>c.SurfaceArea,new{@id="txtsurfacearea",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.SurfaceArea, new { @id = "txtsurfacearea", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Wall Thickness(mm)</label>
-                    @Html.TextBoxFor(c => c.WallThickness ,new{@id="txtwallthickness",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.WallThickness, new { @id = "txtwallthickness", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Viscosity(Sec)</label>
-                    @Html.TextBoxFor(c =>c.Viscosity,new{@id="txtmoconSTD",@class = "form-control smaller-font smaller-height",style="width:130px;"})
+                    @Html.TextBoxFor(c => c.Viscosity, new { @id = "txtmoconSTD", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
             </div><br />
             <div class="row">
-                <div class="col-md-3">
-                    <label class="smaller-font">.</label><br />
+                <div class="col-md-2">
+                    <label class="smaller-font">Coating Type</label><br />
                     <input type="radio" name="Consumption" value="Paint" @(Model.Consumption == "Paint" ? "checked='checked'" : "") />&nbsp;&nbsp;&nbsp<span style="font-size:small">Paint</span>
                     <input type="radio" name="Consumption" value="Powder" @(Model.Consumption == "Powder" ? "checked='checked'" : "") />&nbsp;&nbsp;<span style="font-size:small">Powder</span>
                 </div>
-                <div class=" paint col-md-3">
-                    <label class="smaller-font">Paint(ltr)</label>
-                    @Html.TextBoxFor(c => c.Paint ,new{@id="txtpaint",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                
+                <div class="col-md-2" id="paintDiv" style="display:none;">
+                    <label for="TypeOfPaint" class="smaller-font">Type Of Paint</label>
+                    @Html.DropDownListFor(c => c.TypeOfPaint, new List<SelectListItem>{
+                                        new SelectListItem { Text = "Water Based", Value = "1" },
+                                        new SelectListItem { Text = "PU Paint", Value = "2" },
+                                        new SelectListItem { Text = "Epoxy", Value = "3" }
+                                        }, "--Select--",
+                                        new { @id = "TypeOfPaint", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
-                <div class=" Powder col-md-3">
-                    <label class="smaller-font">Powder(kg)</label>
-                    @Html.TextBoxFor(c => c.Powder ,new{@id="txtPowder",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                <div class="col-md-2" id="powderDiv" style="display:none;">
+                    <label for="TypeOfPowder" class="smaller-font">Type Of Powder</label>
+                    @Html.DropDownListFor(c => c.TypeOfPowder, new List<SelectListItem>{
+                                        new SelectListItem { Text = "PU", Value = "1" },
+                                        new SelectListItem { Text = "Epoxy", Value = "2" }
+                                        }, "--Select--",
+                                        new { @id = "TypeOfPowder", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
-                <div class="col-md-3">
+                <div class=" Powder col-md-2">
+                    <label class="smaller-font">Powder Consumption/Day(kg)</label>
+                    @Html.TextBoxFor(c => c.Powder, new { @id = "txtPowder", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+                <div class=" paint col-md-2">
+                    <label class="smaller-font">Paint Consumption/Day(ltr)</label>
+                    @Html.TextBoxFor(c => c.Paint, new { @id = "txtpaint", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+        
+                <div class="col-md-2">
                     <label for="CategoryDropdown" class="smaller-font">PaintBooth Type</label>
                     @Html.DropDownListFor(c => c.Category, new List<SelectListItem>{
-                        new SelectListItem {Text = "Dry Paint Booth", Value="1"},
+                    new SelectListItem {Text = "Dry Paint Booth", Value="1"},
                     new SelectListItem {Text = "Wet Paint Booth", Value="2"},
                     }, "--Select--",
-                    new { @id = "Category", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                             new { @id = "Category", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
-                <div class="col-md-3">
-                    <label class="smaller-font">DFT(micron)</label>
-                    @Html.TextBoxFor(c => c.DFT ,new{@id="txtwallthickness",@class = "form-control smaller-font smaller-height",style="width:130px"})
-                </div>             
+                <div class="col-md-2" id="divDraftType">
+                    <label for="DraftType" class="smaller-font">Draft Type</label>
+                    @Html.DropDownListFor(c => c.DraftType, new List<SelectListItem>{
+                    new SelectListItem {Text = "Side Draft", Value="1"},
+                    // new SelectListItem {Text = "Down Draft", Value="2"},
+                    // new SelectListItem {Text = "Semi Down Draft", Value="3"},
+                    }, "--Select--",
+                             new { @id = "DraftType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                </div>
+                <div class="col-md-2" id="divSubTypeOfDraft">
+                    <label for="SubTypeOfDraft" class="smaller-font">Sub Type</label>
+                    @Html.DropDownListFor(c => c.SubTypeOfDraft, new List<SelectListItem>{
+                    new SelectListItem {Text = "Open", Value="1"},
+                    new SelectListItem {Text = "Filters On top OR Door", Value="2"},
+                    new SelectListItem {Text = "Enclosed with FAS", Value="3"},
+                    // new SelectListItem {Text = "With FAS & Civil", Value="4"},
+                    // new SelectListItem {Text = "With FAS & Without Civil", Value="5"},
+                    // new SelectListItem {Text = "With Filters on Top & With Civil", Value="6"},
+                    // new SelectListItem {Text = "With Filters on Top & Without Civil", Value="7"},
+                    // new SelectListItem {Text = "With FAS", Value="8"},
+                    // new SelectListItem {Text = "With Filters on Top", Value="9"},
+
+                    }, "--Select--",
+                             new { @id = "SubtypeofDraft", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                </div>
             </div><br />
 
             <div class="row">
-                <div class="col-md-3">
-                    <label class="smaller-font">No of Colours</label>
-                    @Html.TextBoxFor(c =>c.NoOfColors,new{@id="txtWeight",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                <div class="col-md-2">
+                    <label class="smaller-font">DFT(micron)</label>
+                    @Html.TextBoxFor(c => c.DFT, new { @id = "txtwallthickness", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
+                    <label class="smaller-font">No of Colours</label>
+                    @Html.TextBoxFor(c => c.NoOfColors, new { @id = "txtWeight", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+                <div class="col-md-2">
                     <label class="smaller-font">No of coats</label>
-                    @Html.TextBoxFor(c =>c.NoOfCoats,new{@id="txtmoconSTD",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.NoOfCoats, new { @id = "txtmoconSTD", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
                 <div class="col-md-4">
                     <label class="smaller-font">Specific heat of component(kcal/hr)</label>
-                    @Html.TextBoxFor(c =>c.SpecificHeat,new{@id="txtsurfacearea" ,@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.SpecificHeat, new { @id = "txtSpecificHeat", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-
             </div>
-           <br/>                  
+            <br />
             <div class="row">
                 <!-- Component Handling Dropdown -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Component handling</label>
                     @Html.DropDownListFor(c => c.ComponentHandling, new List<SelectListItem>
                     {
                     new SelectListItem { Text = "Applicable", Value = "1" },
                     new SelectListItem { Text = "Not-Applicable", Value ="2" },
                     }, "--Select--", new { @id = "drpCpmonenthandling", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                </div>                  
-                    <div class="Conveyor col-md-3" id="drpConveyordiv">
-                        <label class="smaller-font">Conveyor Types</label>
-                        @Html.DropDownListFor(c=> c.Conveyor ,new List<SelectListItem>
-                        {
-                        new SelectListItem{Text="EOT Crane",Value="1"},
-                        new SelectListItem{Text="Hoist",Value="2"},
-                        new SelectListItem{Text="Overhead Conveyor",Value="3"},
-                        new SelectListItem{Text="Four Wheel (Biplanar)",Value="4"},
-                        new SelectListItem{Text="Overhead Manual Push Pull Track & Trolley Conveyor",Value="5"},
-                        new SelectListItem{Text="Motorized Floor Conveyor",Value="6"},
-                        new SelectListItem{Text="Motorized Floor Trolley",Value="7"},
-                        new SelectListItem{Text="Manually Push Pull Trolley",Value="8"},
-                        }, "--Select--", new { @id="drpConveyor", @class = "form-control smaller-font smaller-height", style="width:130px;" })
-                    </div>
-                <div class="col-md-3" id="drpOverheadConverSubTypes">
+                </div>
+                <div class="Conveyor col-md-2" id="drpConveyordiv">
+                    <label class="smaller-font">Conveyor Types</label>
+                    @Html.DropDownListFor(c => c.Conveyor, new List<SelectListItem>
+                    {
+                    new SelectListItem{Text="EOT Crane",Value="1"},
+                    new SelectListItem{Text="Hoist",Value="2"},
+                    new SelectListItem{Text="Overhead Conveyor",Value="3"},
+                    new SelectListItem{Text="Four Wheel (Biplanar)",Value="4"},
+                    new SelectListItem{Text="Overhead Manual Push Pull Track & Trolley Conveyor",Value="5"},
+                    new SelectListItem{Text="Motorized Floor Conveyor",Value="6"},
+                    new SelectListItem{Text="Motorized Floor Trolley",Value="7"},
+                    new SelectListItem{Text="Manually Push Pull Trolley",Value="8"},
+                    }, "--Select--", new { @id = "drpConveyor", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
+                </div>
+                <div class="col-md-2" id="drpOverheadConverSubTypes">
                     <label class="smaller-font">Conveyor SubTypes</label>
-                    @Html.DropDownListFor(c=> c.OverheadConveyorSubTypes ,new List<SelectListItem>
+                    @Html.DropDownListFor(c => c.OverheadConveyorSubTypes, new List<SelectListItem>
                     {
                     new SelectListItem{Text="Continous",Value="1"},
-                    new SelectListItem{Text="Stop & Go",Value="2"},                   
-                    }, "--Select--", new { @id="drpOverheadConveyorsub", @class = "form-control smaller-font smaller-height", style="width:130px;" })
+                    new SelectListItem{Text="Stop & Go",Value="2"},
+                    }, "--Select--", new { @id = "drpOverheadConveyorsub", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
 
-                <div class="Pitch col-md-3" id="txtCarryCapacitydiv">
-                        <label class="smaller-font">Carrying Capacity(Kg)</label>
-                        @Html.TextBoxFor(c => c.CarringCapacity, new { @id="txtCarryCapacity", @class = "form-control smaller-font smaller-height", style="width:130px;" })
+                <div class="Pitch col-md-2" id="txtCarryCapacitydiv">
+                    <label class="smaller-font">Carrying Capacity(Kg)</label>
+                    @Html.TextBoxFor(c => c.CarringCapacity, new { @id = "txtCarryCapacity", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
 
-                <div class="col-md-3" id="drpConveyorNumberdiv">
-                        <label class="smaller-font">Conveyor Number</label>
-                        @Html.DropDownListFor(c => c.ConveyorNumber ,new List<SelectListItem>
-                        {
-                        new SelectListItem{Text="348",Value="1"},
-                        new SelectListItem{Text="458",Value="2"},
-                        new SelectListItem{Text="678",Value="3"},
-                        }, "--Select--", new { @id="drpConveyorNumber", @class = "form-control smaller-font smaller-height", style="width:130px;" })
-                    </div> 
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-md-3" id="divPitch" style="display:none;">
+                <div class="col-md-2" id="drpConveyorNumberdiv">
+                    <label class="smaller-font">Conveyor Number</label>
+                    @Html.DropDownListFor(c => c.ConveyorNumber, new List<SelectListItem>
+                    {
+                    new SelectListItem{Text="348",Value="1"},
+                    new SelectListItem{Text="458",Value="2"},
+                    new SelectListItem{Text="678",Value="3"},
+                    }, "--Select--", new { @id = "drpConveyorNumber", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
+                </div>
+            
+                <div class="col-md-2" id="divPitch" style="display:none;">
                     <label class="smaller-font">Pitch(mm)</label>
-                    @Html.TextBoxFor(c => c.Pitch, new { @id="txtPitch", @class = "form-control smaller-font smaller-height", style="width:130px;" })
+                    @Html.TextBoxFor(c => c.Pitch, new { @id = "txtPitch", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
-                <div class="col-md-3" id="divSpeed" style="display:none;">
+                <div class="col-md-2" id="divSpeed" style="display:none;">
                     <lable class="smaller-font">Speed(m/min)</lable>
-                    @Html.TextBoxFor(c => c.Speed,new{@id="txtSpeed",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.Speed, new { @id = "txtSpeed", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Loading & Unloading </label>
-                    @Html.DropDownListFor(c=> c.LoadingUnloading ,new List<SelectListItem>
+                    @Html.DropDownListFor(c => c.LoadingUnloading, new List<SelectListItem>
                     {
                     new SelectListItem{Text="Manual",Value="Manual"},
                     new SelectListItem{Text="Automatic",Value="Automatic"},
 
-                    },"Select",new {@id="drpLoadingUnloading",@class = "form-control smaller-font smaller-height",style="width:130px;"})
+                    }, "Select", new { @id = "drpLoadingUnloading", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
-            </div>
+            </div><br />
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">Production/Shift </label>
-                    @Html.TextBoxFor(c => c.ProductionRequirement,new{@id="txtproreuirement",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.ProductionRequirement, new { @id = "txtproreuirement", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
-                    <label class="smaller-font">Working days/year</label>
-                    @Html.TextBoxFor(c => c.Workingdays,new{@id="txtworkday",@class = "form-control smaller-font smaller-height",style="width:130px"})
-                </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="smaller-font">No.of Shifts/day</label>
-                    @Html.TextBoxFor(c => c.NumberofShifts,new{@id="txtnumofshifts",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                    @Html.TextBoxFor(c => c.NumberofShifts, new { @id = "txtnumofshifts", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                <div class="col-md-3">
-                    <label class="smaller-font">Effective Working Hrs</label>
-                    @Html.TextBoxFor(c=>c.EffectiveWorking,new{@id="txteeffworking",@class = "form-control smaller-font smaller-height",style="width:130px"})
+                <div class="col-md-2">
+                    <label class="smaller-font">Effective Working Hrs per shift</label>
+                    @Html.TextBoxFor(c => c.EffectiveWorking, new { @id = "txteeffworking", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
+                <div class="col-md-2">
+                    <label class="smaller-font">Working days/year</label>
+                    @Html.TextBoxFor(c => c.Workingdays, new { @id = "txtworkday", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+                
+               
             </div>
         </div>
         <hr />
-        <div class="row">
-            <div class="col-md-3">
-                <label for="CategoryDropdown" class="smaller-font">Paint Booth SubType:</label>
-                @Html.DropDownListFor(c => c.PaintBoothType, new List<SelectListItem>{
-                new SelectListItem {Text = "Open", Value="1"},
-                new SelectListItem {Text = "Enclosed", Value="2"},
-                new SelectListItem {Text = "Positive Pressurized", Value="3"},
-                new SelectListItem {Text = "Negative Pressurized", Value="4"},
-                }, "--Select--",
-                new { @id = "drpPaintBoothType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+        <div class="row" id="DivComponentEntryAndDoorTypes">
+           
+                <div class="col-md-2">
+                    <label class="smaller-font">Component Entry</label>
+                    @Html.DropDownListFor(c => c.ComponentEntry, new List<SelectListItem>{
+                    new SelectListItem{Text="Front", Value="Front"},
+                    new SelectListItem{Text="Side",Value="Side"}
+                    }, "--Select--",
+                             new { @id = "drpComponentEntry", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                </div>
+                @* <div class="col-md-2">
+                    <label class="smaller-font">Door Type</label>
+                    @Html.DropDownListFor(c => c.DoorType, new List<SelectListItem>{
+                    new SelectListItem{Text="Hinge", Value="Hinge"},
+                    new SelectListItem{Text="Slide",Value="Slide"},
+                    new SelectListItem{Text="Shutter",Value="Shutter"},
+                    }, "--Select--",
+                             new { @id = "drpComponentEntrySubType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                </div> *@
+            <div class="col-md-2">
+                <label class="smaller-font">Door Type</label>
+                @Html.DropDownListFor(c => c.DoorType, new List<SelectListItem>{
+                                new SelectListItem { Text = "Manual", Value = "Manual" },
+                                new SelectListItem { Text = "Motorised", Value = "Motorised" },
+                                }, "--Select--",
+                                new { @id = "drpDoorType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+           <!-- Manual Operation -->
+            <div class="col-md-2" id="manualOperationDiv" style="display:none;">
+                <label class="smaller-font">Type Of Operation</label>
+                @Html.DropDownListFor(c => c.TypeOfOperationForManual, new List<SelectListItem>{
+                        new SelectListItem { Text = "Hinged", Value = "Hinged" },
+                        new SelectListItem { Text = "Sliding", Value = "Sliding" },
+                    },
+                    "--Select--",
+                    new { @id = "drpManualOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+            <!-- Hinged Door selected -->
+            <div class="col-md-2" id="HingedDoorDiv" style="display:none;">
+                <label class="smaller-font">Type Of Hinged Door</label>
+                @Html.DropDownListFor(c => c.TypeOfHingedDoor, new List<SelectListItem>{
+                        new SelectListItem { Text = "Split Doors", Value = "Split Doors" },
+                        new SelectListItem { Text = "4 Fold Doors", Value = "4 Fold Doors" },
+                    },
+                    "--Select--",
+                    new { @id = "drpTypeOfHingedDoor", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
 
-            <div class="col-md-3">
-              <label class="smaller-font"> Motor Type</label>
-              @Html.DropDownListFor(c=>c.MotorType,new List<SelectListItem>{
-                  new SelectListItem{Text="NLP", Value="NLP"},
-                  new SelectListItem{Text="FLP",Value="FLP"}
-              },"---Select---",
-                new {@id="drpMotorType",@class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+
+            <!-- Motorised Operation -->
+            <div class="col-md-2" id="motorisedOperationDiv" style="display:none;">
+                <label class="smaller-font">Type Of Operation</label>
+                @Html.DropDownListFor(c => c.TypeOfOperationForMotorised, new List<SelectListItem>{
+                        new SelectListItem { Text = "Sliding", Value = "Sliding" },
+                        new SelectListItem { Text = "Rolling", Value = "Rolling" },
+                    },
+                    "--Select--",
+                    new { @id = "drpMotorisedOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
-           
+
+            <div class="col-md-3" id="divDoorSideLocation">
+                <label class="smaller-font">Side Location</label>
+                @Html.DropDownListFor(c => c.SideDoorLOcation, new List<SelectListItem>{
+                // new SelectListItem{Text="Left", Value="Left"},
+                // new SelectListItem{Text="Right",Value="Right"},
+                new SelectListItem{Text="BothSide",Value="BothSide",Selected = true},
+                }, "--Select--",
+                         new { @id = "drpDoorSideLocation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+        </div><hr />
+        <div class="row">
+            <div class="col-md-2">
+                <label class="smaller-font"> Motor Type</label>
+                @Html.DropDownListFor(c => c.MotorType, new List<SelectListItem>{
+                new SelectListItem{Text="NFLP", Value="NFLP"},
+                new SelectListItem{Text="FLP",Value="FLP"}
+                }, "--Select--",
+                         new { @id = "drpMotorType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+            <div class="col-md-2" id="divPlenumHeight">
+                <label class="smaller-font">Plenum Height(mm)</label>
+                @Html.DropDownListFor(c => c.HeightOfPlenum, new List<SelectListItem>{
+                new SelectListItem{Text="800", Value="800"},
+                new SelectListItem{Text="1200",Value="1200"},
+                new SelectListItem{Text="1600",Value="1600"},
+                }, "--Select--",
+                         new { @id = "drpPaintType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+            
+
+           @*  <div class="col-md-3">
+                <label class="smaller-font">Extraction Chamber Height (mm)</label>
+
+                 @Html.DropDownListFor(c => c.ExtractionChamberHeight,
+                            new List<SelectListItem>{
+                                new SelectListItem { Text = "2390", Value = "2390" },
+                               
+                            }, "--Select--",
+                        new {
+                            @id = "drpExtractionchamberHeight",
+                            @class = "form-control smaller-font smaller-height",
+                            style = "width:130px;"
+                        })
+    
+                        
+                </div> *@
+            <div class="col-md-2">
+                <label class="smaller-font">Extraction Chamber Height (mm)</label>
+
+                @Html.DropDownListFor(c => c.ExtractionChamberHeight,
+                    new List<SelectListItem>
+                    {
+                    new SelectListItem { Text = "2390", Value = "2390" },
+                    new SelectListItem { Text = "Custom", Value = "custom" }
+                    },
+                    new
+                    {
+                        @id = "drpExtractionchamberHeight",
+                        @class = "form-control smaller-font smaller-height",
+                        style = "width:130px;"
+                    })
+            </div>
+
+            <div class="col-md-2" style="margin-top:3px;">
+                <label class="smaller-font">&nbsp;</label> <!-- Empty label for alignment -->
+                <!-- Custom textbox - hidden by default -->
+                <input type="text"
+                       id="txtCustomHeight"
+                       name="ExtractionChamberHeight"  
+                class="form-control smaller-font smaller-height"
+                style="width:130px; display:none;"
+                placeholder="Enter height (mm)"
+                value="@(Model.ExtractionChamberHeight != "2390" && Model.ExtractionChamberHeight != "custom" && !string.IsNullOrEmpty(Model.ExtractionChamberHeight) ? Model.ExtractionChamberHeight : "")" />
+            </div>
         </div>
         <div class="cl-md-12 col-lg-12 col-sm-12" style="margin-top:20px;">
             <button type="submit" id="saveButton" class="btn btn-success rounded-pill" style="width:100px">Save</button>
@@ -375,13 +541,14 @@
         </div>
     </form>
 </div>
+<br />
 
-<div style="margin-top:10px;/* margin-right:10px */">
+<div style="margin-top:10px;">
     <div class="table-responsive" style="width:90%;max-height:400px;overflow-y:scroll">
         <table class="table">
             <thead class="webgrid-header" style="background-color:gray">
                 <tr>
-                    <th>Sr.NO</th>
+                    <th>Sr.No</th>
                     <th id="tableId" style="display:none;">Enquiry Id</th>
                     <th>Enquiry Number</th>
                     <th>Company Name</th>
@@ -410,8 +577,7 @@
                                 <a href="@Url.Action("Enquiry", "Enquiry", new { id = item.EnquiryId })">
                                     <img style="height:20px;width:20px" src="~/img/pencil.jpg" title="Edit" />
                                 </a>
-                                @* </td> *@
-                                @* <td> *@
+
                                 <a href="@Url.Action("Delete", "Enquiry", new { id = item.EnquiryId })">
                                     <img style="height:20px;width:20px" src="~/img/delete.png" title="Delete" />
                                 </a>
@@ -424,20 +590,27 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('.Powder').hide();
         $('.paint').hide();
+        $('#divPlenumHeight').hide();
+        $('#drpConveyordiv').hide();
+        // $('#drpComponentEntry').on('change', ShowComponetEntry);
         $("#txtCarryCapacitydiv").hide();
+        $("#divDoorSideLocation").hide();
+        $('#drpComponentEntry').trigger("change"); 
         $("#drpConveyorNumberdiv").hide();
-        $("#drpOverheadConverSubTypes").hide();      
+        $("#drpOverheadConverSubTypes").hide();
+         // ShowComponetEntry();
+         
         function toggleComponentHandling() {
             const selectedValue = $('#drpCpmonenthandling').val();
             console.log("Selected Value:", selectedValue); // Debugging log
 
             if (selectedValue === "1") { // Applicable
-                $('#drpConveyordiv').show();              
+                $('#drpConveyordiv').show();
 
             } else {
                 $('#drpConveyordiv').hide();
@@ -445,9 +618,131 @@
                 $("#drpOverheadConverSubTypes").hide();
                 $("#divPitch").hide();
                 $("#divSpeed").hide();
+                $("#txtCarryCapacitydiv").hide();
             }
         }
+        $("#drpExtractionchamberHeight").change(function () {
+        if ($(this).val() === "Other") {
+            $("#txtCustomExtractionHeight").show();
+        } else {
+            $("#txtCustomExtractionHeight").hide();
+            $("#txtCustomExtractionHeight").val("");
+        }
+    });
 
+            var $dropdown = $('#drpExtractionchamberHeight');
+            var $customInput = $('#txtCustomHeight');
+
+            function updateState() {
+                if ($dropdown.val() === "custom") {
+                    $customInput.show().focus();
+                    $dropdown.prop('disabled', true);  // KEY: Disable dropdown so it won't post "custom"
+                } else {
+                    $customInput.hide().val('');
+                    $dropdown.prop('disabled', false); // Re-enable when not custom
+                }
+            }
+
+            // Run on page load (important for postbacks/validation)
+            updateState();
+
+            // Run when dropdown changes
+            $dropdown.change(function () {
+                updateState();
+            });
+
+
+
+
+        // function ShowComponetEntry() {
+        //     const selectedValue = $('#drpComponentEntry').val();
+        //     const $subTypeDropdown = $('#drpComponentEntrySubType');
+
+        //      const currentSubTypeValue = $subTypeDropdown.val(); // get existing value
+        //      console.log("currentSubTypeValue",currentSubTypeValue);
+        //     $subTypeDropdown.empty(); // Clear existing options
+        //     $subTypeDropdown.append($('<option>', { value: "", text: "---Select---" })); // Default option
+           
+        //     if (selectedValue === "Side") {
+        //         // Add only Slide
+        //         $subTypeDropdown.append($('<option>', { value: "Slide", text: "Slide" }));
+        //         $("#divDoorSideLocation").show(); // Show Side Location dropdown
+        //     }
+        // }
+        //Category drp change event
+        $("#Category").change(function () {
+            var selectedValue = $(this).val();
+
+            if (selectedValue == "1") {
+                $("#divSubTypeOfDraft").show();
+                $("#divDraftType").show();
+
+            }
+            else  {
+                $("#divSubTypeOfDraft").hide();
+                $("#divDraftType").hide();
+            }
+        });
+
+        var allSubOptions = $("#SubtypeofDraft option").clone();
+
+        $("#DraftType").change(function () {
+            var selectedDraft = $(this).val();
+
+            // Clear existing options and add default placeholder
+            $("#SubtypeofDraft").empty().append('<option value="">--Select--</option>');
+
+            if (selectedDraft === "1") { // Side Draft
+                // Append only the first 3 options (values 1 to 3)
+                allSubOptions.filter(function () {
+                    var val = $(this).val();
+                    return val === "1" || val === "2" || val === "3";
+                }).appendTo("#SubtypeofDraft");
+            }
+            else if (selectedDraft === "2") { // Down Draft
+
+                allSubOptions.filter(function () {
+                    var val = $(this).val();
+                    return val === "4" || val === "5" || val === "6" || val === "7";
+                }).appendTo("#SubtypeofDraft");
+            }
+            else if (selectedDraft === "3") { //Semi Down Draft
+
+                allSubOptions.filter(function () {
+                    var val = $(this).val();
+                    return val === "8" || val === "9";
+                }).appendTo("#SubtypeofDraft");
+            }
+
+        });
+        //code for when Painbooth type is open then hide component entry div
+        function toggleComponentEntryVisibility() {
+            var selectedValue = $('#SubtypeofDraft').val();
+            if (selectedValue === "1") {
+                $('#DivComponentEntryAndDoorTypes').hide();
+            } 
+            else {
+                $('#DivComponentEntryAndDoorTypes').show();
+            }
+            if(selectedValue === "3")
+            {
+                $('#divPlenumHeight').show();
+            }
+             else {
+                   $('#divPlenumHeight').hide();
+                 }
+            
+        }
+
+        // Initial call in case form is pre-filled
+        toggleComponentEntryVisibility();
+
+        // Bind the change event
+        $('#SubtypeofDraft').change(function () {
+            toggleComponentEntryVisibility();
+        });
+
+         calculateSurfaceArea();
         // Trigger toggle on page load and when dropdown value changes
         toggleComponentHandling(); // Check on page load
         $('#drpCpmonenthandling').change(function () {
@@ -484,34 +779,11 @@
                 $('.paint').hide();
             }
         });
-        $('input[name="Consumption"]').change(function () {
-            var selectedValue = $(this).val();
-            var $categoryDropdown = $('#Category');
-
-            // Clear existing options
-            $categoryDropdown.empty();
-
-            // Add options based on selected radio button
-            if (selectedValue === "Powder") {
-                $categoryDropdown.append(new Option("Dry Paint Booth", "1"));
-            } else if (selectedValue === "Paint") {
-                $categoryDropdown.append(new Option("Dry Paint Booth", "1"));
-                $categoryDropdown.append(new Option("Wet Paint Booth", "2"));
-            }
-
-            // Optionally reset the dropdown to default
-            $categoryDropdown.val('');
-        });
-
-        $('#txtpaint').on('input', function () {
-            var paintValue = parseInt($(this).val());
-            if (paintValue < 20) {
-                $('#Category').val('1');
-            } else {
-                $('#Category').val('2');
-            }
-        });
-
+        
+         $("#txtLengthSize, #txtWidthSize, #txtHeightSize, #txtDiameter, #txtHeightSizeCircular").on("input", function () {
+        calculateSurfaceArea();
+    });
+    //company details fetch code 
         $(document).ready(function () {
             $('#txtcname').on('input', function () {
                 var query = $(this).val();
@@ -571,24 +843,6 @@
                 }
             });
 
-            // $('#drpShape').change(function () {
-            //     var selectedShape = $(this).val();
-            //     console.log("selected Shape", selectedShape);
-            //     if (selectedShape == "Rectangular") {
-            //         $('#rectangular-section').show();
-            //         $('#circular-section').hide();
-            //     } else if (selectedShape == "Circular") {
-            //         $('#circular-section').show();
-            //         $('#rectangular-section').hide();
-            //     } else {
-            //         $('#rectangular-section').hide();
-            //         $('#circular-section').hide();
-            //     }                
-            //     $('#drpOrientation').trigger('change');
-            // });
-
-            // Orientation dropdown change event
-
             $('#drpShape').change(function () {
                 var selectedShape = $(this).val();
                 console.log("Selected Shape:", selectedShape);
@@ -600,7 +854,11 @@
                     // Show Horizontal Rectangle image by default
                     $('#Horizontalrectangle').show();
                     $('#Horizontalrectangle img').attr('src', '@Url.Content("~/img/Rectangular.PNG")');
-                    $('#drpOrientation').val('Horizontal').change(); // Set dropdown to Horizontal
+                  /*   $('#drpOrientation').val('Horizontal').change(); */ // Set dropdown to Horizontal
+                      // Only set default Horizontal if dropdown has no value (new entry case)
+                    if (!$('#drpOrientation').val()) {
+                        $('#drpOrientation').val('Horizontal').change();
+                    }
 
                 } else if (selectedShape == "Circular") {
                     $('#circular-section').show();
@@ -615,6 +873,7 @@
                 // Trigger change event on Orientation dropdown to update image
                 $('#drpOrientation').trigger('change');
             });
+            //dropdown orientation change
             $('#drpOrientation').change(function () {
                 var selectedShape = $('#drpShape').val();
                 var selectedOrientation = $(this).val();
@@ -638,57 +897,11 @@
                         $('#HorizonatalCircle').show();
                     }
                 }
-            });           
+            });
             $('#drpShape').trigger('change');
         });
 
-    });//end ready function
-
-    // let uploadedFiles = [];
-
-    // function handleFileUpload() {
-    //     const fileInput = $('#imageFileInput')[0];
-    //     uploadedFiles = Array.from(fileInput.files);
-
-    //     if (uploadedFiles.length > 0) {
-    //         // Enable the "Show Uploaded Files" button
-    //         $('#showFilesButton').prop('disabled', false);
-    //     } else {
-    //         // Disable the button if no files are uploaded
-    //         $('#showFilesButton').prop('disabled', true);
-    //     }
-
-    //     showUploadedFiles(); // Show the uploaded files in the modal
-    // }
-
-    // function showUploadedFiles() {
-    //     const fileList = $('#uploadedFilesList');
-    //     fileList.empty();
-    //     $.each(uploadedFiles, function (index, file) {
-    //         const listItem = $('<li></li>');
-
-    //         // Create a link for the file name that enables download
-    //         const fileLink = $('<a></a>')
-    //             .attr('href', URL.createObjectURL(file))
-    //             .attr('download', file.name)
-    //             .text(file.name);
-
-    //         listItem.append(fileLink);
-    //         fileList.append(listItem);
-    //     });
-    // }
-
-    // function downloadAllFiles() {
-    //     $.each(uploadedFiles, function (index, file) {
-    //         const url = URL.createObjectURL(file);
-    //         const a = $('<a></a>')
-    //             .attr('href', url)
-    //             .attr('download', file.name);
-    //         $('body').append(a);
-    //         a[0].click();
-    //         a.remove();
-    //     });
-    // }
+    });
     let uploadedFiles = [];
 
     // Handle file uploads
@@ -737,7 +950,108 @@
             a.remove();
         });
     }
+    
+    function toggleDropdowns() {
+            var val = $("input[name='Consumption']:checked").val();
 
+            if (val === "Paint") {
+                $("#paintDiv").show();
+                $("#powderDiv").hide();
+            } 
+            else if (val === "Powder") {
+                $("#powderDiv").show();
+                $("#paintDiv").hide();
+            }
+        }
+
+        // Run on page load (works in edit mode)
+        toggleDropdowns();
+
+        // Run when user changes radio button
+        $("input[name='Consumption']").change(function () {
+            toggleDropdowns();
+        });
+
+function toggleDoorOperations() {
+            var selected = $("#drpDoorType").val();
+
+            if (selected === "Manual") {
+                $("#manualOperationDiv").show();
+                $("#motorisedOperationDiv").hide();
+            }
+            else if (selected === "Motorised") {
+                $("#manualOperationDiv").hide();
+                $("#motorisedOperationDiv").show();
+            }
+            else {
+                $("#manualOperationDiv").hide();
+                $("#motorisedOperationDiv").hide();
+            }
+        }
+
+        // Run on page load (useful for Edit Mode)
+        toggleDoorOperations();
+
+        // Run when user changes dropdown
+        $("#drpDoorType").change(function () {
+            toggleDoorOperations();
+        });
+
+
+        function toggleHingedOperations() {
+                var selected = $("#drpManualOperation").val();
+
+                if (selected === "Hinged")
+               {
+                    $("#HingedDoorDiv").show();
+               }
+                else 
+                {
+                    $("#HingedDoorDiv").hide();
+                }
+            
+        }
+
+        // Run on page load (useful for Edit Mode)
+        toggleHingedOperations();
+
+        // Run when user changes dropdown
+            $("#drpManualOperation").change(function () {
+            toggleHingedOperations();
+        });
+
+
+
+
+
+     function calculateSurfaceArea() {
+        var selectedShape = $("#drpShape").val();
+
+        if (selectedShape === "Rectangular") {
+            var depth = parseFloat($("#txtLengthSize").val()) || 0;
+            var width = parseFloat($("#txtWidthSize").val()) || 0;
+            var height = parseFloat($("#txtHeightSize").val()) || 0;
+
+            // Calculate surface area for a rectangular box
+            var surfaceArea = 2 * (depth * width + depth * height + width * height);
+            console.log("surfaceArea",surfaceArea);
+            var surface= surfaceArea/1000000;
+            console.log("surface",surface);
+
+            $("#txtsurfacearea").val(surface.toFixed(2));
+        } 
+        else if (selectedShape === "Circular") {
+            var diameter = parseFloat($("#txtDiameter").val()) || 0;
+            var radius = diameter / 2;
+            var height = parseFloat($("#txtHeightSizeCircular").val()) || 0;
+
+            // Calculate surface area for a circular box (2πr² + 2πrh)
+            var surfaceAreaCircle = 2 * Math.PI * radius/1000 * radius/1000 ;
+            var surfaceAreaCylinder = 2 * Math.PI * radius/1000 * height/1000;
+            var surfaceArea = surfaceAreaCircle + surfaceAreaCylinder;
+            $("#txtsurfacearea").val(surfaceArea.toFixed(2));
+        }
+    }
 </script>
 
 

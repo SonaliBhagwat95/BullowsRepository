@@ -35,27 +35,7 @@
             }
 </style>
 <script>
-    // function filterGrid() {
-    //     var originalTable = document.getElementById("originalTable");
-    //     var filteredTable = document.getElementById("filteredTable");
-    //     var tbody = filteredTable.getElementsByTagName("tbody")[0];
-    //     tbody.innerHTML = ""; // Clear the filtered table
-
-    //     var rows = originalTable.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
-    //     for (var i = 0; i < rows.length; i++) {
-    //         var panelPosition = rows[i].getElementsByClassName("panel-position")[0].innerText;
-    //         if (panelPosition === "BaseStructureFrame" || panelPosition === "TopStructureFrame") {
-    //             var clonedRow = rows[i].cloneNode(true);
-    //             tbody.appendChild(clonedRow);
-    //         }
-    //     }
-    // }
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     document.getElementById("searchbtn").addEventListener("click", function () {
-    //         // Perform your search logic here and update the original table
-    //         filterGrid(); // Call the filter function after updating the original table
-    //     });
-    // });
+   
     function filterGrid() {
         var originalTable = document.getElementById("originalTable");
         var filteredTable = document.getElementById("filteredTable");
@@ -95,6 +75,7 @@
             @Html.TextBoxFor(c=>c.EnquiryCode, new { @id = "txtEnquiryID", @class = "form-control smaller-font smaller-height", style = "width:120px;" }) 
             <div id="resultsContainer" class="results-container" style="display:none;"></div>
         </div>     
+        
         <div class="col-md-2" style="padding-top:10px">
             <div></div>
             <button type="button" id="searchbtn" class="btn btn-primary rounded-pill" style="width:100px;">Search</button>
@@ -131,7 +112,7 @@
                                     <td>@i</td>
                                     <td style="display:none;">@item.EnquiryId</td>
                                     <td class="panel-position">@item.PanelPosition</td>
-                                        <td>@item.EqualPanelWidthForD.ToString("F2")</td>
+                                    <td>@item.StandardPanelWidthForD.ToString("F2")</td>
                                     <td>@item.EqualPanelWidthByH.ToString("F2")</td>
                                     <td>@item.SheetThickness</td>
                                     <td>@item.NoofPanels</td>
@@ -186,10 +167,12 @@
             </div>
         </div>      
     </div>
+    <form asp-action="SaveCostOFFrameAndPanels" asp-controller="Costing" method="post">
 
+    
         <div class="row">
             <div class="col-md-4">
-                <label class="smaller-font">Raw Matrial Weight of Panels</label>
+                <label class="smaller-font">Raw Material Weight of Panels</label>
                 @Html.TextBoxFor(c=>c.RMWeightOfPanels, new { @id = "txtRMWeightOfPanels", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
             </div>
             <div class="col-md-4">
@@ -200,7 +183,7 @@
         <br />
         <div class="row">
             <div class="col-md-4">
-                <label class="smaller-font">Raw Matrial Weight of Frame</label>
+                <label class="smaller-font">Raw Material Weight of Frame</label>
             @Html.TextBoxFor(c => c.TotalWeightOfFrame, new { @id = "txtSpecificPanelWeight", @class = "form-control smaller-font smaller-height", style = "width:120px;",@Value = Model.TotalWeightOfFrame.ToString("F2") })
             </div>
             <div class="col-md-4">
@@ -209,8 +192,9 @@
             </div>
         </div>
        <div class="row" style="padding-top:10px;margin-left:0px;">
-        <button type="button" id="btnNext" class="btn btn-secondary rounded-pill " style="width:100px"> Next</button>
+        <button type="Submit" id="btnNext" class="btn btn-success rounded-pill " style="width:100px"> Save</button>
        </div>
+    </form>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -228,54 +212,8 @@
                 });
             }
         });
-        // $('#searchbtn').click(function () {
-        //     var EnquiryCode = $('#txtEnquiryID').val().trim(); // Trim any whitespace
-        //     $.post('@Url.Action("SearchByEnquiryID", "Costing")', { EnquiryCode: EnquiryCode }, function (result) {
-        //         $('.divCosting').html($(result).find('.divCosting').html());
-        //     }).fail(function () {
-        //         $('.divCosting').html('<div>Error occurred while processing the request.</div>');
-        //     });
-        // });
-
-        // function bindEvents() {
-        //     $('#txtEnquiryID').on('keyup', function () {
-        //         var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase
-        //         if (enquiryCode.length > 0) {
-        //             $.ajax({
-        //                 url: '@Url.Action("SearchEnquiryCode", "Costing")',
-        //                 type: 'POST',
-        //                 data: { enquiryCode: enquiryCode },
-        //                 success: function (data) {
-        //                     $('#resultsContainer').empty();
-        //                     console.log(data); // Log data for debugging
-        //                     if (data.success && data.results.length > 0) {
-        //                         data.results.forEach(function (item) {
-        //                             $('#resultsContainer').append('<div>' + item + '</div>');
-        //                         });
-        //                     } else {
-        //                         $('#resultsContainer').append('<div>Enquiry Code does not Available</div>');
-        //                     }
-        //                 },
-        //                 error: function () {
-        //                     $('#resultsContainer').empty();
-        //                     $('#resultsContainer').append('<div>Error occurred while searching.</div>');
-        //                 }
-        //             });
-        //         } else {
-        //             $('#resultsContainer').empty();
-        //         }
-        //     });
-
-        //     $(document).on('click', '#resultsContainer div', function () {
-        //         var selectedCode = $(this).text();
-        //         $('#txtEnquiryID').val(selectedCode);
-        //         $('#resultsContainer').empty();
-        //     });
-
-        //     $(document).on('click', '#btnNext', function () {
-        //         window.location.href = '@Url.Action("BOCalculations", "Costing")';
-        //     });
-        // }
+       
+      
 
         // Initial event binding
         function bindEvents() {
@@ -314,9 +252,19 @@
                 $('#resultsContainer').empty().hide(); // Hide container after selection
             });
 
-            $(document).on('click', '#btnNext', function () {
-                window.location.href = '@Url.Action("BOCalculations", "Costing")';
-            });
+            // $(document).on('click', '#btnNext', function () {
+            //     // window.location.href = '@Url.Action("BOCalculations", "Costing")';
+            //     // Get values from the textboxes
+            //     var totalPriceOfFrame = $('#TotalPriceofFrame').val();
+            //     var totalPriceOfPanels = $('#txtTotalPrice').val();
+            //     var enquiryCode = $('#txtEnquiryID').val();
+
+            //     // Redirect with query string parameters
+            //     window.location.href = '@Url.Action("BOCalculations", "Costing")' +
+            //         '?totalPriceOfFrame=' + encodeURIComponent(totalPriceOfFrame) +
+            //         '&totalPriceOfPanels=' + encodeURIComponent(totalPriceOfPanels)+
+            //         '&enquiryCode=' + encodeURIComponent(enquiryCode);
+            // });
         }
 
         bindEvents();

@@ -11,6 +11,7 @@ namespace Bullows.Model
     public class PaintBoothModel
     {
         public List<SettingModel> Settings { get; set; }
+        public string BendType { get; set; }
         public int EnquiryId { get; set; }
         public string SalesNO { get; set; }
         public int? MotorCatalogID { get; set; }
@@ -68,8 +69,8 @@ namespace Bullows.Model
         public double CapacityofBlowerAfterRoundOup { get; set; }
         public int StandardPanels { get; set; }
         public int RemainingPanels { get; set; }
-        public bool MakeItEqual { get; set; }
-        public double EqualPanelWidthForD { get; set; }
+   
+       
         [Required(ErrorMessage = "*")]
         [Range(0.1, double.MaxValue, ErrorMessage = "Water Column must be greater than zero")]
         public double WaterColumn { get; set; }
@@ -101,14 +102,25 @@ namespace Bullows.Model
         public string BlowerOrientation { get; set; }
         public List<PaintBoothModel> DetailsList { get; set; } = new List<PaintBoothModel>();
         public int FilterHeight { get; set; }
-        public double ExhaustLength { get; set; }
+        public double ExhaustDuctHeight { get; set; } 
         public double ExhaustWidth { get; set; }
-        public double ExhaustThickness { get; set; }
-
+        [Required(ErrorMessage = "*")]
+        public double ExhaustThickness { get; set; } = 2;
+        public double PanelWidth { get; set; }
+        public double PanelHeight { get; set; }
+        public double PanelLength { get; set; }
         public string ExhaustDucting { get; set; }
         public string BendDucting { get; set; }
         public double DuctLength { get; set; }
+        public double DuctWeight { get; set; }
+        public double BendWeight { get; set; }
         public IEnumerable<PressureDrop> pressureDropDetails { get; set; }
+        public List<ExhaustDuctingModel> ExhaustDuctingList { get; set; }
+       
+        public string ExhaustDuctingListJson { get; set; } // Serialized JSON list
+
+        public double CChannelHeight { get; set; }
+        public string MotorTypes { get; set; }
     }
 
     public class PressureDrop
@@ -116,5 +128,16 @@ namespace Bullows.Model
         public int ItemNumber { get; set; }
         public string Description { get; set; }
         public decimal PressureDrop_mm { get; set; }
+    }
+
+    public class ExhaustDuctingModel
+    {
+        public string BendType { get; set; }
+        public int? DuctLength { get; set; } // Nullable because not all bend types need a length
+        public decimal DuctWidth { get; set; }
+        public decimal DuctHeight { get; set; }
+        public decimal DuctThickness { get; set; }
+        public decimal DuctWeight { get; set; }
+
     }
 }

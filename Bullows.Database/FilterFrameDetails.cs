@@ -17,5 +17,7 @@ namespace Bullows.Database
         public int EnquiryID { get; set; }
         public string SalesNO { get; set; }
         public bool IsDeleted { get; set; }
+        public decimal FrameWeight { get; set; }
+        
     }
 }

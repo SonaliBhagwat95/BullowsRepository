@@ -13,7 +13,7 @@ namespace Bullows.Controllers
     {
         private readonly UnitOfWorks _uow;
         private readonly ISession Session;
-
+     
         public LogOnController(IUnitOfWork uow, IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
             this._uow = uow as UnitOfWorks;
@@ -31,9 +31,10 @@ namespace Bullows.Controllers
         [HttpPost]
         public JsonResult Index(LoginModel loginModel, string returnUrl)
         {
-
+           
             try
             {
+                
                 UserModel model = this._uow.userRepository.ValidateUser(loginModel.LoginId, loginModel.Password);
                 if (model == null)
                 {
@@ -75,12 +76,13 @@ namespace Bullows.Controllers
 
                     this.Session.SetInt32("UserId", model.EmpId);
                     this.Session.SetString("UserName", model.FullName);
-                    this.Session.SetString("UserRoleId", model.UserRoleID.ToString());
+                    this.Session.SetInt32("UserRoleId", model.UserRoleID);
                     return Json(new { Result = true });
                 }
             }
             catch (Exception ex)
             {
+                _uow.exceptionHandlerRepository.SaveException("LogOnController", "Index", ex.Message);
                 return Json(new { Result = false, Message = ex.Message });
             }
 

@@ -7,8 +7,6 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-
 <style>
     .smaller-font, .smaller-font input {
         font-size: smaller;
@@ -32,9 +30,13 @@
             cursor: pointer;
         }
 
-        #resultsContainer div:hover {
-            background-color: #eaeaea;
-        } 
+            #resultsContainer div:hover {
+                background-color: #eaeaea;
+            }
+
+    .input-error {
+        border-color: red !important;
+    }
 </style>
 
 <div class="divPaintBooth" style="margin-left:20px;">
@@ -46,7 +48,7 @@
                         <div class="row">
                             <div class="col-md-3 ">
                                 <label class="smaller-font">Enquiry Code</label>
-                                @Html.TextBoxFor(c=>c.SalesNO, new { @id = "txtEnquiryCode", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+                                @Html.TextBoxFor(c => c.SalesNO, new { @id = "txtEnquiryCode", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 <div id="resultsContainer" class="results-container" style="display: none;"></div>
                             </div>
                             <div class="col-md-2" style="padding-top:15px;">
@@ -54,10 +56,10 @@
                             </div>
                             <div class="col-md-2" style="padding-top:15px;margin-left:20px;">
                                 <button type="button" id="showSettingDetails" class="btn btn-success rounded-pill" style="width:100px;" disabled>Setting</button>
-                            </div> 
+                            </div>
                         </div>
                         <hr />
-                         <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -69,27 +71,24 @@
                                     <div class="modal-body" id="modalContent">
                                         <!-- Randomized data will be dynamically injected here -->
                                     </div>
-                                    @* <div class="modal-footer">
-                                        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
-                                    </div> *@
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div id="divComponantsdetails">
                             <h6>Components Details</h6>
                             <div class="row">
                                 <div class="col-md-3">
-                                    <label class="smaller-font">Length</label>
-                                    @Html.TextBoxFor(c =>c.Depth,new{@id="txtlenght",@class="form-control smaller-font smaller-height",style= "width:120px;" ,@readonly="readonly"})
+                                    <label class="smaller-font">Depth</label>
+                                    @Html.TextBoxFor(c => c.Depth, new { @id = "txtlenght", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                                 </div>
 
                                 <div class="col-md-3">
                                     <label class="smaller-font">Width</label>
-                                    @Html.TextBoxFor(c => c.Width, new { @id = "txtwidth", @class = "form-control  smaller-font smaller-height", style = "width:120px;",@readonly="readonly" })
+                                    @Html.TextBoxFor(c => c.Width, new { @id = "txtwidth", @class = "form-control  smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                                 </div>
                                 <div class="col-md-3">
                                     <label class="smaller-font">Height</label>
-                                    @Html.TextBoxFor(c => c.Height, new { @id = "txtheight", @class = "form-control smaller-font smaller-height", style = "width:120px;",@readonly="readonly" })
+                                    @Html.TextBoxFor(c => c.Height, new { @id = "txtheight", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                                 </div>
                             </div>
                             <hr />
@@ -97,259 +96,98 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="smaller-font">D1</label>
-                                    @Html.TextBoxFor(c=>c.D1,new{@id="txtD1",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.D1, new { @id = "txtD1", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                                 <div class="col-md-3">
                                     <label class="smaller-font">D2</label>
-                                    @Html.TextBoxFor(c=>c.D2,new{@id="txtD2",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.D2, new { @id = "txtD2", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                                 <div class="col-md-3">
                                     <label class="smaller-font">D3</label>
-                                    @Html.TextBoxFor(c=>c.D3,new{@id="txtD3",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.D3, new { @id = "txtD3", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="smaller-font">W1</label>
-                                    @Html.TextBoxFor(c=>c.W1,new{@id="txtw1",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.W1, new { @id = "txtw1", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                                 <div class="col-md-3">
                                     <label class="smaller-font">W2</label>
-                                    @Html.TextBoxFor(c=>c.W2,new{@id="txtw2",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.W2, new { @id = "txtw2", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                                 <div class="col-md-3">
                                     <label class="smaller-font">W3</label>
-                                    @Html.TextBoxFor(c=>c.W3,new{@id="txtw3",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.W3, new { @id = "txtw3", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="smaller-font">H1</label>
-                                    @Html.TextBoxFor(c=>c.H1,new{@id="txtH1",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.H1, new { @id = "txtH1", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                                 <div class="col-md-3">
                                     <label class="smaller-font">H2</label>
-                                    @Html.TextBoxFor(c=>c.H2,new{@id="txtH2",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.H2, new { @id = "txtH2", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="smaller-font">Depth(mm)</label>
-                                    @Html.TextBoxFor(c=>c.D,new{@id="txtD",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.D, new { @id = "txtD", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
-                                @*  new code for adding standard and nonstandard panels *@
-
                                 <div class="col-md-3">
-                                    <label for="CategoryDropdown" class="smaller-font">Panel Type:</label>
-                                    @Html.DropDownListFor(c => c.PanelTypes, new List<SelectListItem>{ new SelectListItem {Text = "Standard Panel", Value="1"},
-                                    new SelectListItem {Text = "Non-Standard Panel", Value="2"},
-                                    }, "--Select--",
-                                    new { @id = "drpPaneltype", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                    <label class="smaller-font">Standard Panels</label>
+                                    @Html.TextBoxFor(c => c.StandardPanels, new { @id = "txtstandardPanels", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                                 </div>
-
-                                <div class="col-md-3" id="txtstandardPanelDropdown" style="display:none;">
-                                    <label for="CategoryDropdown" class="smaller-font">Panel Size:</label>
-                                    @Html.DropDownListFor(c=>c.PanelsizeforD, new List<SelectListItem>
-                                    {
-                                    new SelectListItem { Text = "1",   Value = "1" },
-                                    new SelectListItem { Text = "1.5", Value = "2" }, // Keep the text as value
-                                    new SelectListItem { Text = "2",   Value = "3" },
-                                    new SelectListItem { Text = "2.5", Value = "4" },
-                                    new SelectListItem { Text = "3",   Value = "5" },
-                                    new SelectListItem { Text = "3.5", Value = "6" },
-                                    new SelectListItem { Text = "4",   Value = "7" },
-                                    new SelectListItem { Text = "4.5", Value = "8" },
-                                    new SelectListItem { Text = "5",   Value = "9" },
-                                    new SelectListItem { Text = "5.5", Value = "10" },
-                                    new SelectListItem { Text = "6",   Value = "11" },
-                                    new SelectListItem { Text = "6.5", Value = "12" },
-                                    new SelectListItem { Text = "7",   Value = "13" },
-                                    new SelectListItem { Text = "7.5", Value = "14" },
-                                    }, "--Select--",
-                                    new { id = "panelSizeDropdown", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                                  
+                                <div class="col-md-3">
+                                    <label class="smaller-font">Remaining Panels</label>
+                                    @Html.TextBoxFor(c => c.RemainingPanels, new { @id = "txtremaingPanels", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                                 </div>
-                                <div class="col-md-3" id="divStandardSize">
-                                    <label class="smaller-font">Standard Size</label>
-                                    @Html.TextBoxFor(c=>c.StandardPanelWidthForD , new { id = "txt2panelsize", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
-                                </div>
-                                <br />
-                                <div class="col-md-3" id="divHalfSize">
-                                    <label class="smaller-font">Half Panel Size</label>
-                                    @Html.TextBoxFor(c=>c.HalfPanelswidthforD, new {id = "txthalfpanelsize", @class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <br />
-                                <div class="row" id="NonStandardPanel">
-                                    <div class="col-md-3">
-                                        <label class="smaller-font">Standard Panels</label>
-                                        @Html.TextBoxFor(c=>c.StandardPanels,new{@id="txtstandardPanels",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="smaller-font">Remaining Panels</label>
-                                        @Html.TextBoxFor(c=>c.RemainingPanels,new{@id="txtremaingPanels",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                    </div>
-                                    @* <div class="col-md-3">
-                                        <lable class="smaller-font">Make it equal panels</lable>
-                                        @Html.CheckBoxFor(c => c.MakeItEqual, new { @id = "chkMakeItEqual" })
-                                    </div> *@
-                                </div>
-
                             </div> <br />
-                            <div class="row" id="equalPanelsDiv">
-                                <div class="col-md-3">
-                                    <lable class="smaller-font">Equal P.W</lable>
-                                    @Html.TextBoxFor(c=>c.EqualPanelWidthForD,new{@id="txtEqualPanels",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <div class="col-md-3">
-                                    <lable class="smaller-font">Total Panels</lable>
-                                    @Html.TextBoxFor(c=>c.TotalPanels,new{@id="txtTotalpanels",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                            </div>
-                            <br />
+
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="smaller-font">Width(mm)</label>
-                                    @Html.TextBoxFor(c=>c.W,new{@id="txtw",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.W, new { @id = "txtw", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="smaller-font">Panel Type:</label>
-                                    @Html.DropDownListFor(c => c.PanelTypesforW, new List<SelectListItem>{ new SelectListItem {Text = "Standard Panel", Value="1"},
-                                    new SelectListItem {Text = "Non-Standard Panel", Value="2"},
-                                    }, "--Select--",
-                                    new { @id = "drpPaneltypeforW", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                                </div>
-
-                                <div class="col-md-3" id="txtstandardPanelDropdownByW">
-                                    <label for="CategoryDropdown" class="smaller-font">Panel Size:</label>
-                                    @Html.DropDownListFor(c=>c.PanelsizeforW, new List<SelectListItem>
-                                    {
-                                    new SelectListItem { Text = "1", Value = "1" },
-                                    new SelectListItem { Text = "1.5", Value = "2" },
-                                    new SelectListItem { Text = "2", Value = "3" },
-                                    new SelectListItem { Text = "2.5", Value = "4" },
-                                    new SelectListItem { Text = "3", Value = "5" },
-                                    new SelectListItem { Text = "3.5", Value = "6" },
-                                    new SelectListItem { Text = "4", Value = "7" },
-                                    new SelectListItem { Text = "4.5", Value = "8" },
-                                    new SelectListItem { Text = "5", Value = "9" },
-                                    new SelectListItem { Text = "5.5", Value = "10" },
-                                    new SelectListItem { Text = "6", Value = "11" },
-                                    new SelectListItem { Text = "6.5", Value = "12" },
-                                    new SelectListItem { Text = "7", Value = "13" },
-                                    new SelectListItem { Text = "7.5", Value = "14" },
-                                    }, "--Select--",
-                                    new { id = "panelSizeDropdownforW", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                                </div>
-                                <div class="col-md-3" id="divStandardSizeforW">
-                                    <label class="smaller-font">Standard Size</label>
-                                    @Html.TextBoxFor(c=>c.PanelHeightforW, new { id = "txt2panelsizeforW", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
-                                </div>
-                                <br />
-                                <div class="col-md-3" id="divHalfSizeforW">
-                                    <label class="smaller-font">Half Panel Size</label>
-                                    @Html.TextBoxFor(c=>c.HalfPanelsHeightforW, new {id = "txthalfpanelsizeforW", @class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <br />
-                                <div class="row" id="NonStandardPanelforW">                               
-                                <div class="col-md-3" id="divStandardPanels">
-                                    <label class="smaller-font">Standard Panels</label>
-                                    @Html.TextBoxFor(c=>c.StandardPanelsByW,new{@id="txtstandardPanelsByW",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <div class="col-md-3" id="divRemainingPanels">
-                                    <label class="smaller-font">Remaining Panels</label>
-                                    @Html.TextBoxFor(c=>c.RemainingPanelsByW,new{@id="txtremaingPanelsByW",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                               @*  <div class="col-md-3" id="divmakeitequal">
-                                    <lable class="smaller-font">Make it equal panels</lable>
-                                    @Html.CheckBoxFor(c => c.MakeItEqualByW, new { @id = "chkMakeItEqualByW" })
-                                </div> *@
-                                </div>
+                            
+                                    <div class="col-md-3" id="divStandardPanels">
+                                        <label class="smaller-font">Standard Panels</label>
+                                    @Html.TextBoxFor(c => c.StandardPanelsByW, new { @id = "txtstandardPanelsByW", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+                                    </div>
+                                    <div class="col-md-3" id="divRemainingPanels">
+                                        <label class="smaller-font">Remaining Panels</label>
+                                    @Html.TextBoxFor(c => c.RemainingPanelsByW, new { @id = "txtremaingPanelsByW", @class = "form-control smaller-font smaller-height", style = "width:120px;" ,@readonly = "readonly" })
+                                    </div>
+                            
                             </div>
                             <br />
-                            <div class="row" id="equalPanelsDivByW">
-                                <div class="col-md-3">
-                                    <lable class="smaller-font">Equal P.W(w)</lable>
-                                    @Html.TextBoxFor(c=>c.EqualPanelWidthByW,new{@id="txtEqualPanelsByW",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <div class="col-md-3">
-                                    <lable class="smaller-font">Total Panels(w)</lable>
-                                    @Html.TextBoxFor(c=>c.TotalPanelsByW,new{@id="txtTotalpanelsByW",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="smaller-font">Height(mm)</label>
-                                    @Html.TextBoxFor(c=>c.H,new{@id="txtH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.H, new { @id = "txtH", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="smaller-font">Panel Type:</label>
-                                    @Html.DropDownListFor(c => c.PanelTypesforH, new List<SelectListItem>{ new SelectListItem {Text = "Standard Panel", Value="1"},
-                                    new SelectListItem {Text = "Non-Standard Panel", Value="2"},
-                                    }, "--Select--",
-                                    new { @id = "drpPaneltypeforH", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                                </div>
-
-                                <div class="col-md-3" id="txtstandardPanelDropdownByH" style="display:none;">
-                                    <label class="smaller-font">Panel Size:</label>
-                                    @Html.DropDownListFor(c=>c.PanelsizeforH, new List<SelectListItem>
-                                    {
-                                    new SelectListItem { Text = "1", Value = "1" },
-                                    new SelectListItem { Text = "1.5", Value = "2" },
-                                    new SelectListItem { Text = "2", Value = "3" },
-                                    new SelectListItem { Text = "2.5", Value = "4" },
-                                    new SelectListItem { Text = "3", Value = "5" },
-                                    new SelectListItem { Text = "3.5", Value = "6" },
-                                    new SelectListItem { Text = "4", Value = "7" },
-                                    new SelectListItem { Text = "4.5", Value = "8" },
-                                    new SelectListItem { Text = "5", Value = "9" },
-                                    new SelectListItem { Text = "5.5", Value = "10" },
-                                    new SelectListItem { Text = "6", Value = "11" },
-                                    new SelectListItem { Text = "6.5", Value = "12" },
-                                    new SelectListItem { Text = "7", Value = "13" },
-                                    new SelectListItem { Text = "7.5", Value = "14" },
-                                    }, "--Select--",
-                                    new { id = "panelSizeDropdownforH", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                                </div>
-                                <div class="col-md-3" id="divStandardSizeforH">
-                                    <label class="smaller-font">Standard Size</label>
-                                    @Html.TextBoxFor(c=>c.PanelHeightforH, new { id = "txt2panelsizeforH", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
-                                </div>
-                                <br />
-                                <div class="col-md-3" id="divHalfSizeforH">
-                                    <label class="smaller-font">Half Panel Size</label>
-                                    @Html.TextBoxFor(c=>c.HalfPanelsHeightforH, new {id = "txthalfpanelsizeforH", @class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <br />
-                                <div class="row" id="NonStandardPanelforH">
                                     <div class="col-md-3" id="divStandardPanelsH">
                                         <label class="smaller-font">Standard Panels</label>
-                                        @Html.TextBoxFor(c=>c.StandardPanelsByH,new{@id="txtstandardPanelsByH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.StandardPanelsByH, new { @id = "txtstandardPanelsByH", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                                     </div>
                                     <div class="col-md-3" id="divRemainingPanelsH">
                                         <label class="smaller-font">Remaining Panels</label>
-                                        @Html.TextBoxFor(c=>c.RemainingPanelsByH,new{@id="txtremaingPanelsByH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                                    @Html.TextBoxFor(c => c.RemainingPanelsByH, new { @id = "txtremaingPanelsByH", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+                                   
                                     </div>
-                                    @* <div class="col-md-3" id="divmakeitequalH">
-                                        <lable class="smaller-font">Make it equal panels</lable>
-                                        @Html.CheckBoxFor(c => c.MakeItEqualByH, new { @id = "chkMakeItEqualByH" })
-                                    </div> *@
-                                </div>
-                                
+                                    <div class="col-md-3">
+                                    <span id="remainingHeightError" class="text-danger smaller-font" style="display:none;">
+                                        Remaining height should be at least 300 mm or set to 0.
+                                    </span>
+                                    </div>
+
                             </div>
-                            @*    <br /> *@
-                            <div class="row" id="equalPanelsDivByH">
-                                <div class="col-md-3">
-                                    <lable class="smaller-font">Equal P.W(H)</lable>
-                                    @Html.TextBoxFor(c=>c.EqualPanelWidthByH,new{@id="txtEqualPanelsByH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                                <div class="col-md-3">
-                                    <lable class="smaller-font">Total Panels(H)</lable>
-                                    @Html.TextBoxFor(c=>c.TotalPanelsByH,new{@id="txtTotalpanelsByH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                                </div>
-                            </div>
+                           
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -374,14 +212,13 @@
                         }, "--Select--", new { @id = "drpServiceDoorLocation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                         @Html.ValidationMessageFor(c => c.ServiceDoorLocation, "", new { @class = "text-danger" })
                     </div>
-
                     <div class="col-md-3" id="iddivServiceDoor">
                         <lable class="smaller-font"> Service Door Height(mm)</lable>
-                        @Html.TextBoxFor(c=>c.DoorHeight,new{@id="txtDoorHeight",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.DoorHeight, new { @id = "txtDoorHeight", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-3" id="iddivServiceDoor">
                         <lable class="smaller-font">Service Door Width(mm)</lable>
-                        @Html.TextBoxFor(c=>c.DoorWidth,new{@id="txtDoorWidth",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.DoorWidth, new { @id = "txtDoorWidth", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
 
                 </div>
@@ -392,19 +229,19 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label class="smaller-font">C/S Area (sq m)</label>
-                        @Html.TextBoxFor(c=>c.CrossSectionalArea,new{@id="txtCrossSectionalArea",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.CrossSectionalArea, new { @id = "txtCrossSectionalArea", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font">Velocity(Blower)(m/s)</label>
-                        @Html.TextBoxFor(c=>c.VelocityofBlower,new{@id="txtVelocityofBlower",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.VelocityofBlower, new { @id = "txtVelocityofBlower", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font">Capacity (Cubic m/Sec)</label>
-                        @Html.TextBoxFor(c=>c.CapacityofBlower,new{@id="txtCapacityofBlower",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.CapacityofBlower, new { @id = "txtCapacityofBlower", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font">Capacity (Cubic m/Hr)</label>
-                        @Html.TextBoxFor(c=>c.CapacityofBlowerinH,new{@id="txtCapacityofBlowerinH",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.CapacityofBlowerinH, new { @id = "txtCapacityofBlowerinH", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                 </div>
                 <hr />
@@ -412,60 +249,78 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label class="smaller-font">Capacity (Cubic m/Hr)</label>
-                        @Html.TextBoxFor(c=>c.CapacityofBlowerinH,new{@id="txtCapacityofBlowerinHReadonly",@class="form-control smaller-font smaller-height", style = "width:120px;",@readonly="readonly"})
+                        @Html.TextBoxFor(c => c.CapacityofBlowerinH, new { @id = "txtCapacityofBlowerinHReadonly", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font"> Rounding Up Capacity</label>
-                        @Html.TextBoxFor(c=>c.CapacityofBlowerRoundOf,new{@id="txtCapacityofBlowerRoundOf",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.CapacityofBlowerRoundOf, new { @id = "txtCapacityofBlowerRoundOf", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font">Capacity of Blower(Cubic m/Sec)</label>
-                        @Html.TextBoxFor(c=>c.CapacityofBlowerAfterRoundOup,new{@id="txtCapacityofBlowerRoundOfmpersec",@class="form-control smaller-font smaller-height", style = "width:120px;" ,@readonly="readonly"})
+                        @Html.TextBoxFor(c => c.CapacityofBlowerAfterRoundOup, new { @id = "txtCapacityofBlowerRoundOfmpersec", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
                     </div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-md-3">
                         <label class="smaller-font">Velocity(Filter Frame)(m/s)</label>
-                        @Html.TextBoxFor(c=>c.VelocityofFilterFrame,new{@id="txtVelocityofFilterFrame",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.VelocityofFilterFrame, new { @id = "txtVelocityofFilterFrame", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font">Filter Area (sq m)</label>
-                        @Html.TextBoxFor(c=>c.FilterArea,new{@id="txtFilterArea",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.FilterArea, new { @id = "txtFilterArea", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                 </div>
                 <hr />
                 <h6>Exhaust Ducting Details</h6>
-                <div class="row">                  
-                    <div class="col-md-2">
-                        <lable class="smaller-font">Exhaust Length</lable>
-                        @Html.TextBoxFor(c=>c.ExhaustLength,new {@id="txtexhaustlength",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                <div class="row">
+                    <div class="col-md-3">
+                        <lable class="smaller-font">Exhaust Duct Height(mm)</lable>
+                        @Html.TextBoxFor(c => c.ExhaustDuctHeight, new { @id = "txtexhaustheight", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
-                    <div class="col-md-2">
-                        <lable class="smaller-font">Exhaust Width</lable>
-                        @Html.TextBoxFor(c=>c.ExhaustWidth,new {@id="txtExhaustWidth",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                    <div class="col-md-3">
+                        <lable class="smaller-font">Exhaust Duct Width(mm)</lable>
+                        @Html.TextBoxFor(c => c.ExhaustWidth, new { @id = "txtExhaustWidth", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
-                    <div class="col-md-2">
-                        <lable class="smaller-font">Exhaust Thickness</lable>
-                        @Html.TextBoxFor(c=>c.ExhaustThickness ,new {@id="txtExhaustThickness",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                    <div class="col-md-3">
+                        <lable class="smaller-font">Exhaust Duct Thickness(mm)</lable>
+                        @Html.TextBoxFor(c => c.ExhaustThickness, new { @id = "txtExhaustThickness", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
+                        @Html.ValidationMessageFor(c => c.ExhaustThickness, "", new { @class = "text-danger" })
                     </div>
-                </div>
-                <div class="row">                  
+                </div><br />
+                <div class="row">
+
+                    <div class="col-md-2">
+                        <label class="smaller-font">Blower Orientation</label>
+                        @Html.DropDownListFor(c => c.BlowerOrientation, new List<SelectListItem>
+                        {
+                        // new SelectListItem { Text = "0", Value = "0" },
+                        new SelectListItem { Text = "90°", Value ="90" },
+                        // new SelectListItem { Text = "180", Value ="180" },
+                        // new SelectListItem { Text = "270", Value ="270" },
+                        }, new { @id = "drpOrientaionBlower", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+
+                    </div>
                     <div class="col-md-3">
                         <label class="smaller-font"> Ducting Component</label>
-                        <select id="drpBendDucting" class="form-control smaller-font smaller-height" style="width: 130px;">
+                        @Html.DropDownListFor(c => c.ExhaustDucting, new List<SelectListItem>{
+                                                new SelectListItem { Text = "Bend Upwards", Value = "Bend Upwards", Selected = true },
+                        new SelectListItem{Text="Duct",Value="Duct"}
+                        }, "--Select--", new { @id = "drpBendDucting", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+
+                        @* <select id="drpBendDucting" class="form-control smaller-font smaller-height" style="width: 130px;">
                             <option value="">--Select--</option>
                             <option value="Bend Right">Bend Right</option>
                             <option value="Bend Left">Bend Left</option>
                             <option value="Bend Upwards">Bend Upwards</option>
                             <option value="Bend Downwards">Bend Downwards</option>
                             <option value="Duct">Duct</option>
-                        </select>
-                        @Html.ValidationMessageFor(c => c.ExhaustDucting, "", new { @class = "text-danger" })
-                    </div>                   
+                        </select> *@
+                        @*  @Html.ValidationMessageFor(c => c.ExhaustDucting, "", new { @class = "text-danger" }) *@
+                    </div>
                     <div class="col-md-3" id="dicductlength" style="display:none;">
                         <label class="smaller-font">Duct Length(mm)</label>
-                        @Html.TextBoxFor(c=>c.DuctLength,new{@id="txtDuctLength",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.DuctLength, new { @id = "txtDuctLength", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-2">
                         <button type="button" id="btnAdd" class="btn btn-secondary rounded-pill" style="width:100px; margin-top:10px;">Add</button>
@@ -473,20 +328,22 @@
 
 
                 </div>
-                <div class="row" style="margin-top:10px;">               
-                <table class="table table-bordered" id="componentsTable">
-                    <thead>
-                        <tr>
-                            <th>Sr. No</th>
-                            <th>Bend Type</th>
-                            <th>Length</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be added dynamically -->
-                    </tbody>
-                </table>
+                <div class="row" style="margin-top:10px;">
+
+                    <table class="table table-bordered" id="componentsTable">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>Bend Type</th>
+                                <th>Length</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                    <input type="hidden" id="hiddenDuctingList" name="ExhaustDuctingListJson">
                 </div>
                 <h6>Blower Power Calculations</h6>
                 <div class="row">
@@ -512,7 +369,7 @@
                             <tfoot>
                                 <tr>
                                     <td colspan="5" style="text-align: right;">Addition Factor:</td>
-                                    <td><input type="number" id="additionFactor" class="form-control" style="width: 80px; text-align: center;"></td>
+                                    <td><input type="number" value="10" id="additionFactor" class="form-control" style="width: 80px; text-align: center;"></td>
                                 </tr>
                                 <tr>
                                     <td colspan="5" style="text-align: right; font-weight: bold;">Grand Total:</td>
@@ -520,36 +377,23 @@
                                 </tr>
                             </tfoot>
                         </table>
-                    </div><hr/>
-                   
+                    </div><hr />
+
                     <div class="col-md-2">
                         <lable class="smaller-font">Water Column</lable>
                         @Html.ValidationMessageFor(c => c.WaterColumn, "", new { @class = "text-danger" })
-                        @Html.TextBoxFor(c=>c.WaterColumn,new{@id="txtWater",@class="form-control smaller-font smaller-height", style = "width:120px;"})
+                        @Html.TextBoxFor(c => c.WaterColumn, new { @id = "txtWater", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
                     <div class="col-md-2">
                         <lable class="smaller-font">Blower Hp calculation</lable>
-                        @Html.TextBoxFor(c=>c.BlowerHpCalculation,new{@id="txtHPCalculations",@class="form-control smaller-font smaller-height", style = "width:120px;"})
-                        
+                        @Html.TextBoxFor(c => c.BlowerHpCalculation, new { @id = "txtHPCalculations", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                     </div>
-                    <div class="col-md-3">
-                        <label class="smaller-font">Blower Orientation</label>
-                        @Html.DropDownListFor(c => c.BlowerOrientation, new List<SelectListItem>
-                        {
-                        new SelectListItem { Text = "0", Value = "0" },
-                        new SelectListItem { Text = "90", Value ="90" },
-                        new SelectListItem { Text = "180", Value ="180" },
-                        new SelectListItem { Text = "270", Value ="270" },
-                        },  new { @id = "drpOrientaionBlower", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                        
-                    </div>
-
                     <div class="col-md-3">
                         <lable class="smaller-font"></lable>
                         <button id="btnFetchRecords" type="button" class="btn btn-secondary rounded-pill" style="margin-top:15px;">Motor Details</button>
                     </div>
-                </div><br/>
-             @*    this code for fetching records for Motor details *@
+                </div><br />
+                @*    this code for fetching records for Motor details *@
                 <div class="col-md-12">
                     <table id="motorFlangeTable" class="table table-bordered">
                         <thead>
@@ -570,10 +414,15 @@
                     </table>
                 </div>
                 <input type="hidden" id="motorCatalogIDInput" name="MotorCatalogID" />
-                <div class="row" style="margin-top:20px">
+                <div class=" col-md-12 row" style="margin-top:20px" >
                     <div class="col-md-2">
                         <button type="submit" id="submitbtn" class="btn btn-success rounded-pill" style="width:100px">Next</button>
-                    </div>                  
+                    </div>
+                    <div class="col-md-10">
+                        <span id="SubmitError" class="text-danger smaller-font" style="display:none;">
+                            Please check above details are correct or not?
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -586,1680 +435,1337 @@
             </div>
         }
     </form>
-
-    
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-    var standardPanelSize ;
-    var standardPanelHeight = 2390;
-    $(document).ready(function () {
-        // Set default values
-        $("#submitbtn").prop("disabled", true);
+      var standardPanelSize ;
+      var standardPanelHeight = 2390;
+      $(document).ready(function () {
+          // Set default values
+          $("#submitbtn").prop("disabled", true);
+          $("#btnFetchRecords").on("click", function () {
+              $("#submitbtn").prop("disabled", false);
+          });
+          bindSettingstatus();
+          $('#motorFlangeTable').hide();
+          $('#NonStandardPanel').hide();
+          $('#ServiceDoormainDiv').hide();
+          $('#serviceDoorDimentions').hide();
+          $('#divComponantsdetails').hide();
+          $('#divBlower').hide();
+          $('#txtD1').val('1200');
+          $('#txtD2').val('700');
+          $('#txtD3').val('800');
+          $('#txtw1').val('500');
+          $('#txtw2').val('500');
+          $('#txtH1').val('700');
+          $('#txtH2').val('1000');
+          $('#txtVelocityofBlower').val('0.5');
+          $('#txtVelocityofFilterFrame').val('0.5');
+          // Check the checkbox
+        $("#chkServiceDoor").prop("checked", true);
+
+        // Set dropdown selected value
+        $("#drpServiceDoorLocation").val("RightSide");
+
+        // Set textbox values
+        $("#txtDoorHeight").val("1180");
+        $("#txtDoorWidth").val("580");
+          $('#txtDoorWidth, #txtDoorHeight').on('input', function () {
+             
+              checkServiceDoorHeightAndWidth();
+          });
+
+              function checkServiceDoorHeightAndWidth() {
+
+        var D3Width = parseFloat($('#txtD3').val()) || 0;
+        var ServiceDoorWidth = parseFloat($('#txtDoorWidth').val()) || 0;
+        var ServiceDoorHeight = parseFloat($('#txtDoorHeight').val()) || 0;
+
+        // Reset previous errors
+        $('#txtDoorWidth').removeClass('is-invalid');
+        $('#txtDoorHeight').removeClass('is-invalid');
+
+        let isValid = true;
+
+        // Width Validation
+        if (ServiceDoorWidth > D3Width) {
+            $('#txtDoorWidth').addClass('is-invalid');
+            alert("Service Door Width cannot be greater than D3 Width (" + D3Width + " mm)");
+            isValid = false;
+        }
+
+        // Height Validation
+        if (ServiceDoorHeight > 2390) {
+            $('#txtDoorHeight').addClass('is-invalid');
+            alert("Service Door Height cannot be greater than extraction chember height.");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+
+
+
+
+          //this code for changing value for H manually
+          // Event listener for changes in txtH
+          $('#txtH').on('input', function () {
+              isManualChange = true; // Set to true when user changes txtH
+          });
+          // Event listeners for other input fields to recalculate H
+          $('#txtH1, #txtH2, #txtheight').on('input', function () {
+              isManualChange = false; // Reset manual change flag
+              calculateH(); // Recalculate H when these fields change
+          });
+          // Optionally, you can add a button to reset the manual change flag
+          $('#resetManualChange').on('click', function () {
+              isManualChange = false; // Reset the manual change flag
+              calculateH(); // Recalculate H based on the input fields
+          });
+          //show when this checked service door checkbox
+          $("#chkServiceDoor").change(function () {
+              if ($(this).is(":checked")) {
+                  $("#serviceDoorDimentions").show();
+              } else {
+                  $("#serviceDoorDimentions").hide();
+              }
+          });
+         
+          $("#btnFetchRecords").click(function () {
+              $('#motorFlangeTable').show();
+          });
         
-        
-        $("#btnFetchRecords").on("click", function () {
-            $("#submitbtn").prop("disabled", false);
+          $('#txtH').on('input', function () {
+              checkValueofH();
+          });
+
+          $('#txtH1, #txtH2, #txtheight').on('input', function () {
+              calculateH();
+          });
+          calculateBlowerHp();
+          $('#txtWater').on('input', function () {
+              // Recalculate the Blower HP when the Water Column value changes
+              calculateBlowerHp();
+          });
+          $("#txtCapacityofBlowerinHReadonly").on("change", function () {
+              calculateDuctWidthAndHeight();
+          });
+          calculateD();
+          calculateW();
+          calculateH();
+          calculateCrossSectionalArea();
+          calculateCapacity();
+          calculateFilterFrame();
+          updatePanels();
+          updatePanelsByH();
+          checkValueofH();
+          convertToCubicMetersPerSecond();
+          calculateBlowerHp();
+          updateTxtW3();
+          showSettingDetails();
+          showMotorDetails();
+
+           // 🔁 On submit click: validate again
+        $('#submitbtn').on('click', function (e) {
+            var remainingHeight = parseFloat($("#txtremaingPanelsByH").val()) || 0;
+            var isValid = true;
+
+            if (remainingHeight > 0 && remainingHeight < 300) {
+                showRemainingHeightError();
+                isValid = false;
+            } else {
+                hideRemainingHeightError();
+            }
+
+            if (!isValid) {
+                e.preventDefault(); // Prevent form submission
+            }
         });
-        bindSettingstatus();
-        $('#motorFlangeTable').hide();
-        $('#equalPanelsDiv').hide();
-        $('#divStandardSize').hide();
-        $('#divStandardSizeforW').hide();
-        $('#divStandardSizeforH').hide();
-        $('#divHalfSize').hide();
-        $('#divHalfSizeforW').hide();
-        $('#divHalfSizeforH').hide();
-        $('#txthalfpanelsize').hide();
-        $('#txthalfpanelsizeforW').hide();
-        $('#txthalfpanelsizeforH').hide();
-        $('#txtstandardPanelDropdownByW').hide();
-        $('#txtstandardPanelDropdownByH').hide();
-        $('#NonStandardPanel').hide();
-        $('#NonStandardPanelforW').hide();
-        $('#NonStandardPanelforH').hide();
-        $('#equalPanelsDivByW').hide();
-        $('#ServiceDoormainDiv').hide();
-        $('#serviceDoorDimentions').hide();
-        $('#equalPanelsDivByH').hide();
-        $('#divComponantsdetails').hide();
-        $('#divBlower').hide();
-        $('#txtD1').val('1200');
-        $('#txtD2').val('700');
-        $('#txtD3').val('700');
-        $('#txtw1').val('500');
-        $('#txtw2').val('500');
-        $('#txtH1').val('700');
-        $('#txtH2').val('1000');
-        $('#txtVelocityofBlower').val('0.5');
-        $('#txtVelocityofFilterFrame').val('0.5');
-        //this code for changing value for H manually
-        // Event listener for changes in txtH
+
+        // 🔁 When H value changes
         $('#txtH').on('input', function () {
-            isManualChange = true; // Set to true when user changes txtH
-        });
-        // Event listeners for other input fields to recalculate H
-        $('#txtH1, #txtH2, #txtheight').on('input', function () {
-            isManualChange = false; // Reset manual change flag
-            calculateH(); // Recalculate H when these fields change
-        });
-        // Optionally, you can add a button to reset the manual change flag
-        $('#resetManualChange').on('click', function () {
-            isManualChange = false; // Reset the manual change flag
-            calculateH(); // Recalculate H based on the input fields
-        });      
-        //show when this checked service door checkbox
-        $("#chkServiceDoor").change(function () {
-            if ($(this).is(":checked")) {
-                $("#serviceDoorDimentions").show();
-            } else {
-                $("#serviceDoorDimentions").hide();
-            }
-        });
-        $('#chkMakeItEqual').change(function () {
-            if ($(this).is(':checked')) {
-                $('#equalPanelsDiv').show();
-            } else {
-                $('#equalPanelsDiv').hide();
-            }
-        });
-        $('#chkMakeItEqualByW').change(function () {
-            if ($(this).is(':checked')) {
-                $('#equalPanelsDivByW').show();
-            } else {
-                $('#equalPanelsDivByW').hide();
-            }
-        });
-        $("#txtw, #chkMakeItEqualByW").on("input change", updatePanelsByW);
-        $("#txtH, #chkMakeItEqualByH").on("input change", updatePanelsByH);
-        $('#chkMakeItEqualByH').change(function () {
-            if ($(this).is(':checked')) {
-                $('#equalPanelsDivByH').show();
-            } else {
-                $('#equalPanelsDivByH').hide();
-            }
-        });
-        $("#btnFetchRecords").click(function () {
-            $('#motorFlangeTable').show();
-        });
-        $('#txtw').on('input', function () {         
-            checkWValue();        
-        });
-        $('#txtH').on('input', function () {       
-            checkValueofH();        
-        });       
-        $('#txtH1, #txtH2, #txtheight').on('input', function () {
-            calculateH();
-        });
-        calculateBlowerHp();
-        $('#txtWater').on('input', function () {
-            // Recalculate the Blower HP when the Water Column value changes
-            calculateBlowerHp();
-        });
-        calculateD();
-        calculateW();
-        calculateH();
-        calculateCrossSectionalArea();
-        calculateCapacity();      
-        calculateFilterFrame();     
-        updatePanels();      
-        updatePanelsByW();
-        updatePanelsByH();
-        checkValueofH();
-        convertToCubicMetersPerSecond();
-        calculateBlowerHp();        
-        updateTxtW3();
-        updatePanelSizeDropdown();     
-        $('#drpPaneltype').change(handlePanelTypeChange);     
-        $('#panelSizeDropdown').change(function () {
-            var selectedValue = $(this).val();
-            updatePanelSize(selectedValue, standardPanelSize);
-            handlePanelSizeVisibility(standardPanelSize);
-        });
-        showSettingDetails();
-        showMotorDetails();
+            var HValue = parseFloat($(this).val()) || 0;
+            var standardPanelHeight = 2390;
 
-        $("#searchbtn").click(function () {
-            $('#showSettingDetails').prop('disabled', false);
+            if (HValue > 1140) {
+                var standardPanelsByHeight = Math.floor(HValue / standardPanelHeight);
+                var remainingHeightpanels = HValue - (standardPanelsByHeight * standardPanelHeight);
 
-            // Clear previous results
-            $('#txtlenght, #txtwidth, #txtheight').val('');
-            $('#ServiceDoormainDiv, #divComponantsdetails, #divBlower').hide();
+                $("#txtstandardPanelsByH").val(standardPanelsByHeight);
+                $("#txtremaingPanelsByH").val(remainingHeightpanels);
 
-            var enquiryCode = $('#txtEnquiryCode').val();
-
-            $.ajax({
-                url: '/PaintBooth/Search',
-                type: 'POST',
-                dataType: 'json',
-                data: { enquiryCode: enquiryCode },
-                success: function (data) {
-                    if (data.error) {
-                        alert(data.error);
-                        $('#errorMessage').text(data.error).show();
-                        return;
-                    }
-
-                    $('#errorMessage').hide();
-                    $('#txtlenght').val(data.length || '');
-                    $('#txtwidth').val(data.width || '');
-                    $('#txtheight').val(data.height || '');
-
-                    standardPanelSize = parseFloat(data.panelWidth) || 1140;
-                    standardPanelHeight = parseFloat(data.panelHeight) || 2390;
-
-                    $('#ServiceDoormainDiv, #divComponantsdetails, #divBlower').show();
-
-                    calculateD();
-                    calculateW();
-                    calculateH();
-                    calculatePanels(standardPanelSize);
-                    $('#txtD').change(function () {
-                        calculatePanels(standardPanelSize);
-                    });
-
-                    handlePanelSizeVisibility(standardPanelSize);
-                    calculateStandardPanels(standardPanelSize);
-
-                    // Additional logic from old code
-                    $('#drpPaneltypeforW').change(function () {
-                        var selectedValue = $(this).val();
-                        if (selectedValue == "1") {
-                            $('#txtstandardPanelDropdownByW').show();
-                        } else {
-                            $('#txtstandardPanelDropdownByW').hide();
-                        }
-                        if (selectedValue === "2") {
-                            $("#NonStandardPanelforW").show();
-                        } else {
-                            $("#NonStandardPanelforW").hide();
-                        }
-                    });
-
-                    $('#drpPaneltypeforH').change(function () {
-                        var selectedValue = $(this).val();
-                        if (selectedValue == "1") {
-                            $('#txtstandardPanelDropdownByH').show();
-                        } else {
-                            $('#txtstandardPanelDropdownByH').hide();
-                        }
-                        if (selectedValue === "2") {
-                            $("#NonStandardPanelforH").show();
-                            $("#divStandardSizeforH").hide();
-                        } else {
-                            $("#NonStandardPanelforH").hide();
-                        }
-                    });
-
-                    $('#panelSizeDropdownforW, #txtw').change(function () {
-                        calculateStandardPanelsforW(standardPanelHeight);
-                        calculatePanelsforW(standardPanelHeight);
-                        showvalueasperchangedropdownforW(standardPanelHeight);
-                    });
-
-                    $('#drpPaneltypeforW').change(function () {
-                        calculateStandardPanelsforW(standardPanelHeight);
-                        calculatePanelsforW(standardPanelHeight);
-                        showvalueasperchangedropdownforW(standardPanelHeight);
-                    });
-
-                    $('#panelSizeDropdownforH, #txtH').change(function () {
-                        calculateStandardPanelsforH(standardPanelHeight);
-                        calculatePanelsforH(standardPanelHeight);
-                        showvalueasperchangedropdownforH(standardPanelHeight);
-                        calculateH();
-                    });
-
-                    $('#drpPaneltypeforH').change(function () {
-                        showvalueasperchangedropdownforH(standardPanelHeight);
-                        calculateStandardPanelsforH(standardPanelHeight);
-                        calculatePanelsforH(standardPanelHeight);
-                    });
-
-                    updatePanels();
-                    updatePanelsByW();
-                    updatePanelsByH();
-                    checkValueofH();
-                    updateTxtW3();
-                    checkBlowerHpValue();
-
-                    var blowerHpValue = parseFloat($('#txtHPCalculations').val());
-                    if (blowerHpValue > 0) {
-                        $('#btnFetchRecords').prop('disabled', false);
-                    } else {
-                        $('#btnFetchRecords').prop('disabled', true);
-                    }
-
-                    $('#txtHPCalculations').on('input', function () {
-                        var blowerHpValue = parseFloat($(this).val());
-                        if (blowerHpValue > 0) {
-                            $('#btnFetchRecords').prop('disabled', false);
-                        } else {
-                            $('#btnFetchRecords').prop('disabled', true);
-                        }
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
+                // ✅ Show error if invalid
+                if (remainingHeightpanels > 0 && remainingHeightpanels < 300) {
+                    showRemainingHeightError();
+                } else {
+                    hideRemainingHeightError();
                 }
-            });
-
-            // Handle enquiry code suggestions
-            $('#txtEnquiryCode').on('input', function () {
-                var enquiryCode = $(this).val();
-
-                if (enquiryCode.trim() === '') {
-                    $('#resultsContainer').hide().empty();
-                    $('#searchbtn').prop('disabled', true);
-                    return;
-                }
-
-                $.ajax({
-                    url: '/PaintBooth/SearchEnquiryCode',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { enquiryCode: enquiryCode },
-                    success: function (response) {
-                        if (!response.success || response.results.length === 0) {
-                            $('#resultsContainer').show().html('<p>No Enquiry Codes found</p>');
-                            $('#searchbtn').prop('disabled', true);
-                            return;
-                        }
-
-                        var resultsHtml = '<ul>';
-                        response.results.forEach(function (result) {
-                            resultsHtml += `<li class="result-item" data-code="${result}">${result}</li>`;
-                        });
-                        resultsHtml += '</ul>';
-
-                        $('#resultsContainer').show().html(resultsHtml);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
-
-            $(document).on('click', '.result-item', function () {
-                var selectedCode = $(this).data('code');
-                $('#txtEnquiryCode').val(selectedCode);
-                $('#resultsContainer').empty();
-                $('#searchbtn').prop('disabled', false);
-            });
-        });
-
-        let rowIndex = 1; // Counter for serial numbers
-
-        // Show or hide the duct length field based on the dropdown selection
-        $('#drpBendDucting').on('change', function () {
-            const selectedValue = $(this).val();
-            if (selectedValue === 'Duct') {
-                $('#dicductlength').show();
             } else {
-                $('#dicductlength').hide();
-                $('#txtDuctLength').val(''); // Clear length field if not "Duct"
+                $("#txtstandardPanelsByH").val('');
+                $("#txtremaingPanelsByH").val('');
+                hideRemainingHeightError();
             }
         });
 
-        
-       
-        // Add row to the Exhaust duct  table
-        $('#btnAdd').on('click', function () {
-            const bendType = $('#drpBendDucting').val();
-            const ductLength = $('#txtDuctLength').val();
-
-            // Validation
-            if (!bendType) {
-                alert('Please select a Bend Type.');
-                return;
-            }
-            if (bendType === 'Duct' && !ductLength) {
-                alert('Please enter the Duct Length.');
-                return;
-            }
-
-            // Append the row with Edit and Delete buttons
-            const newRow = `
-                <tr>
-                    <td>${rowIndex++}</td>
-                    <td class="bend-type">${bendType}</td>
-                    <td class="duct-length">${bendType === 'Duct' ? ductLength : '-'}</td>
-                    <td>
-                        <button type="button" class="btn btn-warning btn-sm edit-row">Edit</button>
-                        <button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
-                    </td>
-                </tr>
-            `;
-            $('#componentsTable tbody').append(newRow);
-
-            // Clear selections
-            $('#drpBendDucting').val('');
-            $('#txtDuctLength').val('');
-            $('#dicductlength').hide();
-        });
-
-        // Handle Delete button click
-        $('#componentsTable').on('click', '.delete-row', function () {
-            $(this).closest('tr').remove();
-            updateRowNumbers(); // Update row numbers after deletion
-        });
-
-        // Handle Edit button click
-        $('#componentsTable').on('click', '.edit-row', function () {
-            const row = $(this).closest('tr');
-            const bendType = row.find('.bend-type').text();
-            const ductLength = row.find('.duct-length').text();
-
-            // Populate dropdown and input field for editing
-            $('#drpBendDucting').val(bendType);
-            if (bendType === 'Duct') {
-                $('#dicductlength').show();
-                $('#txtDuctLength').val(ductLength);
-            } else {
-                $('#dicductlength').hide();
-                $('#txtDuctLength').val('');
-            }
-
-            // Remove the row from the table temporarily
-            row.remove();
-            updateRowNumbers(); // Update row numbers after removal
-        });
-
-        // Update row numbers
-        function updateRowNumbers() {
-            $('#componentsTable tbody tr').each(function (index) {
-                $(this).find('td:first-child').text(index + 1);
-            });
-            rowIndex = $('#componentsTable tbody tr').length + 1;
+        function showRemainingHeightError() {
+            $("#txtremaingPanelsByH").addClass("input-error");
+            $("#remainingHeightError").show();
+            $("#SubmitError").show();
         }
 
-        // $("#btnWaterColumn").on("click", function () {
-        //     $.ajax({
-        //         url: '/PaintBooth/WaterColumnCalculations',
-        //         type: 'GET',
-        //         success: function (data) {
-        //             var tableBody = $("#pressureDropBody");
-        //             tableBody.empty(); // Clear existing rows
-
-        //             // Initialize grand total variable
-        //             var grandTotal = 0;
-
-        //             // Check if 'pressureDropDetails' is an array before using forEach
-        //             if (Array.isArray(data.pressureDropDetails) && data.pressureDropDetails.length > 0) {
-        //                 // Iterate over the pressureDropDetails array and append rows
-        //                 $.each(data.pressureDropDetails, function (index, item) {
-        //                     tableBody.append(`
-        //                         <tr>
-        //                             <td><input type="checkbox" class="select-row-checkbox" data-id="${item.itemNumber}" checked></td> <!-- Checkboxes checked by default -->
-        //                             <td style="text-align: center;">${item.itemNumber}</td>
-        //                             <td style="text-align: center;">${item.description}</td>
-        //                             <td style="text-align: center;">${item.pressureDrop_mm}</td>
-        //                             <td><input type="number" class="quantity-input" data-id="${item.itemNumber}" style="width: 80px; text-align: center;"></td>
-        //                             <td><input type="number" class="total-input" data-id="${item.itemNumber}" readonly style="width: 80px; text-align: center;"></td>
-        //                         </tr>
-        //                     `);
-        //                 });
-
-        //                 // Add event listener for checkbox change (to disable/enable rows)
-        //                 $(".select-row-checkbox").on("change", function () {
-        //                     var row = $(this).closest("tr"); // Get the row of the clicked checkbox
-        //                     if (!$(this).prop("checked")) {
-        //                         // Disable Quantity and Total inputs when checkbox is unchecked
-        //                         row.find(".quantity-input, .total-input").prop("disabled", true);
-        //                         // Clear the total if the checkbox is unchecked
-        //                         row.find(".total-input").val("");
-        //                     } else {
-        //                         // Enable Quantity and Total inputs when checkbox is checked
-        //                         row.find(".quantity-input, .total-input").prop("disabled", false);
-        //                     }
-        //                     // Update the grand total when the checkbox is toggled
-        //                     updateGrandTotal();
-        //                 });
-
-        //                 // Add event listener for Quantity input change
-        //                 $(".quantity-input").on("input", function () {
-        //                     var quantity = parseFloat($(this).val());
-        //                     var pressureDrop = parseFloat($(this).closest('tr').find('td:nth-child(4)').text()); // Pressure Drop is in 4th column
-        //                     var totalInput = $(this).closest('tr').find('.total-input');
-
-        //                     // Calculate total if quantity and pressureDrop are numbers
-        //                     if (!isNaN(quantity) && !isNaN(pressureDrop)) {
-        //                         var total = quantity * pressureDrop;
-        //                         totalInput.val(total.toFixed(2)); // Update the Total textbox
-        //                     } else {
-        //                         totalInput.val(""); // Clear total if invalid input
-        //                     }
-
-        //                     // Recalculate the grand total
-        //                     updateGrandTotal();
-        //                 });
-        //             } else {
-        //                 tableBody.append('<tr><td colspan="6">No records found</td></tr>');
-        //             }
-
-        //             // Update grand total based on row totals
-        //             function updateGrandTotal() {
-        //                 grandTotal = 0;
-        //                 $(".total-input").each(function () {
-        //                     // Only add to grand total if the row is not disabled
-        //                     if (!$(this).closest('tr').find('.select-row-checkbox').prop("checked")) {
-        //                         return; // Skip this row if the checkbox is unchecked
-        //                     }
-
-        //                     var rowTotal = parseFloat($(this).val());
-        //                     if (!isNaN(rowTotal)) {
-        //                         grandTotal += rowTotal;
-        //                     }
-        //                 });
-
-        //                 // Get the value from the addition factor input field
-        //                 var additionFactor = parseFloat($("#additionFactor").val()) || 0;
-        //                 grandTotal += additionFactor; // Add addition factor to grand total
-
-        //                 // Display the grand total in the table
-        //                 $("#grandTotal").text(grandTotal.toFixed(2));
-
-        //                 // Set the grand total into the Water Column TextBox
-        //                 $("#txtWater").val(grandTotal.toFixed(2));
-        //                 // Call calculateBlowerHp when the value is set
-        //                 calculateBlowerHp();
-        //             }
-
-        //             // Add event listener for addition factor input change
-        //             $("#additionFactor").on("input", function () {
-        //                 updateGrandTotal(); // Update grand total when the addition factor changes
-        //             });
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error("Error fetching data:", error);
-        //         }
-        //     });
-        // });
-        $("#btnWaterColumn").on("click", function () {
-
-            // Step 1: Calculate bendCount from the first grid
-            var bendCount = 0;
-            $("#componentsTable tbody tr").each(function () {
-                debugger;
-                var bendType = $(this).find(".bend-type").text(); // Adjust as per your grid
-                if (bendType.includes("Bend")) { // Check if bendType contains the word "Bend"
-                    bendCount += 1; // Increment bend count by 1 for each match
-                }
-            });
-
-            console.log("Calculated Bend Count:", bendCount); // Debugging log
-            $.ajax({
-                url: '/PaintBooth/WaterColumnCalculations',
-                type: 'GET',
-                success: function (data) {
-                    var tableBody = $("#pressureDropBody");
-                    tableBody.empty(); // Clear existing rows
-
-                    // Initialize grand total variable
-                    var grandTotal = 0;
-
-                   
-
-                    // Check if 'pressureDropDetails' is an array before using forEach
-                    if (Array.isArray(data.pressureDropDetails) && data.pressureDropDetails.length > 0) {
-                        // Iterate over the pressureDropDetails array and append rows
-                        $.each(data.pressureDropDetails, function (index, item) {
-                            // Default quantity for 90 Deg. Bend
-                            var quantity = item.description === "90 Deg. Bend" ? bendCount : "";
-                            console.log(`Description: ${item.description}, Quantity: ${quantity}`); // Debug log
-
-                            tableBody.append(`
-                            <tr>
-                                    <td><input type="checkbox" class="select-row-checkbox" data-id="${item.itemNumber}" checked></td> <!-- Checkboxes checked by default -->
-                                <td style="text-align: center;">${item.itemNumber}</td>
-                                <td style="text-align: center;">${item.description}</td>
-                                <td style="text-align: center;">${item.pressureDrop_mm}</td>
-                                <td><input type="number" class="quantity-input" data-id="${item.itemNumber}" style="width: 80px; text-align: center;" value="${quantity}"></td>
-                                <td><input type="number" class="total-input" data-id="${item.itemNumber}" readonly style="width: 80px; text-align: center;"></td>
-                            </tr>
-                        `);
-                        });
-                        
-                        // Add event listeners (checkbox change, quantity input change, etc.)
-                        addEventListeners();
-                        
-                    } else {
-                        tableBody.append('<tr><td colspan="6">No records found</td></tr>');
-                    }
-
-                    // Function to add all event listeners for the new grid
-                    function addEventListeners() {
-                        $(".select-row-checkbox").on("change", function () {
-                            var row = $(this).closest("tr"); // Get the row of the clicked checkbox
-                            if (!$(this).prop("checked")) {
-                                // Disable Quantity and Total inputs when checkbox is unchecked
-                                row.find(".quantity-input, .total-input").prop("disabled", true);
-                                // Clear the total if the checkbox is unchecked
-                                row.find(".total-input").val("");
-                            } else {
-                                // Enable Quantity and Total inputs when checkbox is checked
-                                row.find(".quantity-input, .total-input").prop("disabled", false);
-                            }
-                            // Update the grand total when the checkbox is toggled
-                            updateGrandTotal();
-                        });
-                        
-                        $(".quantity-input").on("input", function () {
-                            var quantity = parseFloat($(this).val());
-                            var pressureDrop = parseFloat($(this).closest('tr').find('td:nth-child(4)').text()); // Pressure Drop is in 4th column
-                            var totalInput = $(this).closest('tr').find('.total-input');
-
-                            // Calculate total if quantity and pressureDrop are numbers
-                            if (!isNaN(quantity) && !isNaN(pressureDrop)) {
-                                var total = quantity * pressureDrop;
-                                totalInput.val(total.toFixed(2)); // Update the Total textbox
-                            } else {
-                                totalInput.val(""); // Clear total if invalid input
-                            }
-
-                            // Recalculate the grand total
-                            updateGrandTotal();
-                        });
-
-                        // Add event listener for addition factor input change
-                        $("#additionFactor").on("input", function () {
-                            updateGrandTotal(); // Update grand total when the addition factor changes
-                        });
-                    }
-
-                    // Update grand total based on row totals
-                    function updateGrandTotal() {
-                        grandTotal = 0;
-                        $(".total-input").each(function () {
-                            // Only add to grand total if the row is not disabled
-                            if (!$(this).closest('tr').find('.select-row-checkbox').prop("checked")) {
-                                return; // Skip this row if the checkbox is unchecked
-                            }
-
-                            var rowTotal = parseFloat($(this).val());
-                            if (!isNaN(rowTotal)) {
-                                grandTotal += rowTotal;
-                            }
-                        });
-
-                        // Get the value from the addition factor input field
-                        var additionFactor = parseFloat($("#additionFactor").val()) || 0;
-                        grandTotal += additionFactor; // Add addition factor to grand total
-
-                        // Display the grand total in the table
-                        $("#grandTotal").text(grandTotal.toFixed(2));
-
-                        // Set the grand total into the Water Column TextBox
-                        $("#txtWater").val(grandTotal.toFixed(2));
-                        // Call calculateBlowerHp when the value is set
-                        calculateBlowerHp();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching data:", error);
-                }
-            });
-        });
-
-        
-
-    });
-    function checkBlowerHpValue() {
-        var blowerHpValue = parseFloat($('#txtHPCalculations').val());
-
-        if (blowerHpValue > 0) {
-            $('#btnFetchRecords').prop('disabled', false);
-           
-        } else {
-            $('#btnFetchRecords').prop('disabled', true);
-           
+        function hideRemainingHeightError() {
+            $("#txtremaingPanelsByH").removeClass("input-error");
+            $("#remainingHeightError").hide();
+             $("#SubmitError").hide();
         }
-    }
-    $('#txtD1, #txtD2, #txtlenght').on('input', function () {
-        calculateD();
-        calculateCrossSectionalArea();
-        calculateCapacity();
-        calculateFilterFrame();
-        calculatePanels();
-    });
-    $('#txtw1,#txtw2,#txtwidth').on('input', function () {
-        calculateW();
-        calculateCrossSectionalArea();
-        calculateCapacity();
-        //calculateFilterFrame();
-    });
-    $('#txtH1, #txtH2 , #txtheight').on('input', function () {
-        calculateH();
-    });
-    $('#txtVelocityofBlower, #txtVelocityofFilterFrame').on('input', function () {
-        calculateCapacity();
-        calculateFilterFrame();
-    });
-    $('#txtD').on('input', function () {
-        calculatePanels(standardPanelSize)
-        updatePanels();
-        calculateStandardPanels();
-    });
 
-    $("#txtD, #txtStandardPanels").on("input", updatePanels);
-    $("#chkMakeItEqual").change(updatePanels);
-    $('#txtH').on('input', function () {       
-        calculateStandardPanelsforH();
-        updatePanelSizeDropdownForH();
-    });
-    $('#txtWater, #txtCapacityofBlowerRoundOf').on('input', function () {
-        calculateBlowerHp();
-    });
-    
-    $('#txtCapacityofBlowerRoundOfmpersec, #txtVelocityofFilterFrame').on('input', function () {
-        calculateFilterFrame();
-    });
-    $("#txtw").on("input", updateTxtW3);
-    // Function to calculate and update value of D textbox
-    function calculateD() {
-        var D1 = parseFloat($('#txtD1').val()) || 0;
-        var D2 = parseFloat($('#txtD2').val()) || 0;
-        var Depth = parseFloat($('#txtlenght').val()) || 0;
-        var D = D1 + D2 + Depth;
-        $('#txtD').val(D);
-    }
-    function calculateW() {
-        var W1 = parseFloat($('#txtw1').val()) || 0;
-        var W2 = parseFloat($('#txtw2').val()) || 0;
-        var W3 = parseFloat($('#txtwidth').val()) || 0;
-        var W = W1 + W2 + W3;
-        $('#txtw').val(W);
-    }
-    let isManualChange = false;
-    function calculateH() {
-        
-        if (!isManualChange) { // Only calculate if not manually changed
-            var H1 = parseFloat($('#txtH1').val()) || 0;
-            var H2 = parseFloat($('#txtH2').val()) || 0;
-            var H3 = parseFloat($('#txtheight').val()) || 0;
-            var H = H1 + H2 + H3;
-            $('#txtH').val(H);
-        }
-    }
-    function calculateCrossSectionalArea() {
-       
-        var paintBoothWidth = parseFloat($('#txtw').val()) || 0;
-       
-        var paintBoothHeight = parseFloat($('#txtH').val()) || 0;
-       
-        var paintBoothWidthinMeter = paintBoothWidth / 1000;
-        
-        var paintBoothHeightinMeter = paintBoothHeight / 1000;
-       
-        var crossArea = paintBoothWidthinMeter * paintBoothHeightinMeter;
-       
-        $('#txtCrossSectionalArea').val(crossArea);
-    }
-    function calculateCapacity() {
-        var totalCrossSectionalArea = parseFloat($('#txtCrossSectionalArea').val()) || 0;
-        console.log("totalCrossSectionalArea", totalCrossSectionalArea);
-        var Velocity = parseFloat($('#txtVelocityofBlower').val()) || 0;
-        console.log("Velocity", Velocity);
-        var TotalCapacity = totalCrossSectionalArea * Velocity;
-        console.log("TotalCapacity", TotalCapacity);
-        $('#txtCapacityofBlower').val(TotalCapacity.toFixed(3));
-        var capacityinHour = TotalCapacity * 3600;
-        $('#txtCapacityofBlowerinH').val(capacityinHour.toFixed(3));
+          function calculateDuctWidthAndHeight() {
+              var capacity = parseFloat($('#txtCapacityofBlowerinHReadonly').val()) || 0;
+              var capacityinmeter = (capacity /(3600* 10));
 
-        $('#txtCapacityofBlowerinHReadonly').val(capacityinHour.toFixed(3));
-        $('#txtCrossSectionalArearead').val(TotalCapacity.toFixed(3));
-    }
+              // Step 2: Find the square root of the calculated value
+              var squareRootValue = Math.sqrt(capacityinmeter);
 
-   
-    function convertToCubicMetersPerSecond(m3PerHr) {
-        return (parseFloat(m3PerHr) / 3600).toFixed(3); // Convert and format to 3 decimal places
-    }
-    // Event handler for when the value changes
-    $('#txtCapacityofBlowerRoundOf').on('input', function () {
-        var m3PerHr = $(this).val();
-        var m3PerSec = convertToCubicMetersPerSecond(m3PerHr);
-        $('#txtCapacityofBlowerRoundOfmpersec').val(m3PerSec);
-        calculateFilterFrame();
-    });
-    //for D
-    //added fuction for non standard and standard
-    function handlePanelTypeChange() {
-        var selectedValue = $('#drpPaneltype').val();
-        if (selectedValue == "1") { // Standard Panel selected
-            $('#txtstandardPanelDropdown').show();
-            $('#NonStandardPanel').hide();
-            $('#halfPanelSize').hide();
-        } else if (selectedValue == "2") { // Non-Standard Panel selected
-            $('#txtstandardPanelDropdown').hide();
-            $('#halfPanelSize').hide();
-            $('#NonStandardPanel').show();
-            $('#divStandardSize').hide();
-        } else { // Handle other cases if needed
-            $('#txtstandardPanelDropdown').hide();
-            $('#halfPanelSize').hide();
-            $('#divHalfSize').hide();
-            $('#NonStandardPanel').hide();
-            $('#divStandardSize').hide();
-        }
-    }
-    //Calulate filter area old code 
-    function calculateFilterFrame() {
-       
-        var roundedValue = parseFloat($('#txtCapacityofBlowerRoundOfmpersec').val()) || 0;
-        console.log("roundedValue", roundedValue);
-        // Get the original blower capacity value
-        var originalValue = parseFloat($('#txtCapacityofBlower').val()) || 0;
+              var valueInMM = Math.ceil(squareRootValue * 1000);
 
-        // Determine which value to use: rounded if it's greater than 0, otherwise original
-        var Capacity = roundedValue > 0 ? roundedValue : originalValue;
-        console.log("Capacity", Capacity);
+              // Step 3: Update the values in Exhaust Duct Height and Width
+              $("#txtexhaustheight").val(valueInMM.toFixed(2));
+              $("#txtExhaustWidth").val(valueInMM.toFixed(2));
+          }
+          // Function to adjust Duct Width when Height changes
+          function adjustDuctWidthBasedOnHeight() {
+              var height = parseFloat($("#txtexhaustheight").val()) || 0; // Get the new Duct Height
+              var capacity = parseFloat($('#txtCapacityofBlowerinHReadonly').val()) || 0;
+              var capacityinmeter = (capacity / (3600 * 10));
 
-        // Get the velocity of the filter frame
-        var Velocityoffilter = parseFloat($('#txtVelocityofFilterFrame').val()) || 0;
+              // Calculate the new width to maintain constant capacity
+              var newWidth = Math.ceil(capacityinmeter * 1000 * 1000) / height;
 
-        // Calculate the total filter area
-        var TotalFilterArea = 0;
-        if (Velocityoffilter > 0) { 
-            TotalFilterArea = Capacity / Velocityoffilter;
-        }
-        // Update the filter area field with the calculated value
-        $('#txtFilterArea').val(TotalFilterArea.toFixed(3));
-    }
+              // Update the Duct Width textbox
+              $("#txtExhaustWidth").val(newWidth.toFixed(2))
+          }
+
+
+          function updateHiddenField() {
+              const data = collectTableData();
+              $('#hdnExhaustDuctingList').val(JSON.stringify(data));
+          }
+
+          $("#searchbtn").click(function () {
+              $('#showSettingDetails').prop('disabled', false);
+
+              // Clear previous results
+              $('#txtlenght, #txtwidth, #txtheight').val('');
+              $('#ServiceDoormainDiv, #divComponantsdetails, #divBlower').hide();
+
+              var enquiryCode = $('#txtEnquiryCode').val();
+
+              $.ajax({
+                  url: '/PaintBooth/Search',
+                  type: 'POST',
+                  dataType: 'json',
+                  data: { enquiryCode: enquiryCode },
+                  success: function (data) {
+                      if (data.error) {
+                          alert(data.error);
+                          $('#errorMessage').text(data.error).show();
+                          return;
+                      }
+
+                      $('#errorMessage').hide();
+                      $('#txtlenght').val(data.length || '');
+                      $('#txtwidth').val(data.width || '');
+                      $('#txtheight').val(data.height || '');
+
+                      standardPanelSize = parseFloat(data.panelWidth) || 1140;
+                      standardPanelHeight = parseFloat(data.panelHeight) || 2390;
+
+                      $('#ServiceDoormainDiv, #divComponantsdetails, #divBlower').show();
+
+                      calculateD();
+                      calculateW();
+                      calculateH();
+                      calculatePanels(standardPanelSize);
+                      calculateCrossSectionalArea();
+                      calculateCapacity();
+                      calculateFilterFrame();
+                      $('#txtD').change(function () {
+                          calculatePanels(standardPanelSize);
+                      });
+                      handlePanelSizeVisibility(standardPanelSize);
+                      calculateStandardPanels(standardPanelSize);
+
+                      $('#drpPaneltypeforW').change(function () {
+                          calculateStandardPanelsforW(standardPanelHeight);
+                          calculatePanelsforW(standardPanelHeight);
+                          showvalueasperchangedropdownforW(standardPanelHeight);
+                      });
+
+                      $('#panelSizeDropdownforH, #txtH').change(function () {
+                          calculateStandardPanelsforH(standardPanelHeight);
+                          calculatePanelsforH(standardPanelHeight);
+                          showvalueasperchangedropdownforH(standardPanelHeight);
+                          calculateH();
+                      });
+
+                      $('#drpPaneltypeforH').change(function () {
+                          showvalueasperchangedropdownforH(standardPanelHeight);
+                          calculateStandardPanelsforH(standardPanelHeight);
+                          calculatePanelsforH(standardPanelHeight);
+                      });
+                      $("#txtCapacityofBlowerinHReadonly").on("change", function () {
+                          calculateDuctWidthAndHeight();
+                      });
+                      // Bind the change event to the Duct Height textbox
+                      $("#txtexhaustheight").on("change", function () {
+                          adjustDuctWidthBasedOnHeight();
+                      });
+                      updatePanels();
+                      calculatePanelsforW()
+                      updatePanelsByH();
+                      checkValueofH();
+                      updateTxtW3();
+                      checkBlowerHpValue();
+                      calculateDuctWidthAndHeight();
+                      adjustDuctWidthBasedOnHeight();
+                      var blowerHpValue = parseFloat($('#txtHPCalculations').val());
+                      if (blowerHpValue > 0) {
+                          $('#btnFetchRecords').prop('disabled', false);
+                      } else {
+                          $('#btnFetchRecords').prop('disabled', true);
+                      }
+
+                      $('#txtHPCalculations').on('input', function () {
+                          var blowerHpValue = parseFloat($(this).val());
+                          if (blowerHpValue > 0) {
+                              $('#btnFetchRecords').prop('disabled', false);
+                          } else {
+                              $('#btnFetchRecords').prop('disabled', true);
+                          }
+                      });
+                  },
+                  error: function (xhr, status, error) {
+                      console.error(xhr.responseText);
+                  }
+              });
+
+              // Handle enquiry code suggestions
+              $('#txtEnquiryCode').on('input', function () {
+                  var enquiryCode = $(this).val();
+
+                  if (enquiryCode.trim() === '') {
+                      $('#resultsContainer').hide().empty();
+                      $('#searchbtn').prop('disabled', true);
+                      return;
+                  }
+
+                  $.ajax({
+                      url: '/PaintBooth/SearchEnquiryCode',
+                      type: 'POST',
+                      dataType: 'json',
+                      data: { enquiryCode: enquiryCode },
+                      success: function (response) {
+                          if (!response.success || response.results.length === 0) {
+                              $('#resultsContainer').show().html('<p>No Enquiry Codes found</p>');
+                              $('#searchbtn').prop('disabled', true);
+                              return;
+                          }
+
+                          var resultsHtml = '<ul>';
+                          response.results.forEach(function (result) {
+                              resultsHtml += `<li class="result-item" data-code="${result}">${result}</li>`;
+                          });
+                          resultsHtml += '</ul>';
+
+                          $('#resultsContainer').show().html(resultsHtml);
+                      },
+                      error: function (xhr, status, error) {
+                          console.error(xhr.responseText);
+                      }
+                  });
+              });
+
+              $(document).on('click', '.result-item', function () {
+                  var selectedCode = $(this).data('code');
+                  $('#txtEnquiryCode').val(selectedCode);
+                  $('#resultsContainer').empty();
+                  $('#searchbtn').prop('disabled', false);
+              });
+          });
+
+          // Initialize row index
+          let rowIndex = 1;
+          // Show or hide the duct length field based on the dropdown selection
+          $('#drpBendDucting').on('change', function () {
+              const selectedValue = $(this).val();
+              if (selectedValue === 'Duct') {
+                  $('#dicductlength').show();
+              } else {
+                  $('#dicductlength').hide();
+                  $('#txtDuctLength').val(''); // Clear length field if not "Duct"
+              }
+          });
+
+          // Function to update the hidden field with the serialized data
+          function updateHiddenField() {
+              const ductingList = [];
+              debugger;
+              // Collect data from the table rows
+              $('#componentsTable tbody tr').each(function () {
+                  const bendType = $(this).find('.bend-type').text();
+                  const ductLength = $(this).find('.duct-length').text();
+                  ductingList.push({
+                      BendType: bendType,
+                      DuctLength: bendType === 'Duct' ? parseInt(ductLength, 10) || null : null
+                  });
+              });
+
+              // Serialize the list as JSON and update the hidden input field
+              $('#hiddenDuctingList').val(JSON.stringify(ductingList));
+          }
+          // Function to update row numbers
+          function updateRowNumbers() {
+              $('#componentsTable tbody tr').each(function (index) {
+                  $(this).find('td:first').text(index + 1); // Update row number
+              });
+          }
+
+          // Add row to the table
+          $('#btnAdd').on('click', function () {
+              const bendType = $('#drpBendDucting').val();
+              const ductLength = $('#txtDuctLength').val();
+
+              // Validation
+              if (!bendType) {
+                  alert('Please select a Bend Type.');
+                  return;
+              }
+              if (bendType === 'Duct' && !ductLength) {
+                  alert('Please enter the Duct Length.');
+                  return;
+              }
+
+              // Append the row with Edit and Delete buttons
+              const newRow = `
+              <tr>
+                  <td>${rowIndex++}</td>
+                  <td class="bend-type">${bendType}</td>
+                  <td class="duct-length">${bendType === 'Duct' ? ductLength : '-'}</td>
+                  <td>
+                      <button type="button" class="btn btn-warning btn-sm edit-row">Edit</button>
+                      <button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
+                  </td>
+              </tr>
+          `;
+              $('#componentsTable tbody').append(newRow);
+
+              // Update the hidden field
+              updateHiddenField();
+
+          });
+
+          // Handle Delete button click
+          $('#componentsTable').on('click', '.delete-row', function () {
+              $(this).closest('tr').remove(); // Remove the row
+              updateRowNumbers(); // Update row numbers after deletion
+              updateHiddenField(); // Update the hidden field
+          });
+
+          // Handle Edit button click
+          $('#componentsTable').on('click', '.edit-row', function () {
+              const row = $(this).closest('tr');
+              const bendType = row.find('.bend-type').text();
+              const ductLength = row.find('.duct-length').text();
+
+              // Populate dropdown and input field for editing
+              $('#drpBendDucting').val(bendType);
+              if (bendType === 'Duct') {
+                  $('#dicductlength').show();
+                  $('#txtDuctLength').val(ductLength);
+              } else {
+                  $('#dicductlength').hide();
+                  $('#txtDuctLength').val('');
+              }
+
+              // Remove the row from the table temporarily
+              row.remove();
+              updateRowNumbers(); // Update row numbers after removal
+              updateHiddenField(); // Update the hidden field
+          });
+
+          $("#btnWaterColumn").on("click", function () {
+
+              // Step 1: Calculate bendCount from the first grid
+              var bendCount = 0;
+              $("#componentsTable tbody tr").each(function () {
+                  debugger;
+                  var bendType = $(this).find(".bend-type").text(); // Adjust as per your grid
+                  if (bendType.includes("Bend")) { // Check if bendType contains the word "Bend"
+                      bendCount += 1; // Increment bend count by 1 for each match
+                  }
+              });
+              $.ajax({
+                  url: '/PaintBooth/WaterColumnCalculations',
+                  type: 'GET',
+                  success: function (data) {
+                      var tableBody = $("#pressureDropBody");
+                      tableBody.empty(); // Clear existing rows
+
+                      // Initialize grand total variable
+                      var grandTotal = 0;
+
+
+
+                      // Check if 'pressureDropDetails' is an array before using forEach
+                      if (Array.isArray(data.pressureDropDetails) && data.pressureDropDetails.length > 0) {
+                          // Iterate over the pressureDropDetails array and append rows
+                          $.each(data.pressureDropDetails, function (index, item) {
+                              // Default quantity for 90 Deg. Bend
+                              var quantity = item.description === "90 Deg. Bend" ? bendCount : "";
+                              console.log(`Description: ${item.description}, Quantity: ${quantity}`); // Debug log
+
+                              tableBody.append(`
+                              <tr>
+                                      <td><input type="checkbox" class="select-row-checkbox" data-id="${item.itemNumber}" checked></td> <!-- Checkboxes checked by default -->
+                                  <td style="text-align: center;">${item.itemNumber}</td>
+                                  <td style="text-align: center;">${item.description}</td>
+                                  <td style="text-align: center;">${item.pressureDrop_mm}</td>
+                                  <td><input type="number" class="quantity-input" data-id="${item.itemNumber}" style="width: 80px; text-align: center;" value="${quantity}"></td>
+                                  <td><input type="number" class="total-input" data-id="${item.itemNumber}" readonly style="width: 80px; text-align: center;"></td>
+                              </tr>
+                          `);
+                          });
+
+                          // Add event listeners (checkbox change, quantity input change, etc.)
+                          addEventListeners();
+
+                      } else {
+                          tableBody.append('<tr><td colspan="6">No records found</td></tr>');
+                      }
+
+                      // Function to add all event listeners for the new grid
+                      function addEventListeners() {
+                          $(".select-row-checkbox").on("change", function () {
+                              var row = $(this).closest("tr"); // Get the row of the clicked checkbox
+                              if (!$(this).prop("checked")) {
+                                  // Disable Quantity and Total inputs when checkbox is unchecked
+                                  row.find(".quantity-input, .total-input").prop("disabled", true);
+                                  // Clear the total if the checkbox is unchecked
+                                  row.find(".total-input").val("");
+                              } else {
+                                  // Enable Quantity and Total inputs when checkbox is checked
+                                  row.find(".quantity-input, .total-input").prop("disabled", false);
+                              }
+                              // Update the grand total when the checkbox is toggled
+                              updateGrandTotal();
+                          });
+
+                          $(".quantity-input").on("input", function () {
+                              var quantity = parseFloat($(this).val());
+                              var pressureDrop = parseFloat($(this).closest('tr').find('td:nth-child(4)').text()); // Pressure Drop is in 4th column
+                              var totalInput = $(this).closest('tr').find('.total-input');
+
+                              // Calculate total if quantity and pressureDrop are numbers
+                              if (!isNaN(quantity) && !isNaN(pressureDrop)) {
+                                  var total = quantity * pressureDrop;
+                                  totalInput.val(total.toFixed(2)); // Update the Total textbox
+                              } else {
+                                  totalInput.val(""); // Clear total if invalid input
+                              }
+
+                              // Recalculate the grand total
+                              updateGrandTotal();
+                          });
+
+                          // Add event listener for addition factor input change
+                          $("#additionFactor").on("input", function () {
+                              updateGrandTotal(); // Update grand total when the addition factor changes
+                          });
+                      }
+
+                      // Update grand total based on row totals
+                      function updateGrandTotal() {
+                          grandTotal = 0;
+                          $(".total-input").each(function () {
+                              // Only add to grand total if the row is not disabled
+                              if (!$(this).closest('tr').find('.select-row-checkbox').prop("checked")) {
+                                  return; // Skip this row if the checkbox is unchecked
+                              }
+
+                              var rowTotal = parseFloat($(this).val());
+                              if (!isNaN(rowTotal)) {
+                                  grandTotal += rowTotal;
+                              }
+                          });
+
+                          // Get the value from the addition factor input field
+                          var additionFactor = parseFloat($("#additionFactor").val()) || 0;
+                          grandTotal += additionFactor; // Add addition factor to grand total
+
+                          // Display the grand total in the table
+                          $("#grandTotal").text(grandTotal.toFixed(2));
+
+                          // Set the grand total into the Water Column TextBox
+                          $("#txtWater").val(grandTotal.toFixed(2));
+                          // Call calculateBlowerHp when the value is set
+                          calculateBlowerHp();
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      console.error("Error fetching data:", error);
+                  }
+              });
+          });
+
+      });
+      function checkBlowerHpValue() {
+          var blowerHpValue = parseFloat($('#txtHPCalculations').val());
+
+          if (blowerHpValue > 0) {
+              $('#btnFetchRecords').prop('disabled', false);
+
+          } else {
+              $('#btnFetchRecords').prop('disabled', true);
+
+          }
+      }
+      $('#txtD1, #txtD2, #txtlenght,#txtw').on('input', function () {
+          calculateD();
+          calculateCrossSectionalArea();
+          calculateCapacity();
+          calculateFilterFrame();
+          calculatePanels();
+      });
+      $('#txtw1,#txtw2,#txtwidth').on('input', function () {
+          calculateW();
+          calculateCrossSectionalArea();
+          calculateCapacity();
+          //calculateFilterFrame();
+      });
+      $('#txtH1, #txtH2 , #txtheight').on('input', function () {
+          calculateH();
+      });
+      $('#txtVelocityofBlower, #txtVelocityofFilterFrame').on('input', function () {
+          calculateCapacity();
+          calculateFilterFrame();
+      });
+      $('#txtD').on('input', function () {
+          calculatePanels(standardPanelSize)
+          updatePanels();
+          calculateStandardPanels();
+      });
+
+      $("#txtD, #txtStandardPanels").on("input", updatePanels);
+      $("#chkMakeItEqual").change(updatePanels);
+      $('#txtH').on('input', function () {
+          calculateStandardPanelsforH();
+          updatePanelSizeDropdownForH();
+      });
+      $('#txtWater, #txtCapacityofBlowerRoundOf').on('input', function () {
+          calculateBlowerHp();
+      });
+
+      $('#txtCapacityofBlowerRoundOfmpersec, #txtVelocityofFilterFrame').on('input', function () {
+          calculateFilterFrame();
+      });
+      $("#txtw").on("input", updateTxtW3);
+      // Function to calculate and update value of D textbox
+      function calculateD() {
+          var D1 = parseFloat($('#txtD1').val()) || 0;
+          var D2 = parseFloat($('#txtD2').val()) || 0;
+          var Depth = parseFloat($('#txtlenght').val()) || 0;
+          var D = D1 + D2 + Depth;
+          $('#txtD').val(D);
+      }
+      function calculateW() {
+          var W1 = parseFloat($('#txtw1').val()) || 0;
+          var W2 = parseFloat($('#txtw2').val()) || 0;
+          var W3 = parseFloat($('#txtwidth').val()) || 0;//txtWidth means Component width
+          var W = W1 + W2 + W3;
+          $('#txtw').val(W);
+      }
+      let isManualChange = false;
+      function calculateH() {
+
+          if (!isManualChange) { // Only calculate if not manually changed
+              var H1 = parseFloat($('#txtH1').val()) || 0;
+              var H2 = parseFloat($('#txtH2').val()) || 0;
+              var H3 = parseFloat($('#txtheight').val()) || 0;
+              var H = H1 + H2 + H3;
+              $('#txtH').val(H);
+          }
+      }
+      function calculateCrossSectionalArea() {
+
+          var paintBoothWidth = parseFloat($('#txtw').val()) || 0;
+
+          var paintBoothHeight = parseFloat($('#txtH').val()) || 0;
+
+          var paintBoothWidthinMeter = paintBoothWidth / 1000;
+
+          var paintBoothHeightinMeter = paintBoothHeight / 1000;
+
+          var crossArea = paintBoothWidthinMeter * paintBoothHeightinMeter;
+
+          $('#txtCrossSectionalArea').val(crossArea.toFixed(2))
+      }
+      function calculateCapacity() {
+          var totalCrossSectionalArea = parseFloat($('#txtCrossSectionalArea').val()) || 0;
+
+          var Velocity = parseFloat($('#txtVelocityofBlower').val()) || 0;
+
+          var TotalCapacity = totalCrossSectionalArea * Velocity;
+
+          $('#txtCapacityofBlower').val(TotalCapacity.toFixed(3));
+          var capacityinHour = TotalCapacity * 3600;
+          $('#txtCapacityofBlowerinH').val(capacityinHour.toFixed(3));
+
+          $('#txtCapacityofBlowerinHReadonly').val(capacityinHour.toFixed(2));
+          $('#txtCrossSectionalArearead').val(TotalCapacity.toFixed(2));
+      }
+      function convertToCubicMetersPerSecond(m3PerHr) {
+          return (parseFloat(m3PerHr) / 3600).toFixed(3); // Convert and format to 3 decimal places
+      }
+      // Event handler for when the value changes
+      $('#txtCapacityofBlowerRoundOf').on('input', function () {
+          var m3PerHr = $(this).val();
+          var m3PerSec = convertToCubicMetersPerSecond(m3PerHr);
+          $('#txtCapacityofBlowerRoundOfmpersec').val(m3PerSec);
+          calculateFilterFrame();
+      });
+      //for D
+      //added fuction for non standard and standard
+      function handlePanelTypeChange() {
+          var selectedValue = $('#drpPaneltype').val();
+          if (selectedValue == "1") { // Standard Panel selected
+              $('#txtstandardPanelDropdown').show();
+              $('#NonStandardPanel').hide();
+              $('#halfPanelSize').hide();
+          } else if (selectedValue == "2") { // Non-Standard Panel selected
+              $('#txtstandardPanelDropdown').hide();
+              $('#halfPanelSize').hide();
+              $('#NonStandardPanel').show();
+              $('#divStandardSize').hide();
+          } else { // Handle other cases if needed
+              $('#txtstandardPanelDropdown').hide();
+              $('#halfPanelSize').hide();
+              $('#divHalfSize').hide();
+              $('#NonStandardPanel').hide();
+              $('#divStandardSize').hide();
+          }
+      }
+      //Calulate filter area old code
+      function calculateFilterFrame() {
+
+          var roundedValue = parseFloat($('#txtCapacityofBlowerRoundOfmpersec').val()) || 0;
+          console.log("roundedValue", roundedValue);
+          // Get the original blower capacity value
+          var originalValue = parseFloat($('#txtCapacityofBlower').val()) || 0;
+
+          // Determine which value to use: rounded if it's greater than 0, otherwise original
+          var Capacity = roundedValue > 0 ? roundedValue : originalValue;
+          console.log("Capacity", Capacity);
+
+          // Get the velocity of the filter frame
+          var Velocityoffilter = parseFloat($('#txtVelocityofFilterFrame').val()) || 0;
+
+          // Calculate the total filter area
+          var TotalFilterArea = 0;
+          if (Velocityoffilter > 0) {
+              TotalFilterArea = Capacity / Velocityoffilter;
+          }
+          // Update the filter area field with the calculated value
+          $('#txtFilterArea').val(TotalFilterArea.toFixed(2));
+      }
+      function calculatePanels(standardPanelSize) {
+          var D = parseFloat($('#txtD').val()) || 0;
+          var standardPanels = Math.floor(D / standardPanelSize);
+          var remainingPanels = D % standardPanelSize;
+          $('#txtstandardPanels').val(standardPanels);
+          $('#txtremaingPanels').val(remainingPanels);
+      }
+      function calculateStandardPanels(standardPanelSize) {
+          var D = parseFloat($('#txtD').val()) || 0;
+          var standardPanels = Math.floor(D / standardPanelSize);
+          var product = standardPanels * standardPanelSize;
+
+          $('#txt2panelsize').val(product);
+          updatePanelSizeDropdown(standardPanels);
+
+          // Manage element visibility based on user selection
+          handlePanelSizeVisibility(standardPanelSize);
+      }
+      function handlePanelSizeVisibility(standardPanelSize) {
+          var handlepanelsize = standardPanelSize;
+          console.log("handlepanelsize", handlepanelsize);
+          var selectedValue = $('#panelSizeDropdown').val();
+          var halfPanelSize = standardPanelSize/2;
+          $('#txt2panelsize').show();
+
+          // Use standardPanelSize directly here
+          if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
+              selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
+              selectedValue === "13" || selectedValue === "15") {
+              $('#txthalfpanelsize').hide();
+              $('#divStandardSize').show();
+              $('#divHalfSize').hide();
+              $('#txt2panelsize').val(standardPanelSize); // Use the passed variable
+          } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
+              selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
+              selectedValue === "14") {
+              $('#txthalfpanelsize').val(halfPanelSize).show();
+              $('#divStandardSize').show();
+              $('#divHalfSize').show();
+              $('#txt2panelsize').val(standardPanelSize); // Use the passed variable
+          }
+
+          updatePanelSize(selectedValue, standardPanelSize);
+      }
+      function updatePanelSizeDropdown(quotient) {
+          var panelSizeDropdown = $('#panelSizeDropdown');
+          panelSizeDropdown.empty();  // Clear previous options
+
+          if (quotient === 1) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="1">1</option>');
+              // panelSizeDropdown.append('<option value="2">1.5</option>');
+              panelSizeDropdown.append('<option value="3">2</option>');
+          } else if (quotient === 2) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="3">2</option>');
+              // panelSizeDropdown.append('<option value="4">2.5</option>');
+              panelSizeDropdown.append('<option value="5">3</option>');
+          } else if (quotient === 3) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="5">3</option>');
+              // panelSizeDropdown.append('<option value="6">3.5</option>');
+              panelSizeDropdown.append('<option value="7">4</option>');
+          } else if (quotient === 4) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="7">4</option>');
+              // panelSizeDropdown.append('<option value="8">4.5</option>');
+              panelSizeDropdown.append('<option value="9">5</option>');
+          } else if (quotient === 5) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="9">5</option>');
+              // panelSizeDropdown.append('<option value="10">5.5</option>');
+              panelSizeDropdown.append('<option value="11">6</option>');
+          } else if (quotient === 6) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="11">6</option>');
+              // panelSizeDropdown.append('<option value="12">6.5</option>');
+              panelSizeDropdown.append('<option value="13">7</option>');
+          } else if (quotient === 7) {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+              panelSizeDropdown.append('<option value="13">7</option>');
+              // panelSizeDropdown.append('<option value="14">7.5</option>');
+          } else {
+              panelSizeDropdown.append('<option value="">--Select--</option>');
+          }
+      }
+      function updatePanelSize(selectedValue, panelWidth) {
+          var panelSize = panelWidth; // Use the passed panelWidth instead of a hardcoded default
+          switch (selectedValue) {
+              case "1":
+                  panelSize = panelWidth; // Use the dynamic value
+                  break;
+              case "2":
+                  panelSize = panelWidth; // Use the dynamic value
+                  break;
+              case "3":
+                  panelSize = panelWidth * 2; // Use the dynamic value
+                  break;
+              case "4":
+                  panelSize = panelWidth * 2; // Use the dynamic value
+                  break;
+              case "5":
+                  panelSize = panelWidth * 3; // Use the dynamic value
+                  break;
+              case "6":
+                  panelSize = panelWidth * 3; // Use the dynamic value
+                  break;
+              case "7":
+                  panelSize = panelWidth * 4; // Use the dynamic value
+                  break;
+              case "8":
+                  panelSize = panelWidth * 4; // Use the dynamic value
+                  break;
+              case "9":
+                  panelSize = panelWidth * 5; // Use the dynamic value
+                  break;
+              case "10":
+                  panelSize = panelWidth * 5; // Use the dynamic value
+                  break;
+              case "11":
+                  panelSize = panelWidth * 6; // Use the dynamic value
+                  break;
+              case "12":
+                  panelSize = panelWidth * 6; // Use the dynamic value
+                  break;
+              case "13":
+                  panelSize = panelWidth * 7; // Use the dynamic value
+                  break;
+              case "14":
+                  panelSize = panelWidth * 7; // Use the dynamic value
+                  break;
+              default:
+                  panelSize = panelWidth; // Default case using the dynamic value
+                  break;
+          }
+          console.log("panelsizein", panelSize);
+          $('#txt2panelsize').val(panelSize);
+      }
+      function calculateBlowerHp() {
+          // Get the values from the input fields
+          var capacityReadonly = parseFloat($('#txtCapacityofBlowerinHReadonly').val()) || 0;
+          var capacityRoundOf = parseFloat($('#txtCapacityofBlowerRoundOf').val()) || 0;
+          var waterColumn = parseFloat($('#txtWater').val()) || 0;
+
+          // Use the rounded off value if it's provided, otherwise use the readonly value
+          var capacity = capacityRoundOf > 0 ? capacityRoundOf : capacityReadonly;
+
+          // Perform the calculation
+          var blowerHp = (capacity * waterColumn) / (3600 * 75 * 0.67);
+
+          // Set the calculated value in the txtHPCalculations textbox
+          $('#txtHPCalculations').val(blowerHp.toFixed(2)); // Round to 2 decimal places
+
+          // Check the value after updating it
+          checkBlowerHpValue(); // Ensure the button state is updated
+      }
+      function checkValueofH() {
+          var HValue = parseFloat($("#txtH").val());
+          if (HValue > 1140) {
+              $("#divStandardPanelsH").show();
+              $("#divRemainingPanelsH").show();
+              $("#divmakeitequalH").show();
+              var standardPanelsByHeight = Math.floor(HValue / 2390);
+              var remainingHeightpanels = HValue - (standardPanelsByHeight * 2390);
+              $("#txtstandardPanelsByH").val(standardPanelsByHeight);
+              $("#txtremaingPanelsByH").val(remainingHeightpanels);
+          } else {
+              $("#divStandardPanelsH").hide();
+              $("#divRemainingPanelsH").hide();
+              $("#txtstandardPanelsByH").val('');
+              $("#txtremaingPanelsByH").val('');
+              $("#divmakeitequalH").hide();
+          }
+      }
+         
+
+      //added no of equalpanels calculations
+      function updatePanels() {
+          var d = parseFloat($("#txtD").val());
+          var standardPanels = parseFloat($("#txtstandardPanels").val());
+          if (!isNaN(d)) {
+              var ratio = d / 1140;
+              if ($("#chkMakeItEqual").is(":checked")) {
+                  var equalPanels = Math.ceil(ratio);
+
+                  $("#txtTotalpanels").val(equalPanels);
+                  var equalPanelWidth = d / equalPanels;
+                  $("#txtEqualPanels").val(equalPanelWidth);
+              } else {
+                  $("#txtEqualPanels").val('1140');
+              }
+          }
+      }
+      function NextMoveToFilterPage() {
+          var FilterFrame = $('#txtFilterArea').val();
+          var W = $('#txtw').val();
+          var H = parseFloat($('#txtH1').val()) + parseFloat($('#txtheight').val());
+          var D = $('#txtD').val();
+          var Lights = '@Model.Lights';  // Injecting the Lights value into JavaScript
+          console.log("Lights", Lights);
+          window.location.href = '/PaintBooth/FilterFrameCalculations?FilterArea=' + FilterFrame + '&w=' + W + '&h=' + H + '&d=' + D + '&lights=' + Lights;
+         // window.location.href = '/PaintBooth/FilterFrameCalculations?FilterArea=' + FilterFrame + '&w=' + W + '&h=' + H + '&d=' + D;
+
+      }
   
-    function calculatePanels(standardPanelSize) {
-        var D = parseFloat($('#txtD').val()) || 0;                  
-        var standardPanels = Math.floor(D / standardPanelSize);
-        var remainingPanels = D % standardPanelSize;
-        $('#txtstandardPanels').val(standardPanels);
-        $('#txtremaingPanels').val(remainingPanels);
-    }
-    function calculateStandardPanels(standardPanelSize) {
-        var D = parseFloat($('#txtD').val()) || 0;
-        var standardPanels = Math.floor(D / standardPanelSize);
-        var product = standardPanels * standardPanelSize;
-
-        $('#txt2panelsize').val(product);
-        updatePanelSizeDropdown(standardPanels);
-
-        // Manage element visibility based on user selection
-        handlePanelSizeVisibility(standardPanelSize);
-    }
-    function handlePanelSizeVisibility(standardPanelSize) {
-        var handlepanelsize = standardPanelSize;
-        console.log("handlepanelsize", handlepanelsize);
-        var selectedValue = $('#panelSizeDropdown').val();
-        var halfPanelSize = standardPanelSize/2;
-        $('#txt2panelsize').show();
-
-        // Use standardPanelSize directly here
-        if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
-            selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
-            selectedValue === "13" || selectedValue === "15") {
-            $('#txthalfpanelsize').hide();
-            $('#divStandardSize').show();
-            $('#divHalfSize').hide();
-            $('#txt2panelsize').val(standardPanelSize); // Use the passed variable
-        } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
-            selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
-            selectedValue === "14") {
-            $('#txthalfpanelsize').val(halfPanelSize).show();
-            $('#divStandardSize').show();
-            $('#divHalfSize').show();
-            $('#txt2panelsize').val(standardPanelSize); // Use the passed variable
-        }
-
-        updatePanelSize(selectedValue, standardPanelSize);
-    }
-    function updatePanelSizeDropdown(quotient) {
-        var panelSizeDropdown = $('#panelSizeDropdown');
-        panelSizeDropdown.empty();  // Clear previous options
-
-        if (quotient === 1) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="1">1</option>');
-            // panelSizeDropdown.append('<option value="2">1.5</option>');
-            panelSizeDropdown.append('<option value="3">2</option>');
-        } else if (quotient === 2) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="3">2</option>');
-            // panelSizeDropdown.append('<option value="4">2.5</option>');
-            panelSizeDropdown.append('<option value="5">3</option>');
-        } else if (quotient === 3) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="5">3</option>');
-            // panelSizeDropdown.append('<option value="6">3.5</option>');
-            panelSizeDropdown.append('<option value="7">4</option>');
-        } else if (quotient === 4) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="7">4</option>');
-            // panelSizeDropdown.append('<option value="8">4.5</option>');
-            panelSizeDropdown.append('<option value="9">5</option>');
-        } else if (quotient === 5) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="9">5</option>');
-            // panelSizeDropdown.append('<option value="10">5.5</option>');
-            panelSizeDropdown.append('<option value="11">6</option>');
-        } else if (quotient === 6) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="11">6</option>');
-            // panelSizeDropdown.append('<option value="12">6.5</option>');
-            panelSizeDropdown.append('<option value="13">7</option>');
-        } else if (quotient === 7) {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-            panelSizeDropdown.append('<option value="13">7</option>');
-            // panelSizeDropdown.append('<option value="14">7.5</option>');
-        } else {
-            panelSizeDropdown.append('<option value="">--Select--</option>');
-        }
-    }
-    function updatePanelSize(selectedValue, panelWidth) {
-        var panelSize = panelWidth; // Use the passed panelWidth instead of a hardcoded default
-        switch (selectedValue) {
-            case "1":
-                panelSize = panelWidth; // Use the dynamic value
-                break;
-            case "2":
-                panelSize = panelWidth; // Use the dynamic value
-                break;
-            case "3":
-                panelSize = panelWidth * 2; // Use the dynamic value
-                break;
-            case "4":
-                panelSize = panelWidth * 2; // Use the dynamic value
-                break;
-            case "5":
-                panelSize = panelWidth * 3; // Use the dynamic value
-                break;
-            case "6":
-                panelSize = panelWidth * 3; // Use the dynamic value
-                break;
-            case "7":
-                panelSize = panelWidth * 4; // Use the dynamic value
-                break;
-            case "8":
-                panelSize = panelWidth * 4; // Use the dynamic value
-                break;
-            case "9":
-                panelSize = panelWidth * 5; // Use the dynamic value
-                break;
-            case "10":
-                panelSize = panelWidth * 5; // Use the dynamic value
-                break;
-            case "11":
-                panelSize = panelWidth * 6; // Use the dynamic value
-                break;
-            case "12":
-                panelSize = panelWidth * 6; // Use the dynamic value
-                break;
-            case "13":
-                panelSize = panelWidth * 7; // Use the dynamic value
-                break;
-            case "14":
-                panelSize = panelWidth * 7; // Use the dynamic value
-                break;
-            default:
-                panelSize = panelWidth; // Default case using the dynamic value
-                break;
-        }
-        console.log("panelsizein", panelSize);
-        $('#txt2panelsize').val(panelSize);
-    }
-
-
-    function calculateBlowerHp() {
-        // Get the values from the input fields
-        var capacityReadonly = parseFloat($('#txtCapacityofBlowerinHReadonly').val()) || 0;
-        var capacityRoundOf = parseFloat($('#txtCapacityofBlowerRoundOf').val()) || 0;
-        var waterColumn = parseFloat($('#txtWater').val()) || 0;
-
-        // Use the rounded off value if it's provided, otherwise use the readonly value
-        var capacity = capacityRoundOf > 0 ? capacityRoundOf : capacityReadonly;
-
-        // Perform the calculation
-        var blowerHp = (capacity * waterColumn) / (3600 * 75 * 0.67);
-
-        // Set the calculated value in the txtHPCalculations textbox
-        $('#txtHPCalculations').val(blowerHp.toFixed(2)); // Round to 2 decimal places
-
-        // Check the value after updating it
-        checkBlowerHpValue(); // Ensure the button state is updated
-    }
-   
-   
-    function checkValueofH() {
-        var HValue = parseFloat($("#txtH").val());
-        if (HValue > 1140) {
-            $("#divStandardPanelsH").show();
-            $("#divRemainingPanelsH").show();
-            $("#divmakeitequalH").show();
-            var standardPanelsByHeight = Math.floor(HValue / 2390);
-            var remainingHeightpanels = HValue - (standardPanelsByHeight * 2390);
-            $("#txtstandardPanelsByH").val(standardPanelsByHeight);
-            $("#txtremaingPanelsByH").val(remainingHeightpanels);
-        } else {
-            $("#divStandardPanelsH").hide();
-            $("#divRemainingPanelsH").hide();
-            $("#txtstandardPanelsByH").val('');
-            $("#txtremaingPanelsByH").val('');
-            $("#divmakeitequalH").hide();
-        }
-    }
-    //added no of equalpanels calculations
-    function updatePanels() {
-        var d = parseFloat($("#txtD").val());
-        var standardPanels = parseFloat($("#txtstandardPanels").val());
-        if (!isNaN(d)) {
-            var ratio = d / 1140;
-            if ($("#chkMakeItEqual").is(":checked")) {
-                var equalPanels = Math.ceil(ratio);
-
-                $("#txtTotalpanels").val(equalPanels);
-                var equalPanelWidth = d / equalPanels;
-                $("#txtEqualPanels").val(equalPanelWidth);
-            } else {
-                $("#txtEqualPanels").val('1140');
-            }
-        }
-    }
-    function NextMoveToFilterPage() {
-        var FilterFrame = $('#txtFilterArea').val();
-        var W = $('#txtw').val();
-        var H = parseFloat($('#txtH1').val()) + parseFloat($('#txtheight').val());
-        var D = $('#txtD').val();
-        var Lights = '@Model.Lights';  // Injecting the Lights value into JavaScript
-        console.log("Lights", Lights);
-        window.location.href = '/PaintBooth/FilterFrameCalculations?FilterArea=' + FilterFrame + '&w=' + W + '&h=' + H + '&d=' + D + '&lights=' + Lights;
-       // window.location.href = '/PaintBooth/FilterFrameCalculations?FilterArea=' + FilterFrame + '&w=' + W + '&h=' + H + '&d=' + D;
-
-    }
-    function updatePanelsByW() {
-        var W = parseFloat($("#txtw").val());
-        var standardPanelsBy = parseFloat($("#txtstandardPanelsByW").val());
-        if (!isNaN(W)) {
-            var ratio = W / 2390;
-            if ($("#chkMakeItEqualByW").is(":checked")) {
-                var TotalequalPanels = Math.ceil(ratio);
-
-                $("#txtTotalpanelsByW").val(TotalequalPanels);
-                var equalPanelWidthby = W / TotalequalPanels;
-                $("#txtEqualPanelsByW").val(equalPanelWidthby);
-            } else {
-                $("#txtEqualPanelsByW").val('');
-            }
-        }
-    }
-    function updatePanelsByH() {
-        var H = parseFloat($("#txtH").val());
-        var standardPanelsByH = parseFloat($("#txtstandardPanelsByH").val());
-        if (!isNaN(H)) {
-            var ratio = H / 2390;
-            if ($("#chkMakeItEqualByH").is(":checked")) {
-                var TotalequalPanelsH = Math.ceil(ratio);
-                $("#txtTotalpanelsByH").val(TotalequalPanelsH);
-                var equalPanelWidthbyH = H / TotalequalPanelsH;
-                $("#txtEqualPanelsByH").val(equalPanelWidthbyH);
-            } else {
-                $("#txtEqualPanelsByH").val('');
-            }
-        }
-    }
-    function updateTxtW3() {
-        var txtW = parseFloat($("#txtw").val()) || 0;
-        var txtW3 = txtW / 2;
-        $("#txtw3").val(txtW3);
-    }
-    function checkWValue() {
-        var wValue = parseFloat($("#txtw").val());
-        if (wValue > 2390) {
-            $("#divStandardPanels").show();
-            $("#divRemainingPanels").show();
-            $("#divmakeitequal").show();
-            var standardPanelsByWidth = Math.floor(wValue / 2390);
-            var remainingWidthpanels = wValue - (standardPanelsByWidth * 2390);
-            $("#txtstandardPanelsByW").val(standardPanelsByWidth);
-            $("#txtremaingPanelsByW").val(remainingWidthpanels);
-        } else {
-            $("#divStandardPanels").hide();
-            $("#divRemainingPanels").hide();
-            $("#txtstandardPanelsByW").val('');
-            $("#txtremaingPanelsByW").val('');
-            $("#divmakeitequal").hide();
-        }
-    }
-   
-    //this code for W
-    function calculatePanelsforW(standardPanelHeight) {
-        var height = standardPanelHeight;
-        console.log("height", height);
-        var wValue = parseFloat($("#txtw").val());     
-        if (wValue && height) {
-            var standardPanelsByWidth = Math.floor(wValue / height);
-            console.log("standardPanelsByWidth", standardPanelsByWidth);
-            var remainingWidthpanels = wValue - (standardPanelsByWidth * height);
-            // Update the textboxes
-            $("#txtstandardPanelsByW").val(standardPanelsByWidth);
-            $("#txtremaingPanelsByW").val(remainingWidthpanels);
-        }
-    }
-    function calculateStandardPanelsforW(standardPanelHeight) {
-        var W = parseFloat($('#txtw').val()) || 0;
-
-        var panelheightCa = standardPanelHeight;
-        console.log("Standard Panels Height:", panelheightCa);
-        // var standardPanelSize = 2390;
-        var standardPanels = Math.floor(W / standardPanelHeight);
-
-        var product = standardPanels * standardPanelHeight;
-        $('#txt2panelsizeforW').val(product);
-        updateDropdownOptions(standardPanels);
-        showoptionsindropdownforW(standardPanelHeight);
-    }
-    function updateDropdownOptions(standardPanels) {
-        // Clear previous dropdown options
-        var dropdown = $('#panelSizeDropdownforW');
-        var currentValue = dropdown.val(); // Get the currently selected value
-
-        dropdown.empty(); // Clear existing options
-       
-
-        // Define all dropdown options
-        var options = [
-            { Text: "1", Value: "1" },
-            // { Text: "1.5", Value: "2" },
-            { Text: "2", Value: "3" },
-            // { Text: "2.5", Value: "4" },
-            { Text: "3", Value: "5" },
-            // { Text: "3.5", Value: "6" },
-            { Text: "4", Value: "7" },
-            // { Text: "4.5", Value: "8" },
-            { Text: "5", Value: "9" },
-            // { Text: "5.5", Value: "10" },
-            { Text: "6", Value: "11" },
-            // { Text: "6.5", Value: "12" },
-            { Text: "7", Value: "13" },
-            // { Text: "7.5", Value: "14" }
-        ];
-
+      function updatePanelsByH() {
+          var H = parseFloat($("#txtH").val());
+          var standardPanelsByH = parseFloat($("#txtstandardPanelsByH").val());
+          if (!isNaN(H)) {
+              var ratio = H / 2390;
+              if ($("#chkMakeItEqualByH").is(":checked")) {
+                  var TotalequalPanelsH = Math.ceil(ratio);
+                  $("#txtTotalpanelsByH").val(TotalequalPanelsH);
+                  var equalPanelWidthbyH = H / TotalequalPanelsH;
+                  $("#txtEqualPanelsByH").val(equalPanelWidthbyH);
+              } else {
+                  $("#txtEqualPanelsByH").val('');
+              }
+          }
+      }
+      function updateTxtW3() {
+          var txtW = parseFloat($("#txtw").val()) || 0;
+          console.log("txtW",txtW);
+          var txtW3 = txtW / 2;
+          $("#txtw3").val(txtW3);
+      }
+      // function checkWValue() {
+      //         var wValue = parseFloat($("#txtw").val());
+      //         var standardPanelsByWidth = Math.floor(wValue / 2390);
+      //         var remainingWidthpanels = wValue - (standardPanelsByWidth * 2390);
+      //         $("#txtstandardPanelsByW").val(standardPanelsByWidth);
+      //         $("#txtremaingPanelsByW").val(remainingWidthpanels);
+          
+      // }
+      //this code for W
+      function calculatePanelsforW() {
+          var height = 2390;
         
-        let newOptions;
-        if (standardPanels === 1) {
-            // Add first 3 options
-            newOptions = options.slice(0, 2); // "1", "1.5", "2"
-        } else if (standardPanels === 2) {
-            // Add options for standardPanels equal to 2
-            newOptions = options.slice(1, 3); // "2", "2.5", "3"
-        } else if (standardPanels === 3) {
-            // Add options for standardPanels equal to 3
-            newOptions = options.slice(2, 4); // "3.5", "4", "4.5"
-        } else if (standardPanels === 4) {
-            // Add options for standardPanels equal to 4
-            newOptions = options.slice(3, 5); // "5", "5.5", "6"
-        } else {
-            // Add all remaining options if standardPanels is larger
-            newOptions = options.slice(11); // "6.5", "7", "7.5"
-        }
+          var wValue = parseFloat($("#txtw").val());
+          if (wValue && height) {
+              var standardPanelsByWidth = Math.floor(wValue / height);
+             
+              var remainingWidthpanels = wValue - (standardPanelsByWidth * height);
+              
+              $("#txtstandardPanelsByW").val(standardPanelsByWidth);
+              $("#txtremaingPanelsByW").val(remainingWidthpanels);
+          }
+      }
+      // function calculateStandardPanelsforW(standardPanelHeight) {
+      //     var W = parseFloat($('#txtw').val()) || 0;
 
-        // Add new options to the dropdown
-        addOptionsToDropdown(dropdown, newOptions);
+      //     var panelheightCa = standardPanelHeight;
+      //     console.log("Standard Panels Height:", panelheightCa);
+      //     // var standardPanelSize = 2390;
+      //     var standardPanels = Math.floor(W / standardPanelHeight);
 
-        // Set the previously selected value, if it's still available in the new options
-        if (newOptions.some(option => option.Value === currentValue)) {
-            dropdown.val(currentValue); // Re-select the previous value
-        } else {
-            dropdown.val(''); // Reset the value if the previous option is not available
-        }
-        
-    }
-    // Helper function to add options to the dropdown
-    function addOptionsToDropdown(dropdown, options) {
-        options.forEach(function (option) {
-            dropdown.append($('<option>', {
-                value: option.Value,
-                text: option.Text
-            }));
-        });
-    }
-    // Define the function outside document ready
-    function showoptionsindropdownforW(standardPanelHeight) {
-        var handlePanelheight = standardPanelHeight;       
-        var selectedValue = $('#panelSizeDropdownforW').val();      
-
-        var halfPanelSize = handlePanelheight/2; // Adjust as needed
-
-        if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
-            selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
-            selectedValue === "13" || selectedValue === "15") {
-
-            $('#txthalfpanelsizeforW').hide();
-            $('#divStandardSizeforW').show();
-            $('#divHalfSizeforW').hide();
-            $('#txt2panelsizeforW').show();
-        } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
-            selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
-            selectedValue === "14") {
-
-            $('#txthalfpanelsizeforW').val(halfPanelSize).show();
-            $('#divStandardSizeforW').show();
-            $('#divHalfSizeforW').show();
-            $('#txt2panelsizeforW').show();
-        } else {
-            // If no valid value is selected, hide everything
-            $('#divStandardSizeforW').hide();
-            $('#divHalfSizeforW').hide();
-            $('#txthalfpanelsizeforW').val('');
-            $('#txt2panelsizeforW').val('');
-        }
-    }
-    function showvalueasperchangedropdownforW(standardPanelHeight) {
-        var selectedText = $('#panelSizeDropdownforW option:selected').text();
-       
-        // Initialize newTextboxValue
-        var newTextboxValue;
-
-        // Determine the textbox value based on selected text
-        switch (selectedText) {
-            case "1":
-            case "1.5":
-                newTextboxValue = standardPanelHeight; // Same value for 1 and 1.5
-                break;
-            case "2":
-            case "2.5":
-                newTextboxValue = 2 * standardPanelHeight; // Same value for 2 and 2.5
-                break;
-            case "3":
-            case "3.5":
-                newTextboxValue = 3 * standardPanelHeight; // Same value for 3 and 3.5
-                break;
-            case "4":
-            case "4.5":
-                newTextboxValue = 4 * standardPanelHeight; // Same value for 4 and 4.5
-                break;
-            default:
-                // Convert the selected text to a number for other values
-                var multiplier = parseFloat(selectedText);
-                newTextboxValue = multiplier * standardPanelHeight; // Calculate new value for all other selections
-                break;
-        }
-        console.log("newTextboxValue:", newTextboxValue);
-        // Update the textbox with the calculated or selected value
-        $('#txt2panelsizeforW').val(newTextboxValue);
-
-    }
-    //for H calculations
-    function calculateStandardPanelsforH(standardPanelHeight) {
-        var H = parseFloat($('#txtH').val()) || 0;
-
-        var panelheightCa = standardPanelHeight;
-        console.log("Standard Panels Height:", panelheightCa);
-        // var standardPanelSize = 2390;
-        var standardPanels = Math.floor(H / standardPanelHeight);
-
-        var product = standardPanels * standardPanelHeight;
-        $('#txt2panelsizeforH').val(product);
-        updateDropdownOptionsforH(standardPanels);
-        showoptionsindropdownforH(standardPanelHeight);
-    }
-
-    function calculatePanelsforH(standardPanelHeight) {
-        var height = standardPanelHeight;
-        console.log("height", height);
-        var wValue = parseFloat($("#txtH").val());
-        if (wValue && height) {
-            var standardPanelsByHeight = Math.floor(wValue / height);
-            console.log("standardPanelsByWidth", standardPanelsByHeight);
-            var remainingWidthpanels = wValue - (standardPanelsByHeight * height);
-
-            // Update the textboxes
-            $("#txtstandardPanelsByH").val(standardPanelsByHeight);
-            $("#txtremaingPanelsByH").val(remainingWidthpanels);
-        }
-    }
-    function updateDropdownOptionsforH(standardPanels) {
-        // Clear previous dropdown options
-        var dropdown = $('#panelSizeDropdownforH');
-        var currentValue = dropdown.val(); // Get the currently selected value
-        dropdown.empty(); // Clear existing options
-        // Define all dropdown options
-        var options = [
-            { Text: "1", Value: "1" },
-            // { Text: "1.5", Value: "2" },
-            { Text: "2", Value: "3" },
-            // { Text: "2.5", Value: "4" },
-            { Text: "3", Value: "5" },
-            // { Text: "3.5", Value: "6" },
-            { Text: "4", Value: "7" },
-            // { Text: "4.5", Value: "8" },
-            { Text: "5", Value: "9" },
-            // { Text: "5.5", Value: "10" },
-            { Text: "6", Value: "11" },
-            // { Text: "6.5", Value: "12" },
-            { Text: "7", Value: "13" },
-            // { Text: "7.5", Value: "14" }
-        ];
-
-
-        let newOptions;
-        if (standardPanels === 1) {
-            // Add first 3 options
-            newOptions = options.slice(0, 2); // "1", "1.5", "2"
-        } else if (standardPanels === 2) {
-            // Add options for standardPanels equal to 2
-            newOptions = options.slice(1, 3); // "2", "2.5", "3"
-        } else if (standardPanels === 3) {
-            // Add options for standardPanels equal to 3
-            newOptions = options.slice(2, 4); // "3.5", "4", "4.5"
-        } else if (standardPanels === 4) {
-            // Add options for standardPanels equal to 4
-            newOptions = options.slice(3, 5); // "5", "5.5", "6"
-        } else {
-            // Add all remaining options if standardPanels is larger
-            newOptions = options.slice(11); // "6.5", "7", "7.5"
-        }
-
-        // Add new options to the dropdown
-        addOptionsToDropdownforH(dropdown, newOptions);
-
-        // Set the previously selected value, if it's still available in the new options
-        if (newOptions.some(option => option.Value === currentValue)) {
-            dropdown.val(currentValue); // Re-select the previous value
-        } else {
-            dropdown.val(''); // Reset the value if the previous option is not available
-        }
-
-    }
-    function addOptionsToDropdownforH(dropdown, options) {
-        options.forEach(function (option) {
-            dropdown.append($('<option>', {
-                value: option.Value,
-                text: option.Text
-            }));
-        });
-    }
-    function showoptionsindropdownforH(standardPanelHeight) {
-        var handlePanelheight = standardPanelHeight;
-        var selectedValue = $('#panelSizeDropdownforH').val();
-
-        var halfPanelSize = handlePanelheight/2; // Adjust as needed
-
-        if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
-            selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
-            selectedValue === "13" || selectedValue === "15") {
-
-            $('#txthalfpanelsizeforH').hide();
-            $('#divStandardSizeforH').show();
-            $('#divHalfSizeforH').hide();
-            $('#txt2panelsizeforH').show();
-        } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
-            selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
-            selectedValue === "14") {
-
-            $('#txthalfpanelsizeforH').val(halfPanelSize).show();
-            $('#divStandardSizeforH').show();
-            $('#divHalfSizeforH').show();
-            $('#txt2panelsizeforH').show();
-        } else {
-            // If no valid value is selected, hide everything
-            $('#divStandardSizeforH').hide();
-            $('#divHalfSizeforH').hide();
-            $('#txthalfpanelsizeforH').val('');
-            $('#txt2panelsizeforH').val('');
-        }
-    }
-    function showvalueasperchangedropdownforH(standardPanelHeight) {
-        var selectedText = $('#panelSizeDropdownforH option:selected').text();
-        // Initialize newTextboxValue
-        var newTextboxValue;
-
-        // Determine the textbox value based on selected text
-        switch (selectedText) {
-            case "1":
-            case "1.5":
-                newTextboxValue = standardPanelHeight; // Same value for 1 and 1.5
-                break;
-            case "2":
-            case "2.5":
-                newTextboxValue = 2 * standardPanelHeight; // Same value for 2 and 2.5
-                break;
-            case "3":
-            case "3.5":
-                newTextboxValue = 3 * standardPanelHeight; // Same value for 3 and 3.5
-                break;
-            case "4":
-            case "4.5":
-                newTextboxValue = 4 * standardPanelHeight; // Same value for 4 and 4.5
-                break;
-            default:
-                // Convert the selected text to a number for other values
-                var multiplier = parseFloat(selectedText);
-                newTextboxValue = multiplier * standardPanelHeight; // Calculate new value for all other selections
-                break;
-        }
-
-        // Update the textbox with the calculated or selected value
-        $('#txt2panelsizeforH').val(newTextboxValue);
-    }
-    // function bindSettingstatus() {
-    //     $('#txtEnquiryCode').on('keyup', function () {
-    //         var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase
-    //         if (enquiryCode.length > 0) {
-    //             $.ajax({
-    //                 url: '@Url.Action("SearchEnquiryCode", "PaintBooth")',
-    //                 type: 'POST',
-    //                 data: { enquiryCode: enquiryCode },
-    //                 success: function (data) {
-    //                     $('#resultsContainer').empty();
-    //                     console.log(data); // Log data for debugging
-    //                     if (data.success && data.results.length > 0) {
-    //                         data.results.forEach(function (item) {
-    //                             $('#resultsContainer').append('<div>' + item + '</div>');
-    //                         });
-    //                     } else {
-    //                         $('#resultsContainer').append('<div>Enquiry Code does not Available</div>');
-    //                     }
-    //                 },
-    //                 error: function () {
-    //                     $('#resultsContainer').empty();
-    //                     $('#resultsContainer').append('<div>Error occurred while searching.</div>');
-    //                 }
-    //             });
-    //         } else {
-    //             $('#resultsContainer').empty();
-    //         }
-    //     });
-
-    //     $(document).on('click', '#resultsContainer div', function () {
-    //         var selectedCode = $(this).text();
-    //         console.log("selectedCode", selectedCode);
-    //         $('#txtEnquiryCode').val(selectedCode);
-
-    //         $('#resultsContainer').empty();
-    //         $('#searchbtn').prop('disabled', false);
-    //     });
-
-    //     $(document).on('click', '#btnNext', function () {
-    //         window.location.href = '@Url.Action("BOCalculations", "Costing")';
-    //     });
-    // }
-
-    function bindSettingstatus() {
-        $('#txtEnquiryCode').on('keyup', function () {
-            var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase
-
-            if (enquiryCode.length > 0) {
-                $.ajax({
-                    url: '@Url.Action("SearchEnquiryCode", "PaintBooth")',
-                    type: 'POST',
-                    data: { enquiryCode: enquiryCode },
-                    success: function (data) {
-                        $('#resultsContainer').empty();
-
-                        if (data.success && data.results.length > 0) {
-                            var resultsHtml = '';
-                            data.results.forEach(function (item) {
-                                resultsHtml += '<div class="result-item">' + item + '</div>';
-                            });
-                            $('#resultsContainer').html(resultsHtml).show();
-                        } else {
-                            $('#resultsContainer').html('<div>Enquiry Code does not Available</div>').show();
-                        }
-                    },
-                    error: function () {
-                        $('#resultsContainer').empty().html('<div>Error occurred while searching.</div>').show();
-                    }
-                });
-            } else {
-                $('#resultsContainer').empty().hide(); // Hide the container when input is empty
-            }
-        });
-
-        // Handle result selection
-        $(document).on('click', '#resultsContainer div', function () {
-            var selectedCode = $(this).text();
-            console.log("selectedCode", selectedCode);
-            $('#txtEnquiryCode').val(selectedCode);
-
-            $('#resultsContainer').empty().hide(); // Hide the container after selection
-            $('#searchbtn').prop('disabled', false);
-        });
-
-        // Handle next button click
-        $(document).on('click', '#btnNext', function () {
-            window.location.href = '@Url.Action("BOCalculations", "Costing")';
-        });
-    }
-    function showSettingDetails() {
-        $('#showSettingDetails').click(function () {
-            var enquiryCode = $('#txtEnquiryCode').val(); // Get the enquiry code from the textbox
-            $.ajax({
-                url: '@Url.Action("GetSettingDetailsByCode", "PaintBooth")', // Adjust the controller name
-                type: 'GET',
-                data: { enquiryCode: enquiryCode }, // Pass the enquiry code
-                success: function (data) {
-                    console.log("Data received: ", data); // Log the full data response
-
-                    if (data.settings && data.settings.length > 0) {
-                        var setting = data.settings[0]; // Use the first item in the settings list
-
-                        // Log the setting object to ensure data is accessible
-                        console.log("Setting object: ", setting);
-
-                        // Populate the modal with setting data
-                        var content = `
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr>
-                                <th>Sales No</th>
-                                <td>${setting.salesNo}</td>
-                            </tr>
-                            <tr>
-                                <th>Panel Width</th>
-                                <td>${setting.panelWidth}</td>
-                            </tr>
-                            <tr>
-                                <th>Panel Height</th>
-                                <td>${setting.panelHeight}</td>
-                            </tr>
-                            <tr>
-                                <th>Sheet Thickness</th>
-                                <td>${setting.sheetThickness}</td>
-                            </tr>
-                            <tr>
-                                <th>Slot Dimension</th>
-                                <td>${setting.slotDimention}</td>
-                            </tr>
-                            <tr>
-                                <th>Standard Bend 1</th>
-                                <td>${setting.standardBend1}</td>
-                            </tr>
-                            <tr>
-                                <th>Standard Bend 2</th>
-                                <td>${setting.standardBend2}</td>
-                            </tr>
-                            <tr>
-                                <th>Materials</th>
-                                <td>${setting.materials}</td>
-                            </tr>
-                            <tr>
-                                <th>H</th>
-                                <td>${setting.h}</td>
-                            </tr>
-                            <tr>
-                                <th>W</th>
-                                <td>${setting.w}</td>
-                            </tr>
-                            <tr>
-                                <th>T</th>
-                                <td>${setting.t}</td>
-                            </tr>
-                            <tr>
-                                <th>Pitch Distance</th>
-                                <td>${setting.pitchDistance}</td>
-                            </tr>
-                            <tr>
-                                <th>Section</th>
-                                <td>${setting.section}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                `;
-                        // Inject the content into the modal
-                        $('#modalContent').html(content);
-
-                        // Show the modal
-                        $('#settingsModal').modal('show');
-                    } else {
-                        // Log if no settings are found
-                        console.log("No settings found for the provided enquiry code.");
-
-                        // Show a message in the modal
-                        $('#modalContent').html('<p>No settings found for the provided enquiry code.</p>');
-                        $('#settingsModal').modal('show');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching data: " + error); // Log any errors
-                }
-            });
-
-            $(document).on('click', '.close', function () {
-                $('#settingsModal').modal('hide'); // Explicitly hide the modal
-            });
-        });
-    }
-   
-
-
-  // for H
-
+      //     var product = standardPanels * standardPanelHeight;
+      //     $('#txt2panelsizeforW').val(product);
+      //     updateDropdownOptions(standardPanels);
+      //     showoptionsindropdownforW(standardPanelHeight);
+      // }
+  
     
-
-    function bindEvents() {
-        $('#txtEnquiryCode').on('keyup', function () {
-            var enquiryCode = $(this).val();
-            if (enquiryCode.length > 0) {
-                $.ajax({
-                    url: '@Url.Action("GetEnquiryCodes", "PaintBooth")',
-                    type: 'POST',
-                    data: { term: enquiryCode },
-                    success: function (data) {
-                        $('#resultsContainer').empty();
-                        if (data.success && data.results.length > 0) {
-                            data.results.forEach(function (item) {
-                                $('#resultsContainer').append('<div>' + item + '</div>');
-                            });
-                        } else {
-                            $('#resultsContainer').append('<div>Enquiry Code does not Available</div>');
-                        }
-                    },
-                    error: function () {
-                        $('#resultsContainer').empty();
-                        $('#resultsContainer').append('<div>Error occurred while searching.</div>');
-                    }
-                });
-            } else {
-                $('#resultsContainer').empty();
-            }
-        });
-
-        $(document).on('click', '#resultsContainer div', function () {
-            var selectedCode = $(this).text();
-            $('#txtEnquiryCode').val(selectedCode);
-            $('#resultsContainer').empty();
-        });
-
-        $(document).on('click', '#btnNext', function () {
-            window.location.href = '@Url.Action("BOCalculations", "Costing")';
-        });
-    }
-    // function showMotorDetails(){
-    //     $("#btnFetchRecords").click(function () {
-    //         var blowerHpCalculation = $("#txtHPCalculations").val();
-
-    //         $.ajax({
-    //             url: '@Url.Action("GetMotorDetails", "PaintBooth")',
-    //             type: 'GET',
-    //             data: { blowerHpCalculation: blowerHpCalculation },
-    //             success: function (data) {
-    //                 var tbody = $("#motorFlangeBody");
-    //                 tbody.empty(); // Clear existing records
-
-    //                 if (data.length > 0) {
-    //                     $.each(data, function (index, record) {
-    //                         tbody.append(
-    //                             '<tr>' +
-    //                             '<td>' + record.motorCatalogID + '</td>' +
-    //                             '<td>' + record.ratedOutputHP + '</td>' +
-    //                             '<td>' + record.framesize + '</td>' +
-    //                             '<td>' + record.typeReference + '</td>' +
-    //                             '<td>' + record.ratedSpeed + '</td>' +
-    //                             '<td>' + record.ratedCurrent + '</td>' +
-    //                             '<td>' + record.efficiencyFullLoad + '</td>' +
-    //                             '<td><input type="radio" class="form-check-input select-radio" data-id="' + record.motorCatalogID + '"></td>' +
-    //                             '</tr>'
-    //                         );
-    //                     });
-    //                 } else {
-    //                     tbody.append('<tr><td colspan="6">No records found</td></tr>');
-    //                 }
-    //                 bindRadioChange();
-    //             },
-    //             error: function (xhr, status, error) {
-    //                 console.error("Error fetching records: ", error);
-    //             }
-    //         });
-    //     });
-    // }
-    function showMotorDetails() {
-        $("#btnFetchRecords").click(function () {
-            var blowerHpCalculation = $("#txtHPCalculations").val();
-
-            $.ajax({
-                url: '@Url.Action("GetMotorDetails", "PaintBooth")',
-                type: 'GET',
-                data: { blowerHpCalculation: blowerHpCalculation },
-                success: function (data) {
-                    var tbody = $("#motorFlangeBody");
-                    tbody.empty(); // Clear existing records
-
-                    if (data.length > 0) {
-                        $.each(data, function (index, record) {
-                            tbody.append(
-                                '<tr>' +
-                                '<td>' + record.motorCatalogID + '</td>' +
-                                '<td>' + record.ratedOutputHP + '</td>' +
-                                '<td>' + record.framesize + '</td>' +
-                                '<td>' + record.typeReference + '</td>' +
-                                '<td>' + record.ratedSpeed + '</td>' +
-                                '<td>' + record.ratedCurrent + '</td>' +
-                                '<td>' + record.efficiencyFullLoad + '</td>' +
-                                '<td><input type="radio" class="form-check-input select-radio" data-id="' + record.motorCatalogID + '" name="motorSelection"></td>' +
-                                '</tr>'
-                            );
-                        });
-                    } else {
-                        tbody.append('<tr><td colspan="6">No records found</td></tr>');
-                    }
-                    bindRadioChange(); // Bind the change event after data is loaded
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching records: ", error);
-                }
-            });
-        });
-    }
-
-    // Function to bind the radio button change event
-    function bindRadioChange() {
-        $('.select-radio').change(function () {
-            var selectedMotorID = $(this).data('id');
-            $("#motorCatalogIDInput").val(selectedMotorID); // Set the selected motor ID in the hidden input
-        });
-    }
-
    
-   
+      //for H calculations
+      function calculateStandardPanelsforH(standardPanelHeight) {
+          var H = parseFloat($('#txtH').val()) || 0;
+
+          var panelheightCa = standardPanelHeight;
+          console.log("Standard Panels Height:", panelheightCa);
+          // var standardPanelSize = 2390;
+          var standardPanels = Math.floor(H / standardPanelHeight);
+
+          var product = standardPanels * standardPanelHeight;
+          $('#txt2panelsizeforH').val(product);
+         
+          showoptionsindropdownforH(standardPanelHeight);
+      }
+      function calculatePanelsforH(standardPanelHeight) {
+          var height = standardPanelHeight;
+          console.log("height", height);
+          var wValue = parseFloat($("#txtH").val());
+          if (wValue && height) {
+              var standardPanelsByHeight = Math.floor(wValue / height);
+              console.log("standardPanelsByWidth", standardPanelsByHeight);
+              var remainingWidthpanels = wValue - (standardPanelsByHeight * height);
+
+              // Update the textboxes
+              $("#txtstandardPanelsByH").val(standardPanelsByHeight);
+              $("#txtremaingPanelsByH").val(remainingWidthpanels);
+          }
+      }
+    
+      function showoptionsindropdownforH(standardPanelHeight) {
+          var handlePanelheight = standardPanelHeight;
+          var selectedValue = $('#panelSizeDropdownforH').val();
+
+          var halfPanelSize = handlePanelheight/2; // Adjust as needed
+
+          if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
+              selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
+              selectedValue === "13" || selectedValue === "15") {
+
+              $('#txthalfpanelsizeforH').hide();
+              $('#divStandardSizeforH').show();
+              $('#divHalfSizeforH').hide();
+              $('#txt2panelsizeforH').show();
+          } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
+              selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
+              selectedValue === "14") {
+
+              $('#txthalfpanelsizeforH').val(halfPanelSize).show();
+              $('#divStandardSizeforH').show();
+              $('#divHalfSizeforH').show();
+              $('#txt2panelsizeforH').show();
+          } else {
+              // If no valid value is selected, hide everything
+              $('#divStandardSizeforH').hide();
+              $('#divHalfSizeforH').hide();
+              $('#txthalfpanelsizeforH').val('');
+              $('#txt2panelsizeforH').val('');
+          }
+      }
+      function showvalueasperchangedropdownforH(standardPanelHeight) {
+          var selectedText = $('#panelSizeDropdownforH option:selected').text();
+          // Initialize newTextboxValue
+          var newTextboxValue;
+
+          // Determine the textbox value based on selected text
+          switch (selectedText) {
+              case "1":
+              case "1.5":
+                  newTextboxValue = standardPanelHeight; // Same value for 1 and 1.5
+                  break;
+              case "2":
+              case "2.5":
+                  newTextboxValue = 2 * standardPanelHeight; // Same value for 2 and 2.5
+                  break;
+              case "3":
+              case "3.5":
+                  newTextboxValue = 3 * standardPanelHeight; // Same value for 3 and 3.5
+                  break;
+              case "4":
+              case "4.5":
+                  newTextboxValue = 4 * standardPanelHeight; // Same value for 4 and 4.5
+                  break;
+              default:
+                  // Convert the selected text to a number for other values
+                  var multiplier = parseFloat(selectedText);
+                  newTextboxValue = multiplier * standardPanelHeight; // Calculate new value for all other selections
+                  break;
+          }
+
+          // Update the textbox with the calculated or selected value
+          $('#txt2panelsizeforH').val(newTextboxValue);
+      }
+      function bindSettingstatus() {
+          $('#txtEnquiryCode').on('keyup', function () {
+              var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase
+
+              if (enquiryCode.length > 0) {
+                  $.ajax({
+                      url: '@Url.Action("SearchEnquiryCode", "PaintBooth")',
+                      type: 'POST',
+                      data: { enquiryCode: enquiryCode },
+                      success: function (data) {
+                          $('#resultsContainer').empty();
+
+                          if (data.success && data.results.length > 0) {
+                              var resultsHtml = '';
+                              data.results.forEach(function (item) {
+                                  resultsHtml += '<div class="result-item">' + item + '</div>';
+                              });
+                              $('#resultsContainer').html(resultsHtml).show();
+                          } else {
+                              $('#resultsContainer').html('<div>Enquiry Code does not Available</div>').show();
+                          }
+                      },
+                      error: function () {
+                          $('#resultsContainer').empty().html('<div>Error occurred while searching.</div>').show();
+                      }
+                  });
+              } else {
+                  $('#resultsContainer').empty().hide(); // Hide the container when input is empty
+              }
+          });
+
+          // Handle result selection
+          $(document).on('click', '#resultsContainer div', function () {
+              var selectedCode = $(this).text();
+              console.log("selectedCode", selectedCode);
+              $('#txtEnquiryCode').val(selectedCode);
+
+              $('#resultsContainer').empty().hide(); // Hide the container after selection
+              $('#searchbtn').prop('disabled', false);
+          });
+
+          // Handle next button click
+          $(document).on('click', '#btnNext', function () {
+              window.location.href = '@Url.Action("BOCalculations", "Costing")';
+          });
+      }
+      function showSettingDetails() {
+          $('#showSettingDetails').click(function () {
+              var enquiryCode = $('#txtEnquiryCode').val(); // Get the enquiry code from the textbox
+              $.ajax({
+                  url: '@Url.Action("GetSettingDetailsByCode", "PaintBooth")', // Adjust the controller name
+                  type: 'GET',
+                  data: { enquiryCode: enquiryCode }, // Pass the enquiry code
+                  success: function (data) {
+                      console.log("Data received: ", data); // Log the full data response
+
+                      if (data.settings && data.settings.length > 0) {
+                          var setting = data.settings[0]; // Use the first item in the settings list
+
+                          // Log the setting object to ensure data is accessible
+                          console.log("Setting object: ", setting);
+
+                          // Populate the modal with setting data
+                          var content = `
+                      <table class="table table-striped">
+                          <tbody>
+                              <tr>
+                                  <th>Sales No</th>
+                                  <td>${setting.salesNo}</td>
+                              </tr>
+                              <tr>
+                                  <th>Panel Width</th>
+                                  <td>${setting.panelWidth}</td>
+                              </tr>
+                              <tr>
+                                  <th>Panel Height</th>
+                                  <td>${setting.panelHeight}</td>
+                              </tr>
+                              <tr>
+                                  <th>Sheet Thickness</th>
+                                  <td>${setting.sheetThickness}</td>
+                              </tr>
+                              <tr>
+                                  <th>Slot Dimension</th>
+                                  <td>${setting.slotDimention}</td>
+                              </tr>
+                              <tr>
+                                  <th>Standard Bend 1</th>
+                                  <td>${setting.standardBend1}</td>
+                              </tr>
+                              <tr>
+                                  <th>Standard Bend 2</th>
+                                  <td>${setting.standardBend2}</td>
+                              </tr>
+                              <tr>
+                                  <th>Materials</th>
+                                  <td>${setting.materials}</td>
+                              </tr>
+                              <tr>
+                                  <th>H</th>
+                                  <td>${setting.h}</td>
+                              </tr>
+                              <tr>
+                                  <th>W</th>
+                                  <td>${setting.w}</td>
+                              </tr>
+                              <tr>
+                                  <th>T</th>
+                                  <td>${setting.t}</td>
+                              </tr>
+                              <tr>
+                                  <th>Pitch Distance</th>
+                                  <td>${setting.pitchDistance}</td>
+                              </tr>
+                              <tr>
+                                  <th>Section</th>
+                                  <td>${setting.section}</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  `;
+                          // Inject the content into the modal
+                          $('#modalContent').html(content);
+
+                          // Show the modal
+                          $('#settingsModal').modal('show');
+                      } else {
+                          // Log if no settings are found
+                          console.log("No settings found for the provided enquiry code.");
+
+                          // Show a message in the modal
+                          $('#modalContent').html('<p>No settings found for the provided enquiry code.</p>');
+                          $('#settingsModal').modal('show');
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      console.error("Error fetching data: " + error); // Log any errors
+                  }
+              });
+
+              $(document).on('click', '.close', function () {
+                  $('#settingsModal').modal('hide'); // Explicitly hide the modal
+              });
+          });
+      }
+    // for H
+      function bindEvents() {
+          $('#txtEnquiryCode').on('keyup', function () {
+              var enquiryCode = $(this).val();
+              if (enquiryCode.length > 0) {
+                  $.ajax({
+                      url: '@Url.Action("GetEnquiryCodes", "PaintBooth")',
+                      type: 'POST',
+                      data: { term: enquiryCode },
+                      success: function (data) {
+                          $('#resultsContainer').empty();
+                          if (data.success && data.results.length > 0) {
+                              data.results.forEach(function (item) {
+                                  $('#resultsContainer').append('<div>' + item + '</div>');
+                              });
+                          } else {
+                              $('#resultsContainer').append('<div>Enquiry Code does not Available</div>');
+                          }
+                      },
+                      error: function () {
+                          $('#resultsContainer').empty();
+                          $('#resultsContainer').append('<div>Error occurred while searching.</div>');
+                      }
+                  });
+              } else {
+                  $('#resultsContainer').empty();
+              }
+          });
+
+          $(document).on('click', '#resultsContainer div', function () {
+              var selectedCode = $(this).text();
+              $('#txtEnquiryCode').val(selectedCode);
+              $('#resultsContainer').empty();
+          });
+
+          $(document).on('click', '#btnNext', function () {
+              window.location.href = '@Url.Action("BOCalculations", "Costing")';
+          });
+      }
+      function showMotorDetails() {
+          $("#btnFetchRecords").click(function () {
+              var blowerHpCalculation = $("#txtHPCalculations").val();
+
+              $.ajax({
+                  url: '@Url.Action("GetMotorDetails", "PaintBooth")',
+                  type: 'GET',
+                  data: { blowerHpCalculation: blowerHpCalculation },
+                  success: function (data) {
+                      var tbody = $("#motorFlangeBody");
+                      tbody.empty(); // Clear existing records
+
+                      if (data.length > 0) {
+                          $.each(data, function (index, record) {
+                              tbody.append(
+                                  '<tr>' +
+                                  '<td>' + record.motorCatalogID + '</td>' +
+                                  '<td>' + record.ratedOutputHP + '</td>' +
+                                  '<td>' + record.framesize + '</td>' +
+                                  '<td>' + record.typeReference + '</td>' +
+                                  '<td>' + record.ratedSpeed + '</td>' +
+                                  '<td>' + record.ratedCurrent + '</td>' +
+                                  '<td>' + record.efficiencyFullLoad + '</td>' +
+                                  '<td><input type="radio" class="form-check-input select-radio" data-id="' + record.motorCatalogID + '" name="motorSelection"></td>' +
+                                  '</tr>'
+                              );
+                          });
+                      } else {
+                          tbody.append('<tr><td colspan="6">No records found</td></tr>');
+                      }
+                      bindRadioChange(); // Bind the change event after data is loaded
+                  },
+                  error: function (xhr, status, error) {
+                      console.error("Error fetching records: ", error);
+                  }
+              });
+          });
+      }
+      // Function to bind the radio button change event
+      function bindRadioChange() {
+          $('.select-radio').change(function () {
+              var selectedMotorID = $(this).data('id');
+              $("#motorCatalogIDInput").val(selectedMotorID); // Set the selected motor ID in the hidden input
+          });
+      }
 </script>
 
 

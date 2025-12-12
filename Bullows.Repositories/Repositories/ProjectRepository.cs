@@ -30,9 +30,9 @@ namespace Bullows.Repositories.Repositories
                     objtbl = _DbContext.Project.Find(model.ProjectID);
                     objtbl.IsDeleted = false;
 
-                    //objtbl.ProjectCode = model.ProjectCode;
-                    //objtbl.ProjectName = model.ProjectName;
-                    //objtbl.CustomerName = model.CustomerName;
+                    objtbl.ProjectCode = model.ProjectCode;
+                    objtbl.ProjectName = model.ProjectName;
+                    objtbl.CustomerName = model.CustomerName;
                     objtbl.ModifiedBy = 1;/*(int)Session.GetInt32("UserId");*/
                     objtbl.ModifiedDate = DateTime.Now;
                        
@@ -51,7 +51,7 @@ namespace Bullows.Repositories.Repositories
                     _DbContext.Project.Add(objtbl);
                 }
                
-                  _DbContext.SaveChanges();
+                _DbContext.SaveChanges();
                 
                 
             }

@@ -74,66 +74,84 @@ namespace Bullows.Controllers
         [HttpPost]
         public IActionResult SaveEnquiryDetails(EnquiryModel model, Bullows.Database.EnquiryMaster tblenq, Bullows.Database.ComponentTable tblComp, int flag)
         {
-           // MotorTypesval = model.MotorType;
-            var webRootPath = string.Empty;
-            var filelist = Request.Form.Files;
-            flag = SaveFlag;
-           
-            if (Environment.IsDevelopment())
+            try
             {
-                webRootPath = "E:/Sonali/Upload File";
-            }
-            else
-            {
-                webRootPath = this.Environment.WebRootPath;
-            }           
-            List<string> filePaths = new List<string>();
-         
-            foreach (var file in filelist)
-            {
-                if (file != null && file.Length > 0)
-                {
-                    var folderPath = Path.Combine(webRootPath, "Bullows File");
-                    if (!Directory.Exists(folderPath))
-                        Directory.CreateDirectory(folderPath);
+               
+                // MotorTypesval = model.MotorType;
+                var webRootPath = string.Empty;
+                var filelist = Request.Form.Files;
+                flag = SaveFlag;
 
-                    var path = Path.Combine(folderPath, file.FileName);
-                    using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
-                    {
-                        file.CopyTo(stream);
-                    }
-                    filePaths.Add(path);
+                if (Environment.IsDevelopment())
+                {
+                    webRootPath = "E:/Sonali/Upload File";
                 }
+                else
+                {
+                    webRootPath = this.Environment.WebRootPath;
+                }
+                List<string> filePaths = new List<string>();
+
+                foreach (var file in filelist)
+                {
+                    if (file != null && file.Length > 0)
+                    {
+                        var folderPath = Path.Combine(webRootPath, "Bullows File");
+                        if (!Directory.Exists(folderPath))
+                            Directory.CreateDirectory(folderPath);
+
+                        var path = Path.Combine(folderPath, file.FileName);
+                        using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(stream);
+                        }
+                        filePaths.Add(path);
+                    }
+                }
+                // Join file paths as comma-separated string
+                model.Image_Path = string.Join(",", filePaths);
+                var CompanyDetails = _uow.CustomerMasterRepository.GetCompanyDetails(model.CompanyName);
+                if (CompanyDetails != null)
+                {
+                    // Set the CustomerID in the tblenq object
+                    model.CustomerID = CompanyDetails.CustomerID;
+                }
+                EID = _uow.enquiryRepository.SaveComponent(model, tblComp, flag);
+                EID = _uow.enquiryRepository.SaveEnquiry(model, tblenq, flag);
+
+                _uow.enquiryRepository.SaveMotorTypes(model, flag);
+                SaveFlag = 1;
+                return RedirectToAction("Enquiry");
             }
-            // Join file paths as comma-separated string
-            model.Image_Path = string.Join(",", filePaths);
-            
-            
-            var CompanyDetails = _uow.CustomerMasterRepository.GetCompanyDetails(model.CompanyName);
-            if (CompanyDetails != null)
+            catch (Exception ex)
             {
-                // Set the CustomerID in the tblenq object
-                model.CustomerID = CompanyDetails.CustomerID;
+                _uow.exceptionHandlerRepository.SaveException("EnquiryController", "SaveEnquiryDetails",ex.Message);
+                return RedirectToAction("Enquiry");
+
+
             }
-            EID = _uow.enquiryRepository.SaveComponent(model, tblComp, flag);
-            EID = _uow.enquiryRepository.SaveEnquiry(model, tblenq, flag);
-            
-            _uow.enquiryRepository.SaveMotorTypes(model,flag);
-            SaveFlag = 1;
-            return RedirectToAction("Enquiry");
         }
        
 
         [HttpGet]       
         public IActionResult SearchCompanies(string term)
         {
-            if (string.IsNullOrEmpty(term))
+            try
             {
-                return Json(new { success = false, message = "Search term is required.", companies = new List<string>() });
+                if (string.IsNullOrEmpty(term))
+                {
+                    return Json(new { success = false, message = "Search term is required.", companies = new List<string>() });
+                }
+                var companies = _uow.CustomerMasterRepository.GetCompaniesStartingWith(term);
+
+                return Json(companies);
             }
-            var companies = _uow.CustomerMasterRepository.GetCompaniesStartingWith(term);
-            
-            return Json(companies);
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("EnquiryController", "SearchCompanies", ex.Message);
+
+                throw;
+            }
         }
         [HttpPost]
         public JsonResult SearchByCompanyName(string companyName)
@@ -150,8 +168,9 @@ namespace Bullows.Controllers
         public IActionResult Delete(int id = 0)
         {
             EID = _uow.enquiryRepository.Delete(id);
-            return RedirectToAction("Enquiry");
             EID = 2;
+            return RedirectToAction("Enquiry");
+           
 
         }
     }

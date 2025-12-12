@@ -1,13 +1,11 @@
 ﻿using Bullows.Model;
 using devDept.Eyeshot;
-using devDept.Eyeshot.Control;
 using devDept.Eyeshot.Entities;
 using devDept.Eyeshot.Translators;
 using devDept.Geometry;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
-using netDxf.Entities;
-using netDxf.Units;
+
+
 using System.Drawing;
 using devregion = devDept.Eyeshot.Entities.Region;
 
@@ -310,7 +308,6 @@ namespace Bullows.Business
             double X = (double)model.Length;
             decimal H = model.H - 2 * model.T;
             decimal W = model.W - model.T;
-            //decimal Y = (model.H+(2*model.W)-2*model.T);
             decimal Y = H + (2 * W);
 
             drawing = new();

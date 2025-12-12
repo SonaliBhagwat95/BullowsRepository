@@ -57,10 +57,17 @@ namespace Bullows.Database
         public double Viscosity { get; set; }
         public double Paint { get; set; }
         public double Powder { get; set; }
+        public string TypeOfPaint { get; set; }
+        public string TypeOfPowder { get; set; }
         public double DFT { get; set; }
-
         public double SpecificHeat { get; set; }
         public string ConsumptionPerDay { get; set; }
+        public string ExtractionChamberHeight { get; set; }
+        public string ComponentEntry { get; set; }
+        public string DoorType { get; set; }
+        public string DoorSubType { get; set; }
+        public string SideDoorLOcation { get; set; }
+        public string TypeOfHingedDoor { get; set; }
 
     }
 }

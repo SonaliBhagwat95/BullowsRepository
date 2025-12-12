@@ -13,7 +13,7 @@ namespace Bullows.Business
     public class MySheets : Sheet
     {
         public MySheets(linearUnitsType units, double width, double height,
-            string name) : base(units, width, height, name)
+            string name, angleProjectionType projectionType) : base(units, width, height, name, projectionType)
         {
 
         }

@@ -18,11 +18,22 @@ namespace Bullows.Controllers
         }
         public IActionResult Dashboard()
         {
-            ViewBag.EnquiryCount = _uow.enquiryRepository.GetAllEnquiryCount();
-            ViewBag.PaintBoothCount = _uow.PaintBoothRepository.GetAllPaintBoothDesignCount();
-            ViewBag.RowCostingCount = _uow.costingRepository.GetCostingCountByEnquiryID();
+            try
+            {
+                ViewBag.ActivePage = "Home";
+                ViewBag.EnquiryCount = _uow.enquiryRepository.GetAllEnquiryCount();
+                ViewBag.PaintBoothCount = _uow.PaintBoothRepository.GetAllPaintBoothDesignCount();
+                ViewBag.RowCostingCount = _uow.costingRepository.GetCostingCountByEnquiryID();
 
-            return View();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                _uow.exceptionHandlerRepository.SaveException("HomeController", "Dashboard", ex.Message);
+
+                return View();
+
+            }
         }
     }
 }

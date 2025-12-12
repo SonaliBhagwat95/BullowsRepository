@@ -40,7 +40,7 @@ namespace Bullows.Controllers
 
         public void SetSuccessMessage(string Message)
         {
-            //ViewBag.SuccessText = Message;
+            ViewBag.SuccessText = Message;
         }
 
         public void SetInformationMessage(string Message)
@@ -56,9 +56,10 @@ namespace Bullows.Controllers
             if (!string.IsNullOrEmpty(Message))
             {
                 ViewBag.ErrorText = " " + Message;
+                //TempData["ErrorText"] = Message;
             }
         }
-
+        
         public void SetDownloadedFileNames(List<string> files)
         {
             if (files != null && files.Count > 0)

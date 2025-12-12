@@ -38,6 +38,11 @@ namespace Bullows.Database
         public DbSet<TubeLightDetails> TubeLightDetails { get; set; }
         public DbSet<FilterFrameDetails> FilterFrameDetails { get; set; }
         public DbSet<PressureDrop> PressureDrop { get; set; }
+        public DbSet<ExhaustDuctings> ExhaustDuctings { get; set; }
+        public DbSet<MetalBaffleDetails> MetalBaffleDetails { get; set; }
+
+        public DbSet<PriceDetailsTable> PriceDetailsTable { get; set; }
+        public DbSet<ExceptionHandler> ExceptionHandler { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -50,6 +55,7 @@ namespace Bullows.Database
             modelBuilder.Entity<TubeLightDetails>().HasKey(b => b.TubeLightID);
             modelBuilder.Entity<PressureDrop>().HasKey(b => b.ItemNumber);
             modelBuilder.Entity<tblCity>().HasKey(b => b.CityID);
+            modelBuilder.Entity<ExhaustDuctings>().HasKey(b => b.DuctId);
 
 
         }
