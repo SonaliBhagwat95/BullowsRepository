@@ -68,6 +68,8 @@ namespace Bullows.Database
         public string DoorSubType { get; set; }
         public string SideDoorLOcation { get; set; }
         public string TypeOfHingedDoor { get; set; }
+        public decimal DoorWidth { get; set; }
+        public decimal DoorHeight { get; set; }
 
     }
 }

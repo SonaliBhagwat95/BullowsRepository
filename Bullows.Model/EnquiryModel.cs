@@ -76,6 +76,8 @@ namespace Bullows.Model
         public string TypeOfPaint { get; set; }
         public string TypeOfPowder { get; set; }
         public string TypeOfHingedDoor { get; set; }
+        public decimal SplitDoorWidth { get; set; }
+        public decimal SplitDoorHeight { get; set; }
 
     }
 }

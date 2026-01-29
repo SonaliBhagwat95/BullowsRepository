@@ -125,7 +125,7 @@ namespace Bullows.Repositories.Repositories
                     tblobj.Component = model.Component;
                     tblobj.IsDeleted = false;
                     tblobj.CreatedBy = Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0;
-                    //tblobj.CreatedDate = DateTime.Now;
+                    tblobj.CreatedDate = DateTime.Now;
                     tblobj.ModifiedBy = (int)(Session.GetInt32("UserId") != null ? Session.GetInt32("UserId") : 0); 
                     tblobj.ModifiedDate = DateTime.Now;                 
                     tblobj.ComponentHandling = model.ComponentHandling;
@@ -222,6 +222,8 @@ namespace Bullows.Repositories.Repositories
                     }
                     tblobj.TypeOfHingedDoor= model.TypeOfHingedDoor == null ? "" : model.TypeOfHingedDoor;
                     tblobj.SideDoorLOcation = model.SideDoorLOcation == null ? "" : model.SideDoorLOcation;
+                    tblobj.TypeOfPaint = model.TypeOfPaint == null ? "" : model.TypeOfPaint;
+                    tblobj.TypeOfPowder = model.TypeOfPowder == null ? "" : model.TypeOfPowder;
                     _DbContext.Entry(tblobj).State=Microsoft.EntityFrameworkCore.EntityState.Modified;
                 }
                 else
@@ -330,6 +332,8 @@ namespace Bullows.Repositories.Repositories
                     }
                     tblobj.TypeOfHingedDoor = model.TypeOfHingedDoor == null ? "" : model.TypeOfHingedDoor;
                     tblobj.SideDoorLOcation = model.SideDoorLOcation == null ? "" : model.SideDoorLOcation;
+                    tblobj.DoorWidth = model.SplitDoorWidth == null ? 0 : model.SplitDoorWidth;
+                    tblobj.DoorHeight = model.SplitDoorHeight == null ? 0 : model.SplitDoorHeight;
                     _DbContext.ComponentTables.Add(tblobj);
 
                 }

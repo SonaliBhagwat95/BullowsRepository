@@ -1534,7 +1534,7 @@ namespace Bullows.Business
         {
             drawing = new();
             drawing.Units = linearUnitsType.Millimeters;
-            double z = model.PanelHeight;
+            double z = (double)model.HingedDoorHeight;
             //double z = model.Width + 700 + 250;//Component Width+700+250=total panel Height 
             var rectangle = devregion.CreatePolygon(new Point3D[]
             {
@@ -1543,7 +1543,7 @@ namespace Bullows.Business
                 new Point3D(0,y,z),
                 new Point3D(0,0,z)
             });
-            drawing.Entities.Add(rectangle, Color.Blue);
+            drawing.Entities.Add(rectangle, Color.BurlyWood);
             Brep brep = rectangle.ExtrudeAsBrep(SheetThickness);
             //calculate Weight of panels 
             Material mat = Material.StructuralSteel;
@@ -3110,6 +3110,116 @@ namespace Bullows.Business
             };
         }
 
+        public PaintBoothclass ComponantryEntrySideDoor(double doorWidth,double doorHeight,double xoffset)
+        {
+            drawing = new();
+            drawing.Units = linearUnitsType.Millimeters;
+            #region Door Outer frame
+            LinearPath door = new LinearPath(new Point3D[]
+                {
+                    new Point3D(xoffset, PanelLengthForSideDoors, 0),
+                    new Point3D(xoffset, PanelLengthForSideDoors, doorHeight),
+                    new Point3D(doorWidth+xoffset, PanelLengthForSideDoors,doorHeight),
+                    new Point3D(doorWidth+xoffset, PanelLengthForSideDoors, 0),
+                    new Point3D(xoffset, PanelLengthForSideDoors, 0)
+                });
+            drawing.Entities.Add(door, Color.Aquamarine);
+            double T = 3;
+            double sectionWidth = 25;
+            double sectionHeight = 25;
+            double x0 = xoffset;
+            double L = sectionWidth - (2 * T);
+
+            //left L Section
+            var section = devregion.CreatePolygon(new Point3D[]
+            {
+
+                         new Point3D(x0+0 ,               0,      0),
+                         new Point3D(x0+sectionWidth ,    0,      0),
+                         new Point3D(x0+sectionWidth ,    -T,      0),
+                         new Point3D(x0+T,                -T,      0),
+                         new Point3D(x0+T,                -sectionHeight,      0),
+                         new Point3D(x0+0,               - sectionHeight,      0),
+            });
+
+            Solid frame = section.SweepAsSolid(door, 0);
+            //frame.Translate(0, 0, SheetThickness);
+            drawing.Entities.Add(frame, Color.RosyBrown);
+            #endregion
+            double innerDoorWidth = (doorWidth - (2 * T)) / 2;
+            double innerDoorHeight = doorHeight - (2 * T);
+            double innerSectionWidth = 40;
+            double innerSectionHeight = 40;
+            #region Inner Door left
+            LinearPath Innerdoorleft = new LinearPath(new Point3D[]
+               {
+                    new Point3D(xoffset+T, 0, 0),
+                    new Point3D(xoffset+T, 0, innerDoorHeight),
+                    new Point3D(innerDoorWidth+xoffset+T, 0,innerDoorHeight),
+                    new Point3D(innerDoorWidth+xoffset+T, 0, 0),
+                    new Point3D(xoffset+T, 0, 0)
+               });
+            drawing.Entities.Add(Innerdoorleft, Color.Blue);
+            double x1 = x0 + T;
+            double innerSectionWidthWithMinusT = x1 + innerSectionWidth - (2*T);
+            var squareSection = devregion.CreatePolygon(new Point3D[]
+            {
+                 new Point3D(x1 ,                    0,                         0), 
+                 new Point3D(x1+innerSectionWidth ,  0,                         0), 
+                 new Point3D(x1+innerSectionWidth ,  -innerSectionHeight,      0),
+                 new Point3D(x1+0 ,                  -innerSectionHeight,      0),
+                 //inner
+                 //new Point3D(x1+T ,                  -T,                          0),
+                 //new Point3D(innerSectionWidthWithMinusT, -T,                          0),
+                 //new Point3D(innerSectionWidthWithMinusT,  -innerSectionHeight-(2*T) ,  0),
+                 //new Point3D(x1+T,  -innerSectionHeight-(2*T) ,                              0),
+
+            });
+            Solid innerframe = squareSection.SweepAsSolid(Innerdoorleft, 0);
+            //frame.Translate(0, 0, SheetThickness);
+            drawing.Entities.Add(innerframe, Color.CadetBlue);
+
+            Solid cloneInnerFrame = (Solid)innerframe.Clone();
+            cloneInnerFrame.Translate(innerDoorWidth, 0, 0);
+            drawing.Entities.Add(cloneInnerFrame, Color.Brown);
+
+            var metalsheet= devregion.CreatePolygon(new Point3D[]
+            {
+                    new Point3D(xoffset+T, -innerSectionWidth, 0),
+                    new Point3D(xoffset+T,-innerSectionWidth, innerDoorHeight),
+                    new Point3D(innerDoorWidth+xoffset+T,-innerSectionWidth,innerDoorHeight),
+                    new Point3D(innerDoorWidth+xoffset+T, -innerSectionWidth, 0),
+                   
+            });
+            Brep brep = metalsheet.ExtrudeAsBrep(-SheetThickness);
+            Brep CloneBrep = (Brep)brep.Clone();
+            CloneBrep.Translate(innerDoorWidth, 0, 0);
+
+            drawing.Entities.Add(brep, Color.Gold);
+            drawing.Entities.Add(CloneBrep, Color.Silver);
+
+            #endregion
+
+            #region Writing DWG
+            var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
+            if (!Directory.Exists(path + "/Bullows Panel Drawing"))
+                Directory.CreateDirectory(path + "/Bullows Panel Drawing");
+
+            string dwgFilePath = path + "/Bullows Panel Drawing/" + "ComponantryEntrySideDoor" + DateTime.Now.ToString("hh-mm") + ".dwg";
+
+            // Save as DWG
+            WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
+            WriteAutodesk dwgg1 = new WriteAutodesk(auto, dwgFilePath);
+            dwgg1.DoWork();
+            #endregion
+
+            return new PaintBoothclass
+            {
+                drawing = drawing,
+                lstpath = dwgFilePath
+
+            };
+        }
 
         public PaintBoothclass CreateLoftOld(PaintBoothModel model, double extractionChemberHeight)
         {

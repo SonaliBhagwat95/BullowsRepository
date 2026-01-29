@@ -28,6 +28,7 @@ namespace Bullows.Database
         public DateTime? ModifiedDate { get; set; }
         public bool IsDeleted { get; set; }
         public string PlenumHeight { get; set; }
-        
+   
+
     }
 }

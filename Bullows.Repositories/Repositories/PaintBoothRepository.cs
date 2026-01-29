@@ -116,16 +116,9 @@ namespace Bullows.Repositories.Repositories
             return _DbContext.EnquiryMasters.Where(c => c.EnquiryID == enquiryID).Select(c => c.ComponentID).FirstOrDefault();
         }
 
-        public ComponentEntryDetails FetchDoorType(int componentEntryId)
+        public ComponentTable FetchDoorType(int componentEntryId)
         {
-            return _DbContext.ComponentTables
-        .Where(c => c.ComponentID == componentEntryId)
-        .Select(c => new ComponentEntryDetails
-        {
-            DoorType = c.DoorType,
-            ComponentEntry = c.ComponentEntry
-        })
-        .FirstOrDefault();
+            return _DbContext.ComponentTables.Where(x => x.ComponentID == componentEntryId).FirstOrDefault();
         }
         public string FetchExtractionHeight(int ComponentID)
         {

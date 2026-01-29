@@ -30,7 +30,6 @@
         z-index: 10;
     }
 
-    
 </style>
 @if (TempData["ErrorText"] != null)
 {
@@ -142,17 +141,17 @@
                     <label class="smaller-font">Shape</label>
                     @Html.DropDownListFor(c => c.Shape, new List<SelectListItem>
                     {
-                    new SelectListItem { Text = "Rectangular", Value = "Rectangular" },
-                    new SelectListItem { Text = "Circular", Value ="Circular" },
-                    }, "--Select--", new { @id = "drpShape", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                        new SelectListItem { Text = "Rectangular", Value = "Rectangular" },
+                                        new SelectListItem { Text = "Circular", Value = "Circular" },
+                                        }, "--Select--", new { @id = "drpShape", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
                 <div class="col-md-2">
                     <label class="smaller-font">Orientation</label>
                     @Html.DropDownListFor(c => c.Orientation, new List<SelectListItem>
-                    {
-                    new SelectListItem { Text = "Horizontal", Value = "Horizontal" },
-                    new SelectListItem { Text = "Vertical", Value ="Vertical" },
-                    }, "--Select--", new { @id = "drpOrientation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                        {
+                        new SelectListItem { Text = "Horizontal", Value = "Horizontal" },
+                                        new SelectListItem { Text = "Vertical", Value = "Vertical" },
+                                        }, "--Select--", new { @id = "drpOrientation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
             </div><br />
             <div class="row" id="rectangular-section" style="display:none;">
@@ -231,7 +230,7 @@
                     <input type="radio" name="Consumption" value="Paint" @(Model.Consumption == "Paint" ? "checked='checked'" : "") />&nbsp;&nbsp;&nbsp<span style="font-size:small">Paint</span>
                     <input type="radio" name="Consumption" value="Powder" @(Model.Consumption == "Powder" ? "checked='checked'" : "") />&nbsp;&nbsp;<span style="font-size:small">Powder</span>
                 </div>
-                
+
                 <div class="col-md-2" id="paintDiv" style="display:none;">
                     <label for="TypeOfPaint" class="smaller-font">Type Of Paint</label>
                     @Html.DropDownListFor(c => c.TypeOfPaint, new List<SelectListItem>{
@@ -257,39 +256,39 @@
                     <label class="smaller-font">Paint Consumption/Day(ltr)</label>
                     @Html.TextBoxFor(c => c.Paint, new { @id = "txtpaint", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-        
+
                 <div class="col-md-2">
                     <label for="CategoryDropdown" class="smaller-font">PaintBooth Type</label>
                     @Html.DropDownListFor(c => c.Category, new List<SelectListItem>{
-                    new SelectListItem {Text = "Dry Paint Booth", Value="1"},
-                    new SelectListItem {Text = "Wet Paint Booth", Value="2"},
-                    }, "--Select--",
-                             new { @id = "Category", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                        new SelectListItem { Text = "Dry Paint Booth", Value = "1" },
+                                        new SelectListItem { Text = "Wet Paint Booth", Value = "2" },
+                                        }, "--Select--",
+                                        new { @id = "Category", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
                 <div class="col-md-2" id="divDraftType">
                     <label for="DraftType" class="smaller-font">Draft Type</label>
                     @Html.DropDownListFor(c => c.DraftType, new List<SelectListItem>{
-                    new SelectListItem {Text = "Side Draft", Value="1"},
-                    // new SelectListItem {Text = "Down Draft", Value="2"},
-                    // new SelectListItem {Text = "Semi Down Draft", Value="3"},
-                    }, "--Select--",
-                             new { @id = "DraftType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                        new SelectListItem { Text = "Side Draft", Value = "1" },
+                                        // new SelectListItem {Text = "Down Draft", Value="2"},
+                                        // new SelectListItem {Text = "Semi Down Draft", Value="3"},
+                                        }, "--Select--",
+                                        new { @id = "DraftType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
                 <div class="col-md-2" id="divSubTypeOfDraft">
                     <label for="SubTypeOfDraft" class="smaller-font">Sub Type</label>
                     @Html.DropDownListFor(c => c.SubTypeOfDraft, new List<SelectListItem>{
-                    new SelectListItem {Text = "Open", Value="1"},
-                    new SelectListItem {Text = "Filters On top OR Door", Value="2"},
-                    new SelectListItem {Text = "Enclosed with FAS", Value="3"},
-                    // new SelectListItem {Text = "With FAS & Civil", Value="4"},
-                    // new SelectListItem {Text = "With FAS & Without Civil", Value="5"},
-                    // new SelectListItem {Text = "With Filters on Top & With Civil", Value="6"},
-                    // new SelectListItem {Text = "With Filters on Top & Without Civil", Value="7"},
-                    // new SelectListItem {Text = "With FAS", Value="8"},
-                    // new SelectListItem {Text = "With Filters on Top", Value="9"},
+                                        new SelectListItem { Text = "Open", Value = "1" },
+                                        new SelectListItem { Text = "Filters On top OR Door", Value = "2" },
+                                        new SelectListItem { Text = "Enclosed with FAS", Value = "3" },
+                                        // new SelectListItem {Text = "With FAS & Civil", Value="4"},
+                                        // new SelectListItem {Text = "With FAS & Without Civil", Value="5"},
+                                        // new SelectListItem {Text = "With Filters on Top & With Civil", Value="6"},
+                                        // new SelectListItem {Text = "With Filters on Top & Without Civil", Value="7"},
+                                        // new SelectListItem {Text = "With FAS", Value="8"},
+                                        // new SelectListItem {Text = "With Filters on Top", Value="9"},
 
-                    }, "--Select--",
-                             new { @id = "SubtypeofDraft", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                        }, "--Select--",
+                                        new { @id = "SubtypeofDraft", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
             </div><br />
 
@@ -317,32 +316,32 @@
                 <div class="col-md-2">
                     <label class="smaller-font">Component handling</label>
                     @Html.DropDownListFor(c => c.ComponentHandling, new List<SelectListItem>
-                    {
-                    new SelectListItem { Text = "Applicable", Value = "1" },
-                    new SelectListItem { Text = "Not-Applicable", Value ="2" },
-                    }, "--Select--", new { @id = "drpCpmonenthandling", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                        {
+                        new SelectListItem { Text = "Applicable", Value = "1" },
+                                        new SelectListItem { Text = "Not-Applicable", Value = "2" },
+                                        }, "--Select--", new { @id = "drpCpmonenthandling", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                 </div>
                 <div class="Conveyor col-md-2" id="drpConveyordiv">
                     <label class="smaller-font">Conveyor Types</label>
                     @Html.DropDownListFor(c => c.Conveyor, new List<SelectListItem>
-                    {
-                    new SelectListItem{Text="EOT Crane",Value="1"},
-                    new SelectListItem{Text="Hoist",Value="2"},
-                    new SelectListItem{Text="Overhead Conveyor",Value="3"},
-                    new SelectListItem{Text="Four Wheel (Biplanar)",Value="4"},
-                    new SelectListItem{Text="Overhead Manual Push Pull Track & Trolley Conveyor",Value="5"},
-                    new SelectListItem{Text="Motorized Floor Conveyor",Value="6"},
-                    new SelectListItem{Text="Motorized Floor Trolley",Value="7"},
-                    new SelectListItem{Text="Manually Push Pull Trolley",Value="8"},
-                    }, "--Select--", new { @id = "drpConveyor", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
+                                        {
+                        new SelectListItem { Text = "EOT Crane", Value = "1" },
+                                        new SelectListItem { Text = "Hoist", Value = "2" },
+                                        new SelectListItem { Text = "Overhead Conveyor", Value = "3" },
+                                        new SelectListItem { Text = "Four Wheel (Biplanar)", Value = "4" },
+                                        new SelectListItem { Text = "Overhead Manual Push Pull Track & Trolley Conveyor", Value = "5" },
+                                        new SelectListItem { Text = "Motorized Floor Conveyor", Value = "6" },
+                                        new SelectListItem { Text = "Motorized Floor Trolley", Value = "7" },
+                                        new SelectListItem { Text = "Manually Push Pull Trolley", Value = "8" },
+                                        }, "--Select--", new { @id = "drpConveyor", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
                 <div class="col-md-2" id="drpOverheadConverSubTypes">
                     <label class="smaller-font">Conveyor SubTypes</label>
                     @Html.DropDownListFor(c => c.OverheadConveyorSubTypes, new List<SelectListItem>
-                    {
-                    new SelectListItem{Text="Continous",Value="1"},
-                    new SelectListItem{Text="Stop & Go",Value="2"},
-                    }, "--Select--", new { @id = "drpOverheadConveyorsub", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
+                                        {
+                        new SelectListItem { Text = "Continous", Value = "1" },
+                                        new SelectListItem { Text = "Stop & Go", Value = "2" },
+                                        }, "--Select--", new { @id = "drpOverheadConveyorsub", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
 
                 <div class="Pitch col-md-2" id="txtCarryCapacitydiv">
@@ -353,13 +352,13 @@
                 <div class="col-md-2" id="drpConveyorNumberdiv">
                     <label class="smaller-font">Conveyor Number</label>
                     @Html.DropDownListFor(c => c.ConveyorNumber, new List<SelectListItem>
-                    {
-                    new SelectListItem{Text="348",Value="1"},
-                    new SelectListItem{Text="458",Value="2"},
-                    new SelectListItem{Text="678",Value="3"},
-                    }, "--Select--", new { @id = "drpConveyorNumber", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
+                                        {
+                        new SelectListItem { Text = "348", Value = "1" },
+                                        new SelectListItem { Text = "458", Value = "2" },
+                                        new SelectListItem { Text = "678", Value = "3" },
+                                        }, "--Select--", new { @id = "drpConveyorNumber", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
-            
+
                 <div class="col-md-2" id="divPitch" style="display:none;">
                     <label class="smaller-font">Pitch(mm)</label>
                     @Html.TextBoxFor(c => c.Pitch, new { @id = "txtPitch", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
@@ -371,11 +370,11 @@
                 <div class="col-md-2">
                     <label class="smaller-font">Loading & Unloading </label>
                     @Html.DropDownListFor(c => c.LoadingUnloading, new List<SelectListItem>
-                    {
-                    new SelectListItem{Text="Manual",Value="Manual"},
-                    new SelectListItem{Text="Automatic",Value="Automatic"},
+                                        {
+                        new SelectListItem { Text = "Manual", Value = "Manual" },
+                                        new SelectListItem { Text = "Automatic", Value = "Automatic" },
 
-                    }, "Select", new { @id = "drpLoadingUnloading", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
+                                        }, "Select", new { @id = "drpLoadingUnloading", @class = "form-control smaller-font smaller-height", style = "width:130px;" })
                 </div>
             </div><br />
             <div class="row">
@@ -395,22 +394,22 @@
                     <label class="smaller-font">Working days/year</label>
                     @Html.TextBoxFor(c => c.Workingdays, new { @id = "txtworkday", @class = "form-control smaller-font smaller-height", style = "width:130px" })
                 </div>
-                
-               
+
+
             </div>
         </div>
         <hr />
         <div class="row" id="DivComponentEntryAndDoorTypes">
-           
-                <div class="col-md-2">
-                    <label class="smaller-font">Component Entry</label>
-                    @Html.DropDownListFor(c => c.ComponentEntry, new List<SelectListItem>{
-                    new SelectListItem{Text="Front", Value="Front"},
-                    new SelectListItem{Text="Side",Value="Side"}
-                    }, "--Select--",
-                             new { @id = "drpComponentEntry", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
-                </div>
-                @* <div class="col-md-2">
+
+            <div class="col-md-2">
+                <label class="smaller-font">Component Entry</label>
+                @Html.DropDownListFor(c => c.ComponentEntry, new List<SelectListItem>{
+                                new SelectListItem { Text = "Front", Value = "Front" },
+                                new SelectListItem { Text = "Side", Value = "Side" }
+                                }, "--Select--",
+                                new { @id = "drpComponentEntry", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
+            @* <div class="col-md-2">
                     <label class="smaller-font">Door Type</label>
                     @Html.DropDownListFor(c => c.DoorType, new List<SelectListItem>{
                     new SelectListItem{Text="Hinge", Value="Hinge"},
@@ -427,70 +426,81 @@
                                 }, "--Select--",
                                 new { @id = "drpDoorType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
-           <!-- Manual Operation -->
+            <!-- Manual Operation -->
             <div class="col-md-2" id="manualOperationDiv" style="display:none;">
                 <label class="smaller-font">Type Of Operation</label>
                 @Html.DropDownListFor(c => c.TypeOfOperationForManual, new List<SelectListItem>{
-                        new SelectListItem { Text = "Hinged", Value = "Hinged" },
-                        new SelectListItem { Text = "Sliding", Value = "Sliding" },
-                    },
-                    "--Select--",
-                    new { @id = "drpManualOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                new SelectListItem { Text = "Hinged", Value = "Hinged" },
+                                new SelectListItem { Text = "Sliding", Value = "Sliding" },
+                                },
+                                "--Select--",
+                                new { @id = "drpManualOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
             <!-- Hinged Door selected -->
             <div class="col-md-2" id="HingedDoorDiv" style="display:none;">
                 <label class="smaller-font">Type Of Hinged Door</label>
                 @Html.DropDownListFor(c => c.TypeOfHingedDoor, new List<SelectListItem>{
-                        new SelectListItem { Text = "Split Doors", Value = "Split Doors" },
-                        new SelectListItem { Text = "4 Fold Doors", Value = "4 Fold Doors" },
-                    },
-                    "--Select--",
-                    new { @id = "drpTypeOfHingedDoor", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                new SelectListItem { Text = "Split Doors", Value = "Split Doors" },
+                                new SelectListItem { Text = "4 Fold Doors", Value = "4 Fold Doors" },
+                                },
+                                "--Select--",
+                                new { @id = "drpTypeOfHingedDoor", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
-
-
+           @*  <br/>
+            <div class="row" id="divDoorDimensions" style="display:none;">
+                <div class="col-md-2">
+                    <label class="smaller-font">Door Width</label>
+                    @Html.TextBoxFor(c => c.SplitDoorWidth, new { @id = "txtSplitDoorWidth", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+                <div class="col-md-2">
+                    <label class="smaller-font">Door Height</label>
+                    @Html.TextBoxFor(c => c.SplitDoorHeight, new { @id = "txtSplitDoorHeight", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+            </div> *@
             <!-- Motorised Operation -->
             <div class="col-md-2" id="motorisedOperationDiv" style="display:none;">
                 <label class="smaller-font">Type Of Operation</label>
                 @Html.DropDownListFor(c => c.TypeOfOperationForMotorised, new List<SelectListItem>{
-                        new SelectListItem { Text = "Sliding", Value = "Sliding" },
-                        new SelectListItem { Text = "Rolling", Value = "Rolling" },
-                    },
-                    "--Select--",
-                    new { @id = "drpMotorisedOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                new SelectListItem { Text = "Sliding", Value = "Sliding" },
+                                new SelectListItem { Text = "Rolling", Value = "Rolling" },
+                                },
+                                "--Select--",
+                                new { @id = "drpMotorisedOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
 
             <div class="col-md-3" id="divDoorSideLocation">
                 <label class="smaller-font">Side Location</label>
                 @Html.DropDownListFor(c => c.SideDoorLOcation, new List<SelectListItem>{
-                // new SelectListItem{Text="Left", Value="Left"},
-                // new SelectListItem{Text="Right",Value="Right"},
-                new SelectListItem{Text="BothSide",Value="BothSide",Selected = true},
-                }, "--Select--",
-                         new { @id = "drpDoorSideLocation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                // new SelectListItem{Text="Left", Value="Left"},
+                                // new SelectListItem{Text="Right",Value="Right"},
+                                new SelectListItem { Text = "BothSide", Value = "BothSide", Selected = true },
+                                }, "--Select--",
+                                new { @id = "drpDoorSideLocation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
-        </div><hr />
+           
+        </div>
+        <hr />
         <div class="row">
             <div class="col-md-2">
                 <label class="smaller-font"> Motor Type</label>
                 @Html.DropDownListFor(c => c.MotorType, new List<SelectListItem>{
-                new SelectListItem{Text="NFLP", Value="NFLP"},
-                new SelectListItem{Text="FLP",Value="FLP"}
-                }, "--Select--",
-                         new { @id = "drpMotorType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                new SelectListItem { Text = "NFLP", Value = "NFLP" },
+                                new SelectListItem { Text = "FLP", Value = "FLP" }
+                                }, "--Select--",
+                                new { @id = "drpMotorType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
             <div class="col-md-2" id="divPlenumHeight">
                 <label class="smaller-font">Plenum Height(mm)</label>
                 @Html.DropDownListFor(c => c.HeightOfPlenum, new List<SelectListItem>{
-                new SelectListItem{Text="800", Value="800"},
-                new SelectListItem{Text="1200",Value="1200"},
-                new SelectListItem{Text="1600",Value="1600"},
-                }, "--Select--",
-                         new { @id = "drpPaintType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                new SelectListItem { Text = "800", Value = "800" },
+                                new SelectListItem { Text = "1200", Value = "1200" },
+                                new SelectListItem { Text = "1600", Value = "1600" },
+                                }, "--Select--",
+                                new { @id = "drpPaintType", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
-            
 
-           @*  <div class="col-md-3">
+
+            @*  <div class="col-md-3">
                 <label class="smaller-font">Extraction Chamber Height (mm)</label>
 
                  @Html.DropDownListFor(c => c.ExtractionChamberHeight,
@@ -510,29 +520,28 @@
                 <label class="smaller-font">Extraction Chamber Height (mm)</label>
 
                 @Html.DropDownListFor(c => c.ExtractionChamberHeight,
-                    new List<SelectListItem>
-                    {
-                    new SelectListItem { Text = "2390", Value = "2390" },
-                    new SelectListItem { Text = "Custom", Value = "custom" }
-                    },
-                    new
-                    {
-                        @id = "drpExtractionchamberHeight",
-                        @class = "form-control smaller-font smaller-height",
-                        style = "width:130px;"
-                    })
+                                new List<SelectListItem>
+                                {
+                                new SelectListItem { Text = "2390", Value = "2390" },
+                                new SelectListItem { Text = "Custom", Value = "custom" }
+                                },
+                                new
+                                {
+                                    @id = "drpExtractionchamberHeight",
+                                    @class = "form-control smaller-font smaller-height",
+                                    style = "width:130px;"
+                                })
             </div>
-
             <div class="col-md-2" style="margin-top:3px;">
                 <label class="smaller-font">&nbsp;</label> <!-- Empty label for alignment -->
                 <!-- Custom textbox - hidden by default -->
                 <input type="text"
                        id="txtCustomHeight"
-                       name="ExtractionChamberHeight"  
-                class="form-control smaller-font smaller-height"
-                style="width:130px; display:none;"
-                placeholder="Enter height (mm)"
-                value="@(Model.ExtractionChamberHeight != "2390" && Model.ExtractionChamberHeight != "custom" && !string.IsNullOrEmpty(Model.ExtractionChamberHeight) ? Model.ExtractionChamberHeight : "")" />
+                       name="ExtractionChamberHeight"
+                       class="form-control smaller-font smaller-height"
+                       style="width:130px; display:none;"
+                       placeholder="Enter height (mm)"
+                       value="@(Model.ExtractionChamberHeight != "2390" && Model.ExtractionChamberHeight != "custom" && !string.IsNullOrEmpty(Model.ExtractionChamberHeight) ? Model.ExtractionChamberHeight : "")" />
             </div>
         </div>
         <div class="cl-md-12 col-lg-12 col-sm-12" style="margin-top:20px;">
@@ -592,466 +601,468 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('.Powder').hide();
-        $('.paint').hide();
-        $('#divPlenumHeight').hide();
-        $('#drpConveyordiv').hide();
-        // $('#drpComponentEntry').on('change', ShowComponetEntry);
-        $("#txtCarryCapacitydiv").hide();
-        $("#divDoorSideLocation").hide();
-        $('#drpComponentEntry').trigger("change"); 
-        $("#drpConveyorNumberdiv").hide();
-        $("#drpOverheadConverSubTypes").hide();
-         // ShowComponetEntry();
-         
-        function toggleComponentHandling() {
-            const selectedValue = $('#drpCpmonenthandling').val();
-            console.log("Selected Value:", selectedValue); // Debugging log
-
-            if (selectedValue === "1") { // Applicable
-                $('#drpConveyordiv').show();
-
-            } else {
-                $('#drpConveyordiv').hide();
-                $("#drpConveyorNumberdiv").hide();
-                $("#drpOverheadConverSubTypes").hide();
-                $("#divPitch").hide();
-                $("#divSpeed").hide();
-                $("#txtCarryCapacitydiv").hide();
-            }
-        }
-        $("#drpExtractionchamberHeight").change(function () {
-        if ($(this).val() === "Other") {
-            $("#txtCustomExtractionHeight").show();
-        } else {
-            $("#txtCustomExtractionHeight").hide();
-            $("#txtCustomExtractionHeight").val("");
-        }
-    });
-
-            var $dropdown = $('#drpExtractionchamberHeight');
-            var $customInput = $('#txtCustomHeight');
-
-            function updateState() {
-                if ($dropdown.val() === "custom") {
-                    $customInput.show().focus();
-                    $dropdown.prop('disabled', true);  // KEY: Disable dropdown so it won't post "custom"
-                } else {
-                    $customInput.hide().val('');
-                    $dropdown.prop('disabled', false); // Re-enable when not custom
-                }
-            }
-
-            // Run on page load (important for postbacks/validation)
-            updateState();
-
-            // Run when dropdown changes
-            $dropdown.change(function () {
-                updateState();
-            });
-
-
-
-
-        // function ShowComponetEntry() {
-        //     const selectedValue = $('#drpComponentEntry').val();
-        //     const $subTypeDropdown = $('#drpComponentEntrySubType');
-
-        //      const currentSubTypeValue = $subTypeDropdown.val(); // get existing value
-        //      console.log("currentSubTypeValue",currentSubTypeValue);
-        //     $subTypeDropdown.empty(); // Clear existing options
-        //     $subTypeDropdown.append($('<option>', { value: "", text: "---Select---" })); // Default option
-           
-        //     if (selectedValue === "Side") {
-        //         // Add only Slide
-        //         $subTypeDropdown.append($('<option>', { value: "Slide", text: "Slide" }));
-        //         $("#divDoorSideLocation").show(); // Show Side Location dropdown
-        //     }
-        // }
-        //Category drp change event
-        $("#Category").change(function () {
-            var selectedValue = $(this).val();
-
-            if (selectedValue == "1") {
-                $("#divSubTypeOfDraft").show();
-                $("#divDraftType").show();
-
-            }
-            else  {
-                $("#divSubTypeOfDraft").hide();
-                $("#divDraftType").hide();
-            }
-        });
-
-        var allSubOptions = $("#SubtypeofDraft option").clone();
-
-        $("#DraftType").change(function () {
-            var selectedDraft = $(this).val();
-
-            // Clear existing options and add default placeholder
-            $("#SubtypeofDraft").empty().append('<option value="">--Select--</option>');
-
-            if (selectedDraft === "1") { // Side Draft
-                // Append only the first 3 options (values 1 to 3)
-                allSubOptions.filter(function () {
-                    var val = $(this).val();
-                    return val === "1" || val === "2" || val === "3";
-                }).appendTo("#SubtypeofDraft");
-            }
-            else if (selectedDraft === "2") { // Down Draft
-
-                allSubOptions.filter(function () {
-                    var val = $(this).val();
-                    return val === "4" || val === "5" || val === "6" || val === "7";
-                }).appendTo("#SubtypeofDraft");
-            }
-            else if (selectedDraft === "3") { //Semi Down Draft
-
-                allSubOptions.filter(function () {
-                    var val = $(this).val();
-                    return val === "8" || val === "9";
-                }).appendTo("#SubtypeofDraft");
-            }
-
-        });
-        //code for when Painbooth type is open then hide component entry div
-        function toggleComponentEntryVisibility() {
-            var selectedValue = $('#SubtypeofDraft').val();
-            if (selectedValue === "1") {
-                $('#DivComponentEntryAndDoorTypes').hide();
-            } 
-            else {
-                $('#DivComponentEntryAndDoorTypes').show();
-            }
-            if(selectedValue === "3")
-            {
-                $('#divPlenumHeight').show();
-            }
-             else {
-                   $('#divPlenumHeight').hide();
-                 }
-            
-        }
-
-        // Initial call in case form is pre-filled
-        toggleComponentEntryVisibility();
-
-        // Bind the change event
-        $('#SubtypeofDraft').change(function () {
-            toggleComponentEntryVisibility();
-        });
-
-         calculateSurfaceArea();
-        // Trigger toggle on page load and when dropdown value changes
-        toggleComponentHandling(); // Check on page load
-        $('#drpCpmonenthandling').change(function () {
-            toggleComponentHandling(); // Check on dropdown change
-        });
-
-        $("#drpConveyor").change(function () {
-            var selectedValue = $(this).val();
-
-            // Hide all elements initially
-            $("#txtCarryCapacitydiv").hide();
-            $("#drpOverheadConverSubTypes").hide();
-            $("#drpConveyorNumberdiv").hide();
-
-            if (selectedValue == "3") {
-                $("#drpOverheadConverSubTypes").show();
-                $("#drpConveyorNumberdiv").show();
-                $("#divPitch").show();
-                $("#divSpeed").show();
-            }
-            else if (["1", "2", "6", "7", "8"].includes(selectedValue)) {
-                $("#txtCarryCapacitydiv").show();
-            }
-        });
-        $('input[name="Consumption"]').change(function () {
-
-            if ($(this).val() == 'Paint') {
-
-                $('.paint').show();
-                $('.Powder').hide();
-            } else if ($(this).val() == 'Powder') {
-
-                $('.Powder').show();
-                $('.paint').hide();
-            }
-        });
-        
-         $("#txtLengthSize, #txtWidthSize, #txtHeightSize, #txtDiameter, #txtHeightSizeCircular").on("input", function () {
-        calculateSurfaceArea();
-    });
-    //company details fetch code 
         $(document).ready(function () {
-            $('#txtcname').on('input', function () {
-                var query = $(this).val();
-                if (query.length > 0) {
-                    $.ajax({
-                        url: '@Url.Action("SearchCompanies", "Enquiry")',
-                        type: 'GET',
-                        data: { term: query },
-                        success: function (data) {
-                            var list = $('#company-list');
-                            list.empty();
-                            if (data.length > 0) {
-                                $.each(data, function (index, company) {
-                                    list.append('<a class="dropdown-item" href="#">' + company + '</a>');
-                                });
-                                list.show();
-                            } else {
-                                list.hide();
-                            }
-                        },
-                        error: function () {
-                            console.log('Error fetching company names.');
-                        }
-                    });
+            $('.Powder').hide();
+            $('.paint').hide();
+            $('#divPlenumHeight').hide();
+            $('#drpConveyordiv').hide();
+            // $('#drpComponentEntry').on('change', ShowComponetEntry);
+            $("#txtCarryCapacitydiv").hide();
+            $("#divDoorSideLocation").hide();
+            $('#drpComponentEntry').trigger("change");
+            $("#drpConveyorNumberdiv").hide();
+            $("#drpOverheadConverSubTypes").hide();
+             // ShowComponetEntry();
+
+            function toggleComponentHandling() {
+                const selectedValue = $('#drpCpmonenthandling').val();
+                console.log("Selected Value:", selectedValue); // Debugging log
+
+                if (selectedValue === "1") { // Applicable
+                    $('#drpConveyordiv').show();
+
                 } else {
-                    $('#company-list').hide();
+                    $('#drpConveyordiv').hide();
+                    $("#drpConveyorNumberdiv").hide();
+                    $("#drpOverheadConverSubTypes").hide();
+                    $("#divPitch").hide();
+                    $("#divSpeed").hide();
+                    $("#txtCarryCapacitydiv").hide();
+                }
+            }
+            $("#drpExtractionchamberHeight").change(function () {
+            if ($(this).val() === "Other") {
+                $("#txtCustomExtractionHeight").show();
+            } else {
+                $("#txtCustomExtractionHeight").hide();
+                $("#txtCustomExtractionHeight").val("");
+            }
+        });
+
+                var $dropdown = $('#drpExtractionchamberHeight');
+                var $customInput = $('#txtCustomHeight');
+
+                function updateState() {
+                    if ($dropdown.val() === "custom") {
+                        $customInput.show().focus();
+                        $dropdown.prop('disabled', true);  // KEY: Disable dropdown so it won't post "custom"
+                    } else {
+                        $customInput.hide().val('');
+                        $dropdown.prop('disabled', false); // Re-enable when not custom
+                    }
+                }
+
+                // Run on page load (important for postbacks/validation)
+                updateState();
+
+                // Run when dropdown changes
+                $dropdown.change(function () {
+                    updateState();
+                });
+
+
+
+
+            // function ShowComponetEntry() {
+            //     const selectedValue = $('#drpComponentEntry').val();
+            //     const $subTypeDropdown = $('#drpComponentEntrySubType');
+
+            //      const currentSubTypeValue = $subTypeDropdown.val(); // get existing value
+            //      console.log("currentSubTypeValue",currentSubTypeValue);
+            //     $subTypeDropdown.empty(); // Clear existing options
+            //     $subTypeDropdown.append($('<option>', { value: "", text: "---Select---" })); // Default option
+
+            //     if (selectedValue === "Side") {
+            //         // Add only Slide
+            //         $subTypeDropdown.append($('<option>', { value: "Slide", text: "Slide" }));
+            //         $("#divDoorSideLocation").show(); // Show Side Location dropdown
+            //     }
+            // }
+            //Category drp change event
+            $("#Category").change(function () {
+                var selectedValue = $(this).val();
+
+                if (selectedValue == "1") {
+                    $("#divSubTypeOfDraft").show();
+                    $("#divDraftType").show();
+
+                }
+                else  {
+                    $("#divSubTypeOfDraft").hide();
+                    $("#divDraftType").hide();
                 }
             });
 
-            $(document).on('click', '.dropdown-item', function () {
-                var companyName = $(this).text();
-                $('#txtcname').val(companyName);
-                $('#company-list').hide();
+            var allSubOptions = $("#SubtypeofDraft option").clone();
 
-                // Fetch detailed information about the selected company
-                $.ajax({
-                    url: '/Enquiry/SearchByCompanyName',
-                    type: 'POST',
-                    datatype: 'json',
-                    data: { companyName: companyName },
-                    success: function (data) {
-                        $("#txtcadresss").val(data.customerAddress);
-                        $("#txtContactPerson").val(data.contactperson);
-                        $("#txtdesignation").val(data.designation);
-                        $("#txtmobile").val(data.mobileNo);
-                        $("#txtemail").val(data.emailId);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
+            $("#DraftType").change(function () {
+                var selectedDraft = $(this).val();
+
+                // Clear existing options and add default placeholder
+                $("#SubtypeofDraft").empty().append('<option value="">--Select--</option>');
+
+                if (selectedDraft === "1") { // Side Draft
+                    // Append only the first 3 options (values 1 to 3)
+                    allSubOptions.filter(function () {
+                        var val = $(this).val();
+                        return val === "1" || val === "2" || val === "3";
+                    }).appendTo("#SubtypeofDraft");
+                }
+                else if (selectedDraft === "2") { // Down Draft
+
+                    allSubOptions.filter(function () {
+                        var val = $(this).val();
+                        return val === "4" || val === "5" || val === "6" || val === "7";
+                    }).appendTo("#SubtypeofDraft");
+                }
+                else if (selectedDraft === "3") { //Semi Down Draft
+
+                    allSubOptions.filter(function () {
+                        var val = $(this).val();
+                        return val === "8" || val === "9";
+                    }).appendTo("#SubtypeofDraft");
+                }
+
+            });
+            //code for when Painbooth type is open then hide component entry div
+            function toggleComponentEntryVisibility() {
+                var selectedValue = $('#SubtypeofDraft').val();
+                if (selectedValue === "1") {
+                    $('#DivComponentEntryAndDoorTypes').hide();
+                }
+                else {
+                    $('#DivComponentEntryAndDoorTypes').show();
+                }
+                if(selectedValue === "3")
+                {
+                    $('#divPlenumHeight').show();
+                }
+                 else {
+                       $('#divPlenumHeight').hide();
+                     }
+
+            }
+
+            // Initial call in case form is pre-filled
+            toggleComponentEntryVisibility();
+
+            // Bind the change event
+            $('#SubtypeofDraft').change(function () {
+                toggleComponentEntryVisibility();
+            });
+
+             calculateSurfaceArea();
+            // Trigger toggle on page load and when dropdown value changes
+            toggleComponentHandling(); // Check on page load
+            $('#drpCpmonenthandling').change(function () {
+                toggleComponentHandling(); // Check on dropdown change
+            });
+
+            $("#drpConveyor").change(function () {
+                var selectedValue = $(this).val();
+
+                // Hide all elements initially
+                $("#txtCarryCapacitydiv").hide();
+                $("#drpOverheadConverSubTypes").hide();
+                $("#drpConveyorNumberdiv").hide();
+
+                if (selectedValue == "3") {
+                    $("#drpOverheadConverSubTypes").show();
+                    $("#drpConveyorNumberdiv").show();
+                    $("#divPitch").show();
+                    $("#divSpeed").show();
+                }
+                else if (["1", "2", "6", "7", "8"].includes(selectedValue)) {
+                    $("#txtCarryCapacitydiv").show();
+                }
+            });
+            $('input[name="Consumption"]').change(function () {
+
+                if ($(this).val() == 'Paint') {
+
+                    $('.paint').show();
+                    $('.Powder').hide();
+                } else if ($(this).val() == 'Powder') {
+
+                    $('.Powder').show();
+                    $('.paint').hide();
+                }
+            });
+
+             $("#txtLengthSize, #txtWidthSize, #txtHeightSize, #txtDiameter, #txtHeightSizeCircular").on("input", function () {
+            calculateSurfaceArea();
+        });
+        //company details fetch code
+            $(document).ready(function () {
+                $('#txtcname').on('input', function () {
+                    var query = $(this).val();
+                    if (query.length > 0) {
+                        $.ajax({
+                            url: '@Url.Action("SearchCompanies", "Enquiry")',
+                            type: 'GET',
+                            data: { term: query },
+                            success: function (data) {
+                                var list = $('#company-list');
+                                list.empty();
+                                if (data.length > 0) {
+                                    $.each(data, function (index, company) {
+                                        list.append('<a class="dropdown-item" href="#">' + company + '</a>');
+                                    });
+                                    list.show();
+                                } else {
+                                    list.hide();
+                                }
+                            },
+                            error: function () {
+                                console.log('Error fetching company names.');
+                            }
+                        });
+                    } else {
+                        $('#company-list').hide();
                     }
                 });
-            });
 
-            $(document).click(function (e) {
-                if (!$(e.target).closest('#txtcname, #company-list').length) {
+                $(document).on('click', '.dropdown-item', function () {
+                    var companyName = $(this).text();
+                    $('#txtcname').val(companyName);
                     $('#company-list').hide();
-                }
-            });
 
-            $('#drpShape').change(function () {
-                var selectedShape = $(this).val();
-                console.log("Selected Shape:", selectedShape);
+                    // Fetch detailed information about the selected company
+                    $.ajax({
+                        url: '/Enquiry/SearchByCompanyName',
+                        type: 'POST',
+                        datatype: 'json',
+                        data: { companyName: companyName },
+                        success: function (data) {
+                            $("#txtcadresss").val(data.customerAddress);
+                            $("#txtContactPerson").val(data.contactperson);
+                            $("#txtdesignation").val(data.designation);
+                            $("#txtmobile").val(data.mobileNo);
+                            $("#txtemail").val(data.emailId);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                });
 
-                if (selectedShape == "Rectangular") {
-                    $('#rectangular-section').show();
-                    $('#circular-section').hide();
-
-                    // Show Horizontal Rectangle image by default
-                    $('#Horizontalrectangle').show();
-                    $('#Horizontalrectangle img').attr('src', '@Url.Content("~/img/Rectangular.PNG")');
-                  /*   $('#drpOrientation').val('Horizontal').change(); */ // Set dropdown to Horizontal
-                      // Only set default Horizontal if dropdown has no value (new entry case)
-                    if (!$('#drpOrientation').val()) {
-                        $('#drpOrientation').val('Horizontal').change();
+                $(document).click(function (e) {
+                    if (!$(e.target).closest('#txtcname, #company-list').length) {
+                        $('#company-list').hide();
                     }
+                });
 
-                } else if (selectedShape == "Circular") {
-                    $('#circular-section').show();
-                    $('#rectangular-section').hide();
-                    $('#Horizontalrectangle').hide(); // Hide rectangle image if Circular is selected
-                } else {
-                    $('#rectangular-section').hide();
-                    $('#circular-section').hide();
-                    $('#Horizontalrectangle').hide();
-                }
+                $('#drpShape').change(function () {
+                    var selectedShape = $(this).val();
+                    console.log("Selected Shape:", selectedShape);
 
-                // Trigger change event on Orientation dropdown to update image
-                $('#drpOrientation').trigger('change');
-            });
-            //dropdown orientation change
-            $('#drpOrientation').change(function () {
-                var selectedShape = $('#drpShape').val();
-                var selectedOrientation = $(this).val();
+                    if (selectedShape == "Rectangular") {
+                        $('#rectangular-section').show();
+                        $('#circular-section').hide();
 
-                // For rectangular shape
-                if (selectedShape == "Rectangular") {
-                    if (selectedOrientation == "Vertical") {
-                        $('#verticalrectangle').show();
-                        $('#Horizontalrectangle').hide();
-                    } else {
-                        $('#verticalrectangle').hide();
+                        // Show Horizontal Rectangle image by default
                         $('#Horizontalrectangle').show();
-                    }
-                }
-                else if (selectedShape == "Circular") {
-                    if (selectedOrientation == "Vertical") {
-                        $('#VerticalCircle').show();
-                        $('#HorizonatalCircle').hide();
+                        $('#Horizontalrectangle img').attr('src', '@Url.Content("~/img/Rectangular.PNG")');
+                      /*   $('#drpOrientation').val('Horizontal').change(); */ // Set dropdown to Horizontal
+                          // Only set default Horizontal if dropdown has no value (new entry case)
+                        if (!$('#drpOrientation').val()) {
+                            $('#drpOrientation').val('Horizontal').change();
+                        }
+
+                    } else if (selectedShape == "Circular") {
+                        $('#circular-section').show();
+                        $('#rectangular-section').hide();
+                        $('#Horizontalrectangle').hide(); // Hide rectangle image if Circular is selected
                     } else {
-                        $('#VerticalCircle').hide();
-                        $('#HorizonatalCircle').show();
+                        $('#rectangular-section').hide();
+                        $('#circular-section').hide();
+                        $('#Horizontalrectangle').hide();
                     }
-                }
+
+                    // Trigger change event on Orientation dropdown to update image
+                    $('#drpOrientation').trigger('change');
+                });
+                //dropdown orientation change
+                $('#drpOrientation').change(function () {
+                    var selectedShape = $('#drpShape').val();
+                    var selectedOrientation = $(this).val();
+
+                    // For rectangular shape
+                    if (selectedShape == "Rectangular") {
+                        if (selectedOrientation == "Vertical") {
+                            $('#verticalrectangle').show();
+                            $('#Horizontalrectangle').hide();
+                        } else {
+                            $('#verticalrectangle').hide();
+                            $('#Horizontalrectangle').show();
+                        }
+                    }
+                    else if (selectedShape == "Circular") {
+                        if (selectedOrientation == "Vertical") {
+                            $('#VerticalCircle').show();
+                            $('#HorizonatalCircle').hide();
+                        } else {
+                            $('#VerticalCircle').hide();
+                            $('#HorizonatalCircle').show();
+                        }
+                    }
+                });
+                $('#drpShape').trigger('change');
             });
-            $('#drpShape').trigger('change');
+
         });
+        let uploadedFiles = [];
 
-    });
-    let uploadedFiles = [];
+        // Handle file uploads
+        function handleFileUpload() {
+            const fileInput = $('#imageFileInput')[0];
+            const newFiles = Array.from(fileInput.files);
 
-    // Handle file uploads
-    function handleFileUpload() {
-        const fileInput = $('#imageFileInput')[0];
-        const newFiles = Array.from(fileInput.files);
+            // Append new files to the existing array
+            uploadedFiles = uploadedFiles.concat(newFiles);
 
-        // Append new files to the existing array
-        uploadedFiles = uploadedFiles.concat(newFiles);
+            // Enable the "Show Uploaded Files" button if there are uploaded files
+            $('#showFilesButton').prop('disabled', uploadedFiles.length === 0);
 
-        // Enable the "Show Uploaded Files" button if there are uploaded files
-        $('#showFilesButton').prop('disabled', uploadedFiles.length === 0);
-
-        // Show the uploaded files in the modal
-        showUploadedFiles();
-    }
-
-    // Show uploaded files in the modal
-    function showUploadedFiles() {
-        const fileList = $('#uploadedFilesList');
-        fileList.empty(); // Clear the existing list
-
-        $.each(uploadedFiles, function (index, file) {
-            const listItem = $('<li></li>');
-
-            // Create a link for the file name that enables download
-            const fileLink = $('<a></a>')
-                .attr('href', URL.createObjectURL(file))
-                .attr('download', file.name)
-                .text(file.name);
-
-            listItem.append(fileLink);
-            fileList.append(listItem);
-        });
-    }
-
-    // Download all uploaded files
-    function downloadAllFiles() {
-        $.each(uploadedFiles, function (index, file) {
-            const url = URL.createObjectURL(file);
-            const a = $('<a></a>')
-                .attr('href', url)
-                .attr('download', file.name);
-            $('body').append(a);
-            a[0].click();
-            a.remove();
-        });
-    }
-    
-    function toggleDropdowns() {
-            var val = $("input[name='Consumption']:checked").val();
-
-            if (val === "Paint") {
-                $("#paintDiv").show();
-                $("#powderDiv").hide();
-            } 
-            else if (val === "Powder") {
-                $("#powderDiv").show();
-                $("#paintDiv").hide();
-            }
+            // Show the uploaded files in the modal
+            showUploadedFiles();
         }
 
-        // Run on page load (works in edit mode)
-        toggleDropdowns();
+        // Show uploaded files in the modal
+        function showUploadedFiles() {
+            const fileList = $('#uploadedFilesList');
+            fileList.empty(); // Clear the existing list
 
-        // Run when user changes radio button
-        $("input[name='Consumption']").change(function () {
-            toggleDropdowns();
-        });
+            $.each(uploadedFiles, function (index, file) {
+                const listItem = $('<li></li>');
 
-function toggleDoorOperations() {
-            var selected = $("#drpDoorType").val();
+                // Create a link for the file name that enables download
+                const fileLink = $('<a></a>')
+                    .attr('href', URL.createObjectURL(file))
+                    .attr('download', file.name)
+                    .text(file.name);
 
-            if (selected === "Manual") {
-                $("#manualOperationDiv").show();
-                $("#motorisedOperationDiv").hide();
-            }
-            else if (selected === "Motorised") {
-                $("#manualOperationDiv").hide();
-                $("#motorisedOperationDiv").show();
-            }
-            else {
-                $("#manualOperationDiv").hide();
-                $("#motorisedOperationDiv").hide();
-            }
+                listItem.append(fileLink);
+                fileList.append(listItem);
+            });
         }
 
-        // Run on page load (useful for Edit Mode)
-        toggleDoorOperations();
+        // Download all uploaded files
+        function downloadAllFiles() {
+            $.each(uploadedFiles, function (index, file) {
+                const url = URL.createObjectURL(file);
+                const a = $('<a></a>')
+                    .attr('href', url)
+                    .attr('download', file.name);
+                $('body').append(a);
+                a[0].click();
+                a.remove();
+            });
+        }
 
-        // Run when user changes dropdown
-        $("#drpDoorType").change(function () {
-            toggleDoorOperations();
-        });
+        function toggleDropdowns() {
+                var val = $("input[name='Consumption']:checked").val();
 
-
-        function toggleHingedOperations() {
-                var selected = $("#drpManualOperation").val();
-
-                if (selected === "Hinged")
-               {
-                    $("#HingedDoorDiv").show();
-               }
-                else 
-                {
-                    $("#HingedDoorDiv").hide();
+                if (val === "Paint") {
+                    $("#paintDiv").show();
+                    $("#powderDiv").hide();
                 }
-            
-        }
+                else if (val === "Powder") {
+                    $("#powderDiv").show();
+                    $("#paintDiv").hide();
+                }
+            }
 
-        // Run on page load (useful for Edit Mode)
-        toggleHingedOperations();
+            // Run on page load (works in edit mode)
+            toggleDropdowns();
 
-        // Run when user changes dropdown
-            $("#drpManualOperation").change(function () {
+            // Run when user changes radio button
+            $("input[name='Consumption']").change(function () {
+                toggleDropdowns();
+            });
+
+    function toggleDoorOperations() {
+                var selected = $("#drpDoorType").val();
+
+                if (selected === "Manual") {
+                    $("#manualOperationDiv").show();
+                    $("#motorisedOperationDiv").hide();
+                }
+                else if (selected === "Motorised") {
+                    $("#manualOperationDiv").hide();
+                    $("#motorisedOperationDiv").show();
+                }
+                else {
+                    $("#manualOperationDiv").hide();
+                    $("#motorisedOperationDiv").hide();
+                }
+            }
+
+            // Run on page load (useful for Edit Mode)
+            toggleDoorOperations();
+
+            // Run when user changes dropdown
+            $("#drpDoorType").change(function () {
+                toggleDoorOperations();
+            });
+
+
+            function toggleHingedOperations() {
+                    var selected = $("#drpManualOperation").val();
+
+                    if (selected === "Hinged")
+                   {
+                        $("#HingedDoorDiv").show();
+                       
+                   }
+                    else
+                    {
+                        $("#HingedDoorDiv").hide();
+
+                    }
+
+            }
+
+            // Run on page load (useful for Edit Mode)
             toggleHingedOperations();
-        });
+
+            // Run when user changes dropdown
+                $("#drpManualOperation").change(function () {
+                toggleHingedOperations();
+            });
 
 
 
 
 
-     function calculateSurfaceArea() {
-        var selectedShape = $("#drpShape").val();
+         function calculateSurfaceArea() {
+            var selectedShape = $("#drpShape").val();
 
-        if (selectedShape === "Rectangular") {
-            var depth = parseFloat($("#txtLengthSize").val()) || 0;
-            var width = parseFloat($("#txtWidthSize").val()) || 0;
-            var height = parseFloat($("#txtHeightSize").val()) || 0;
+            if (selectedShape === "Rectangular") {
+                var depth = parseFloat($("#txtLengthSize").val()) || 0;
+                var width = parseFloat($("#txtWidthSize").val()) || 0;
+                var height = parseFloat($("#txtHeightSize").val()) || 0;
 
-            // Calculate surface area for a rectangular box
-            var surfaceArea = 2 * (depth * width + depth * height + width * height);
-            console.log("surfaceArea",surfaceArea);
-            var surface= surfaceArea/1000000;
-            console.log("surface",surface);
+                // Calculate surface area for a rectangular box
+                var surfaceArea = 2 * (depth * width + depth * height + width * height);
+                console.log("surfaceArea",surfaceArea);
+                var surface= surfaceArea/1000000;
+                console.log("surface",surface);
 
-            $("#txtsurfacearea").val(surface.toFixed(2));
-        } 
-        else if (selectedShape === "Circular") {
-            var diameter = parseFloat($("#txtDiameter").val()) || 0;
-            var radius = diameter / 2;
-            var height = parseFloat($("#txtHeightSizeCircular").val()) || 0;
+                $("#txtsurfacearea").val(surface.toFixed(2));
+            }
+            else if (selectedShape === "Circular") {
+                var diameter = parseFloat($("#txtDiameter").val()) || 0;
+                var radius = diameter / 2;
+                var height = parseFloat($("#txtHeightSizeCircular").val()) || 0;
 
-            // Calculate surface area for a circular box (2πr² + 2πrh)
-            var surfaceAreaCircle = 2 * Math.PI * radius/1000 * radius/1000 ;
-            var surfaceAreaCylinder = 2 * Math.PI * radius/1000 * height/1000;
-            var surfaceArea = surfaceAreaCircle + surfaceAreaCylinder;
-            $("#txtsurfacearea").val(surfaceArea.toFixed(2));
+                // Calculate surface area for a circular box (2πr² + 2πrh)
+                var surfaceAreaCircle = 2 * Math.PI * radius/1000 * radius/1000 ;
+                var surfaceAreaCylinder = 2 * Math.PI * radius/1000 * height/1000;
+                var surfaceArea = surfaceAreaCircle + surfaceAreaCylinder;
+                $("#txtsurfacearea").val(surfaceArea.toFixed(2));
+            }
         }
-    }
 </script>
 
 

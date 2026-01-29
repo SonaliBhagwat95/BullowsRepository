@@ -529,6 +529,7 @@ namespace Bullows.Service
                 List<DesignDocument> leftSideDoorDrawings = new List<DesignDocument>();
                 List<DesignDocument> rightSideDoorNearExtractionCDrawings = new List<DesignDocument>();
                 List<DesignDocument> leftSideDoorNearExtractionCDrawings = new List<DesignDocument>();
+                List<DesignDocument> ComponantEntrySideDoor = new List<DesignDocument>();
 
                 #region H Calculate Number of Panels In H
                 model.PanelHeight = paintBooth.PanelHeight;
@@ -539,7 +540,7 @@ namespace Bullows.Service
 
                 if (SideDoorLOcation != "")
                 {
-                    RemainingSpanceinD = (Math.Floor((model.D - (model.Width + 500))) / 2);//model.Width means component width
+                    RemainingSpanceinD = (Math.Floor((model.D - (model.Width + 500))) / 2);    //model.Width means component width
                     if (RemainingSpanceinD > model.PanelWidth)
                     {
                         noOfPanelsInSideDoor = Math.Floor(RemainingSpanceinD / model.PanelWidth);
@@ -621,13 +622,15 @@ namespace Bullows.Service
                         {
                             leftSideDoorDrawings.AddRange(documents);
                             leftSideDoorNearExtractionCDrawings.AddRange(SideDoorNearExtractionC);
-
                         }
                     }
                     designdictionary.Add("rightSideDoorDrawings", rightSideDoorDrawings);
                     designdictionary.Add("leftSideDoorDrawings", leftSideDoorDrawings);
                     designdictionary.Add("rightSideDoorNearExtractionCDrawings", rightSideDoorNearExtractionCDrawings);
                     designdictionary.Add("leftSideDoorNearExtractionCDrawings", leftSideDoorNearExtractionCDrawings);
+                    PaintBoothclass ComponantEntryDrawingPath = paintBooth.ComponantryEntrySideDoor((double)model.HingedDoorWidth, (double)model.HingedDoorHeight, RemainingSpanceinD);
+                    ComponantEntrySideDoor.Add(ComponantEntryDrawingPath.drawing);
+                    designdictionary.Add("ComponantEntrySideDoor", ComponantEntrySideDoor);
                 }
             }
             catch (Exception ex)

@@ -154,16 +154,16 @@
                                     <label class="smaller-font">Width(mm)</label>
                                     @Html.TextBoxFor(c => c.W, new { @id = "txtw", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
-                            
-                                    <div class="col-md-3" id="divStandardPanels">
-                                        <label class="smaller-font">Standard Panels</label>
+
+                                <div class="col-md-3" id="divStandardPanels">
+                                    <label class="smaller-font">Standard Panels</label>
                                     @Html.TextBoxFor(c => c.StandardPanelsByW, new { @id = "txtstandardPanelsByW", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
-                                    </div>
-                                    <div class="col-md-3" id="divRemainingPanels">
-                                        <label class="smaller-font">Remaining Panels</label>
-                                    @Html.TextBoxFor(c => c.RemainingPanelsByW, new { @id = "txtremaingPanelsByW", @class = "form-control smaller-font smaller-height", style = "width:120px;" ,@readonly = "readonly" })
-                                    </div>
-                            
+                                </div>
+                                <div class="col-md-3" id="divRemainingPanels">
+                                    <label class="smaller-font">Remaining Panels</label>
+                                    @Html.TextBoxFor(c => c.RemainingPanelsByW, new { @id = "txtremaingPanelsByW", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
+                                </div>
+
                             </div>
                             <br />
                             <div class="row">
@@ -171,23 +171,23 @@
                                     <label class="smaller-font">Height(mm)</label>
                                     @Html.TextBoxFor(c => c.H, new { @id = "txtH", @class = "form-control smaller-font smaller-height", style = "width:120px;" })
                                 </div>
-                                    <div class="col-md-3" id="divStandardPanelsH">
-                                        <label class="smaller-font">Standard Panels</label>
+                                <div class="col-md-3" id="divStandardPanelsH">
+                                    <label class="smaller-font">Standard Panels</label>
                                     @Html.TextBoxFor(c => c.StandardPanelsByH, new { @id = "txtstandardPanelsByH", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
-                                    </div>
-                                    <div class="col-md-3" id="divRemainingPanelsH">
-                                        <label class="smaller-font">Remaining Panels</label>
+                                </div>
+                                <div class="col-md-3" id="divRemainingPanelsH">
+                                    <label class="smaller-font">Remaining Panels</label>
                                     @Html.TextBoxFor(c => c.RemainingPanelsByH, new { @id = "txtremaingPanelsByH", @class = "form-control smaller-font smaller-height", style = "width:120px;", @readonly = "readonly" })
-                                   
-                                    </div>
-                                    <div class="col-md-3">
+
+                                </div>
+                                <div class="col-md-3">
                                     <span id="remainingHeightError" class="text-danger smaller-font" style="display:none;">
                                         Remaining height should be at least 300 mm or set to 0.
                                     </span>
-                                    </div>
+                                </div>
 
                             </div>
-                           
+
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -206,10 +206,10 @@
                         <label class="smaller-font">Service Door Location</label>
                         @Html.DropDownListFor(c => c.ServiceDoorLocation, new List<SelectListItem>
                         {
-                        new SelectListItem { Text = "LeftSide", Value = "LeftSide" },
-                        new SelectListItem { Text = "RightSide", Value ="RightSide" },
-                        new SelectListItem { Text = "Both Side", Value ="Both Side" },
-                        }, "--Select--", new { @id = "drpServiceDoorLocation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                            new SelectListItem { Text = "LeftSide", Value = "LeftSide" },
+                                                new SelectListItem { Text = "RightSide", Value = "RightSide" },
+                                                new SelectListItem { Text = "Both Side", Value = "Both Side" },
+                                                }, "--Select--", new { @id = "drpServiceDoorLocation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
                         @Html.ValidationMessageFor(c => c.ServiceDoorLocation, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-3" id="iddivServiceDoor">
@@ -222,6 +222,26 @@
                     </div>
 
                 </div>
+
+                <br /><br />   <hr />
+            </div>
+
+            <div class="row" id="divDoorDimensions" style="display:none">
+                <lable class="smaller-font">Component entry Door Dimensions </lable>
+                <div class="col-md-2">
+                    <label class="smaller-font">Door Width</label>
+                    @Html.TextBoxFor(c => c.HingedDoorWidth, new { @id = "txtHingedDoorWidth", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+                <span id="doorWidthError" class="text-danger smaller-font" style="display:none;">
+                    Door width should not be greater than paint booth width
+                </span>
+                <div class="col-md-2">
+                    <label class="smaller-font">Door Height</label>
+                    @Html.TextBoxFor(c => c.HingedDoorHeight, new { @id = "txtHingedDoorHeight", @class = "form-control smaller-font smaller-height", style = "width:130px" })
+                </div>
+                <span id="doorHeightError" class="text-danger smaller-font" style="display:none;">
+                    Door height should not be greater than paint booth height
+                </span>
             </div>
             <div id="divBlower">
                 <hr />
@@ -293,20 +313,20 @@
                     <div class="col-md-2">
                         <label class="smaller-font">Blower Orientation</label>
                         @Html.DropDownListFor(c => c.BlowerOrientation, new List<SelectListItem>
-                        {
-                        // new SelectListItem { Text = "0", Value = "0" },
-                        new SelectListItem { Text = "90°", Value ="90" },
-                        // new SelectListItem { Text = "180", Value ="180" },
-                        // new SelectListItem { Text = "270", Value ="270" },
-                        }, new { @id = "drpOrientaionBlower", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                                {
+                                                  // new SelectListItem { Text = "0", Value = "0" },
+                            new SelectListItem { Text = "90°", Value = "90" },
+                                                // new SelectListItem { Text = "180", Value ="180" },
+                                                // new SelectListItem { Text = "270", Value ="270" },
+                                                }, new { @id = "drpOrientaionBlower", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
 
                     </div>
                     <div class="col-md-3">
                         <label class="smaller-font"> Ducting Component</label>
                         @Html.DropDownListFor(c => c.ExhaustDucting, new List<SelectListItem>{
                                                 new SelectListItem { Text = "Bend Upwards", Value = "Bend Upwards", Selected = true },
-                        new SelectListItem{Text="Duct",Value="Duct"}
-                        }, "--Select--", new { @id = "drpBendDucting", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+                                                new SelectListItem { Text = "Duct", Value = "Duct" }
+                                                }, "--Select--", new { @id = "drpBendDucting", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
 
                         @* <select id="drpBendDucting" class="form-control smaller-font smaller-height" style="width: 130px;">
                             <option value="">--Select--</option>
@@ -414,7 +434,7 @@
                     </table>
                 </div>
                 <input type="hidden" id="motorCatalogIDInput" name="MotorCatalogID" />
-                <div class=" col-md-12 row" style="margin-top:20px" >
+                <div class=" col-md-12 row" style="margin-top:20px">
                     <div class="col-md-2">
                         <button type="submit" id="submitbtn" class="btn btn-success rounded-pill" style="width:100px">Next</button>
                     </div>
@@ -440,7 +460,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-      var standardPanelSize ;
+      var standardPanelSize = 1140 ;
       var standardPanelHeight = 2390;
       $(document).ready(function () {
           // Set default values
@@ -462,6 +482,7 @@
           $('#txtw2').val('500');
           $('#txtH1').val('700');
           $('#txtH2').val('1000');
+          $('#txtHingedDoorHeight').val('2000');
           $('#txtVelocityofBlower').val('0.5');
           $('#txtVelocityofFilterFrame').val('0.5');
           // Check the checkbox
@@ -471,14 +492,14 @@
         $("#drpServiceDoorLocation").val("RightSide");
 
         // Set textbox values
-        $("#txtDoorHeight").val("1180");
-        $("#txtDoorWidth").val("580");
+        $("#txtDoorHeight").val("1180");//Service door height
+        $("#txtDoorWidth").val("580");//Service door width
           $('#txtDoorWidth, #txtDoorHeight').on('input', function () {
-             
+
               checkServiceDoorHeightAndWidth();
           });
 
-              function checkServiceDoorHeightAndWidth() {
+        function checkServiceDoorHeightAndWidth() {
 
         var D3Width = parseFloat($('#txtD3').val()) || 0;
         var ServiceDoorWidth = parseFloat($('#txtDoorWidth').val()) || 0;
@@ -507,8 +528,34 @@
         return isValid;
     }
 
+        function validateDoorDimensions() {
+        var paintBoothHeight = parseFloat($('#txtH').val()) || 0;
+        var doorHeight = parseFloat($('#txtHingedDoorHeight').val()) || 0;
+        var paintBoothWidth = parseFloat($('#txtw').val()) || 0;
+        var doorWidth = parseFloat($('#txtHingedDoorWidth').val()) || 0;
+        if (doorHeight > paintBoothHeight && paintBoothHeight > 0) {
+            $('#doorHeightError').show();
+            $('#txtHingedDoorHeight').val('');
+            $('#txtHingedDoorHeight').focus();
+        } else {
+            $('#doorHeightError').hide();
+        }
 
+        // ----- WIDTH VALIDATION -----
+        if (doorWidth > paintBoothWidth && paintBoothWidth > 0) {
+            $('#doorWidthError').show();
+            $('#txtHingedDoorWidth').val('').focus();
+        } else {
+            $('#doorWidthError').hide();
+        }
+    }
+        $('#txtHingedDoorHeight, #txtHingedDoorWidth').on('input change', function () {
+        validateDoorDimensions();
+    });
 
+    $('#txtH, #txtw').on('input change', function () {
+        validateDoorDimensions();
+    });
 
 
           //this code for changing value for H manually
@@ -534,11 +581,11 @@
                   $("#serviceDoorDimentions").hide();
               }
           });
-         
+
           $("#btnFetchRecords").click(function () {
               $('#motorFlangeTable').show();
           });
-        
+
           $('#txtH').on('input', function () {
               checkValueofH();
           });
@@ -560,7 +607,7 @@
           calculateCrossSectionalArea();
           calculateCapacity();
           calculateFilterFrame();
-          updatePanels();
+        
           updatePanelsByH();
           checkValueofH();
           convertToCubicMetersPerSecond();
@@ -684,7 +731,7 @@
                       standardPanelSize = parseFloat(data.panelWidth) || 1140;
                       standardPanelHeight = parseFloat(data.panelHeight) || 2390;
 
-                      $('#ServiceDoormainDiv, #divComponantsdetails, #divBlower').show();
+                      $('#ServiceDoormainDiv, #divComponantsdetails, #divBlower,#divDoorDimensions').show();
 
                       calculateD();
                       calculateW();
@@ -696,8 +743,11 @@
                       $('#txtD').change(function () {
                           calculatePanels(standardPanelSize);
                       });
-                      handlePanelSizeVisibility(standardPanelSize);
-                      calculateStandardPanels(standardPanelSize);
+                    
+                      $('#txtw').on('input change', function () {
+                        calculatePanelsforW();
+                    });
+               
 
                       $('#drpPaneltypeforW').change(function () {
                           calculateStandardPanelsforW(standardPanelHeight);
@@ -724,7 +774,10 @@
                       $("#txtexhaustheight").on("change", function () {
                           adjustDuctWidthBasedOnHeight();
                       });
-                      updatePanels();
+                    $('#txtw1, #txtw2').on('input change', function () {
+                        calculateHingedDoorWidth();
+                    });
+                    
                       calculatePanelsforW()
                       updatePanelsByH();
                       checkValueofH();
@@ -732,6 +785,7 @@
                       checkBlowerHpValue();
                       calculateDuctWidthAndHeight();
                       adjustDuctWidthBasedOnHeight();
+                      calculateHingedDoorWidth();
                       var blowerHpValue = parseFloat($('#txtHPCalculations').val());
                       if (blowerHpValue > 0) {
                           $('#btnFetchRecords').prop('disabled', false);
@@ -752,7 +806,19 @@
                       console.error(xhr.responseText);
                   }
               });
+            function calculateHingedDoorWidth() {
+                var w1 = parseFloat($('#txtw1').val()) || 0;
+                var w2 = parseFloat($('#txtw2').val()) || 0;
+                var w = parseFloat($('#txtw').val()) || 0;
 
+                var hingedDoorWidth = ((w1 + w2) - 500);
+                var TotalhingedDoorWidth = w - hingedDoorWidth;
+                if (TotalhingedDoorWidth > 0) {
+                    $('#txtHingedDoorWidth').val(TotalhingedDoorWidth.toFixed(2));
+                } else {
+                    $('#txtHingedDoorWidth').val('');
+                }
+            }
               // Handle enquiry code suggestions
               $('#txtEnquiryCode').on('input', function () {
                   var enquiryCode = $(this).val();
@@ -1033,12 +1099,12 @@
 
           }
       }
-      $('#txtD1, #txtD2, #txtlenght,#txtw').on('input', function () {
+      $('#txtD1, #txtD2, #txtlenght').on('input', function () {
           calculateD();
           calculateCrossSectionalArea();
           calculateCapacity();
           calculateFilterFrame();
-          calculatePanels();
+          
       });
       $('#txtw1,#txtw2,#txtwidth').on('input', function () {
           calculateW();
@@ -1055,15 +1121,15 @@
       });
       $('#txtD').on('input', function () {
           calculatePanels(standardPanelSize)
-          updatePanels();
-          calculateStandardPanels();
+     
+          
       });
 
-      $("#txtD, #txtStandardPanels").on("input", updatePanels);
-      $("#chkMakeItEqual").change(updatePanels);
+     
+    
       $('#txtH').on('input', function () {
           calculateStandardPanelsforH();
-          updatePanelSizeDropdownForH();
+         
       });
       $('#txtWater, #txtCapacityofBlowerRoundOf').on('input', function () {
           calculateBlowerHp();
@@ -1080,6 +1146,7 @@
           var Depth = parseFloat($('#txtlenght').val()) || 0;
           var D = D1 + D2 + Depth;
           $('#txtD').val(D);
+          calculatePanels(standardPanelSize);
       }
       function calculateW() {
           var W1 = parseFloat($('#txtw1').val()) || 0;
@@ -1188,137 +1255,7 @@
           $('#txtstandardPanels').val(standardPanels);
           $('#txtremaingPanels').val(remainingPanels);
       }
-      function calculateStandardPanels(standardPanelSize) {
-          var D = parseFloat($('#txtD').val()) || 0;
-          var standardPanels = Math.floor(D / standardPanelSize);
-          var product = standardPanels * standardPanelSize;
-
-          $('#txt2panelsize').val(product);
-          updatePanelSizeDropdown(standardPanels);
-
-          // Manage element visibility based on user selection
-          handlePanelSizeVisibility(standardPanelSize);
-      }
-      function handlePanelSizeVisibility(standardPanelSize) {
-          var handlepanelsize = standardPanelSize;
-          console.log("handlepanelsize", handlepanelsize);
-          var selectedValue = $('#panelSizeDropdown').val();
-          var halfPanelSize = standardPanelSize/2;
-          $('#txt2panelsize').show();
-
-          // Use standardPanelSize directly here
-          if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
-              selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
-              selectedValue === "13" || selectedValue === "15") {
-              $('#txthalfpanelsize').hide();
-              $('#divStandardSize').show();
-              $('#divHalfSize').hide();
-              $('#txt2panelsize').val(standardPanelSize); // Use the passed variable
-          } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
-              selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
-              selectedValue === "14") {
-              $('#txthalfpanelsize').val(halfPanelSize).show();
-              $('#divStandardSize').show();
-              $('#divHalfSize').show();
-              $('#txt2panelsize').val(standardPanelSize); // Use the passed variable
-          }
-
-          updatePanelSize(selectedValue, standardPanelSize);
-      }
-      function updatePanelSizeDropdown(quotient) {
-          var panelSizeDropdown = $('#panelSizeDropdown');
-          panelSizeDropdown.empty();  // Clear previous options
-
-          if (quotient === 1) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="1">1</option>');
-              // panelSizeDropdown.append('<option value="2">1.5</option>');
-              panelSizeDropdown.append('<option value="3">2</option>');
-          } else if (quotient === 2) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="3">2</option>');
-              // panelSizeDropdown.append('<option value="4">2.5</option>');
-              panelSizeDropdown.append('<option value="5">3</option>');
-          } else if (quotient === 3) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="5">3</option>');
-              // panelSizeDropdown.append('<option value="6">3.5</option>');
-              panelSizeDropdown.append('<option value="7">4</option>');
-          } else if (quotient === 4) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="7">4</option>');
-              // panelSizeDropdown.append('<option value="8">4.5</option>');
-              panelSizeDropdown.append('<option value="9">5</option>');
-          } else if (quotient === 5) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="9">5</option>');
-              // panelSizeDropdown.append('<option value="10">5.5</option>');
-              panelSizeDropdown.append('<option value="11">6</option>');
-          } else if (quotient === 6) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="11">6</option>');
-              // panelSizeDropdown.append('<option value="12">6.5</option>');
-              panelSizeDropdown.append('<option value="13">7</option>');
-          } else if (quotient === 7) {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-              panelSizeDropdown.append('<option value="13">7</option>');
-              // panelSizeDropdown.append('<option value="14">7.5</option>');
-          } else {
-              panelSizeDropdown.append('<option value="">--Select--</option>');
-          }
-      }
-      function updatePanelSize(selectedValue, panelWidth) {
-          var panelSize = panelWidth; // Use the passed panelWidth instead of a hardcoded default
-          switch (selectedValue) {
-              case "1":
-                  panelSize = panelWidth; // Use the dynamic value
-                  break;
-              case "2":
-                  panelSize = panelWidth; // Use the dynamic value
-                  break;
-              case "3":
-                  panelSize = panelWidth * 2; // Use the dynamic value
-                  break;
-              case "4":
-                  panelSize = panelWidth * 2; // Use the dynamic value
-                  break;
-              case "5":
-                  panelSize = panelWidth * 3; // Use the dynamic value
-                  break;
-              case "6":
-                  panelSize = panelWidth * 3; // Use the dynamic value
-                  break;
-              case "7":
-                  panelSize = panelWidth * 4; // Use the dynamic value
-                  break;
-              case "8":
-                  panelSize = panelWidth * 4; // Use the dynamic value
-                  break;
-              case "9":
-                  panelSize = panelWidth * 5; // Use the dynamic value
-                  break;
-              case "10":
-                  panelSize = panelWidth * 5; // Use the dynamic value
-                  break;
-              case "11":
-                  panelSize = panelWidth * 6; // Use the dynamic value
-                  break;
-              case "12":
-                  panelSize = panelWidth * 6; // Use the dynamic value
-                  break;
-              case "13":
-                  panelSize = panelWidth * 7; // Use the dynamic value
-                  break;
-              case "14":
-                  panelSize = panelWidth * 7; // Use the dynamic value
-                  break;
-              default:
-                  panelSize = panelWidth; // Default case using the dynamic value
-                  break;
-          }
-          console.log("panelsizein", panelSize);
-          $('#txt2panelsize').val(panelSize);
-      }
+     
       function calculateBlowerHp() {
           // Get the values from the input fields
           var capacityReadonly = parseFloat($('#txtCapacityofBlowerinHReadonly').val()) || 0;
@@ -1355,25 +1292,9 @@
               $("#divmakeitequalH").hide();
           }
       }
-         
 
-      //added no of equalpanels calculations
-      function updatePanels() {
-          var d = parseFloat($("#txtD").val());
-          var standardPanels = parseFloat($("#txtstandardPanels").val());
-          if (!isNaN(d)) {
-              var ratio = d / 1140;
-              if ($("#chkMakeItEqual").is(":checked")) {
-                  var equalPanels = Math.ceil(ratio);
 
-                  $("#txtTotalpanels").val(equalPanels);
-                  var equalPanelWidth = d / equalPanels;
-                  $("#txtEqualPanels").val(equalPanelWidth);
-              } else {
-                  $("#txtEqualPanels").val('1140');
-              }
-          }
-      }
+     
       function NextMoveToFilterPage() {
           var FilterFrame = $('#txtFilterArea').val();
           var W = $('#txtw').val();
@@ -1385,7 +1306,7 @@
          // window.location.href = '/PaintBooth/FilterFrameCalculations?FilterArea=' + FilterFrame + '&w=' + W + '&h=' + H + '&d=' + D;
 
       }
-  
+
       function updatePanelsByH() {
           var H = parseFloat($("#txtH").val());
           var standardPanelsByH = parseFloat($("#txtstandardPanelsByH").val());
@@ -1407,44 +1328,25 @@
           var txtW3 = txtW / 2;
           $("#txtw3").val(txtW3);
       }
-      // function checkWValue() {
-      //         var wValue = parseFloat($("#txtw").val());
-      //         var standardPanelsByWidth = Math.floor(wValue / 2390);
-      //         var remainingWidthpanels = wValue - (standardPanelsByWidth * 2390);
-      //         $("#txtstandardPanelsByW").val(standardPanelsByWidth);
-      //         $("#txtremaingPanelsByW").val(remainingWidthpanels);
-          
-      // }
+      
       //this code for W
       function calculatePanelsforW() {
           var height = 2390;
-        
+
           var wValue = parseFloat($("#txtw").val());
           if (wValue && height) {
               var standardPanelsByWidth = Math.floor(wValue / height);
-             
+
               var remainingWidthpanels = wValue - (standardPanelsByWidth * height);
-              
+
               $("#txtstandardPanelsByW").val(standardPanelsByWidth);
               $("#txtremaingPanelsByW").val(remainingWidthpanels);
           }
       }
-      // function calculateStandardPanelsforW(standardPanelHeight) {
-      //     var W = parseFloat($('#txtw').val()) || 0;
+     
 
-      //     var panelheightCa = standardPanelHeight;
-      //     console.log("Standard Panels Height:", panelheightCa);
-      //     // var standardPanelSize = 2390;
-      //     var standardPanels = Math.floor(W / standardPanelHeight);
 
-      //     var product = standardPanels * standardPanelHeight;
-      //     $('#txt2panelsizeforW').val(product);
-      //     updateDropdownOptions(standardPanels);
-      //     showoptionsindropdownforW(standardPanelHeight);
-      // }
-  
-    
-   
+
       //for H calculations
       function calculateStandardPanelsforH(standardPanelHeight) {
           var H = parseFloat($('#txtH').val()) || 0;
@@ -1456,7 +1358,7 @@
 
           var product = standardPanels * standardPanelHeight;
           $('#txt2panelsizeforH').val(product);
-         
+
           showoptionsindropdownforH(standardPanelHeight);
       }
       function calculatePanelsforH(standardPanelHeight) {
@@ -1473,70 +1375,9 @@
               $("#txtremaingPanelsByH").val(remainingWidthpanels);
           }
       }
-    
-      function showoptionsindropdownforH(standardPanelHeight) {
-          var handlePanelheight = standardPanelHeight;
-          var selectedValue = $('#panelSizeDropdownforH').val();
 
-          var halfPanelSize = handlePanelheight/2; // Adjust as needed
-
-          if (selectedValue === "1" || selectedValue === "3" || selectedValue === "5" ||
-              selectedValue === "7" || selectedValue === "9" || selectedValue === "11" ||
-              selectedValue === "13" || selectedValue === "15") {
-
-              $('#txthalfpanelsizeforH').hide();
-              $('#divStandardSizeforH').show();
-              $('#divHalfSizeforH').hide();
-              $('#txt2panelsizeforH').show();
-          } else if (selectedValue === "2" || selectedValue === "4" || selectedValue === "6" ||
-              selectedValue === "8" || selectedValue === "10" || selectedValue === "12" ||
-              selectedValue === "14") {
-
-              $('#txthalfpanelsizeforH').val(halfPanelSize).show();
-              $('#divStandardSizeforH').show();
-              $('#divHalfSizeforH').show();
-              $('#txt2panelsizeforH').show();
-          } else {
-              // If no valid value is selected, hide everything
-              $('#divStandardSizeforH').hide();
-              $('#divHalfSizeforH').hide();
-              $('#txthalfpanelsizeforH').val('');
-              $('#txt2panelsizeforH').val('');
-          }
-      }
-      function showvalueasperchangedropdownforH(standardPanelHeight) {
-          var selectedText = $('#panelSizeDropdownforH option:selected').text();
-          // Initialize newTextboxValue
-          var newTextboxValue;
-
-          // Determine the textbox value based on selected text
-          switch (selectedText) {
-              case "1":
-              case "1.5":
-                  newTextboxValue = standardPanelHeight; // Same value for 1 and 1.5
-                  break;
-              case "2":
-              case "2.5":
-                  newTextboxValue = 2 * standardPanelHeight; // Same value for 2 and 2.5
-                  break;
-              case "3":
-              case "3.5":
-                  newTextboxValue = 3 * standardPanelHeight; // Same value for 3 and 3.5
-                  break;
-              case "4":
-              case "4.5":
-                  newTextboxValue = 4 * standardPanelHeight; // Same value for 4 and 4.5
-                  break;
-              default:
-                  // Convert the selected text to a number for other values
-                  var multiplier = parseFloat(selectedText);
-                  newTextboxValue = multiplier * standardPanelHeight; // Calculate new value for all other selections
-                  break;
-          }
-
-          // Update the textbox with the calculated or selected value
-          $('#txt2panelsizeforH').val(newTextboxValue);
-      }
+ 
+     
       function bindSettingstatus() {
           $('#txtEnquiryCode').on('keyup', function () {
               var enquiryCode = $(this).val().trim().toLowerCase(); // Trim and convert to lowercase

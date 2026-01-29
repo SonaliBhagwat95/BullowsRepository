@@ -25,7 +25,6 @@ namespace Bullows.Model
         public string PanelsizeforW { get; set; }
         public double PanelHeightforW { get; set; }
         public double HalfPanelsHeightforW { get; set; }
-
         public int Lights { get; set; }
         public string PanelsizeforH { get; set; }
         public double PanelHeightforH { get; set; }
@@ -121,6 +120,8 @@ namespace Bullows.Model
 
         public double CChannelHeight { get; set; }
         public string MotorTypes { get; set; }
+        public decimal HingedDoorWidth { get; set; }
+        public decimal HingedDoorHeight { get; set; }
     }
 
     public class PressureDrop
