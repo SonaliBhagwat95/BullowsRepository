@@ -394,9 +394,16 @@ namespace Bullows.Controllers
                 int componentID = _uow.PaintBoothRepository.FetchComponentId((int)enquiryId);
                 double ExtractionC_Height = int.Parse(_uow.PaintBoothRepository.FetchExtractionHeight(componentID));
 
-                ComponentTable DoorType = null; string SideDoorLOcation = "";
+                ComponentTable DoorType = null;
                 DoorType = _uow.PaintBoothRepository.FetchDoorType(componentID);
-                SideDoorLOcation = _uow.PaintBoothRepository.FetchSideDoorLocation(componentID);
+                //SideDoorLOcation = _uow.PaintBoothRepository.FetchSideDoorLocation(componentID);
+                DoorDimensionsModel doorModel = new();
+                doorModel.doorType = DoorType.DoorSubType;
+                doorModel.doorSubType = DoorType.TypeOfHingedDoor;
+                doorModel.sideDoorLocation = DoorType.SideDoorLOcation;
+                doorModel.doorWidth = (double)model.HingedDoorWidth;
+                doorModel.doorHeight = (double)model.HingedDoorHeight;
+
 
                 #region All Panels methods
                 PaintBoothService service = new PaintBoothService(_uow, _httpContextAccessor, _context, _configuration);
@@ -408,7 +415,7 @@ namespace Bullows.Controllers
                 {
                     model.PanelWidth = setting.PanelWidth;
                     model.PanelHeight = setting.PanelHeight;
-                    service.LeftRightPanelsForSideDoor(model, panel, SideDoorLOcation);
+                    service.LeftRightPanelsForSideDoor(model, panel, doorModel);
                 }
                 service.TopPanels(model, panel);
                 service.D3Panels(model, panel, ExtractionC_Height);
@@ -434,7 +441,8 @@ namespace Bullows.Controllers
                     }
                     else
                     {
-                        SameSpaceBetweenDoors = service.FrontDoorsType(model, panel);
+                        SameSpaceBetweenDoors = service.FrontDoorsType(model, panel,doorModel);
+
                     }
                 }
                 #endregion
@@ -612,24 +620,7 @@ namespace Bullows.Controllers
                     }
                     else if (kvp.Key == "rightSideDoorDrawings" || kvp.Key == "leftSideDoorDrawings")
                     {
-                        //int panelcount = 2;
-
-                        //AssemblyValueModel assembly = new()
-                        //{
-                        //    combinedDrawing = combinedDrawing,
-                        //    drawings = kvp.Value,
-                        //    panelcount = panelcount,
-                        //    xoffset = 0,
-                        //    //yOffset = (double)(kvp.Key == "leftSideDoorDrawings" ? PaintboothWidth : 0),
-                        //    yOffset = 0,
-                        //    //Zoffset = zOffeset,
-                        //    paintboothSide = "rightSideDoorDrawings"
-                        //};
-                        //AddDrawingsToAssembly(assembly, panelWidth);
-
-                        //double smallPanelCount = PaintBoothService.smallPanelsWidthDoors > 0 ? 1 : 0;
-                        //int panelcount = (int)(PaintBoothService.noOfPanelsInSideDoor + smallPanelCount);
-                        //double zOffeset = 0;
+                        
 
                         double smallPanelCount = PaintBoothService.smallPanelsWidthDoors > 0 ? 1 : 0;
                         int panelcount = (int)(PaintBoothService.noOfPanelsInSideDoor + smallPanelCount);
@@ -717,8 +708,9 @@ namespace Bullows.Controllers
                         };
                         AddDrawingsToAssembly(assembly, 0);
                     }
+                    
                     //Componant entry Door
-                    else if (kvp.Key == "ComponantEntrySideDoor")
+                    else if (kvp.Key == "ComponantEntrySideDoor"|| kvp.Key == "ComponantEntryFrontDoor")
                     {
                         AssemblyValueModel assembly = new()
                         {
@@ -1141,7 +1133,13 @@ namespace Bullows.Controllers
                         y = model.yOffset * i;
                         currentXOffset = 0;
                     }
-                    Block blk = new Block(uniqueBlockName);
+
+                    else if(model.paintboothSide== "ComponantEntrySideDoor")
+                    {
+                        currentXOffset =  y = z = 0;
+                        
+                    }
+                        Block blk = new Block(uniqueBlockName);
                     blk.Entities.AddRange(drawing.Entities);
                     model.combinedDrawing.Blocks.Add(blk);
 

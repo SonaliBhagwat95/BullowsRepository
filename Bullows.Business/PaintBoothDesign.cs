@@ -1,6 +1,4 @@
-﻿
-
-using Bullows.Database;
+﻿using Bullows.Database;
 using Bullows.Model;
 using devDept.Eyeshot;
 using devDept.Eyeshot.Control;
@@ -10,11 +8,8 @@ using devDept.Geometry;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Drawing;
+using static ODA.Kernel.TD_RootIntegrated.OdGiLinetypeDash;
 using devregion = devDept.Eyeshot.Entities.Region;
-//using Region = devregion;
-
-
-
 namespace Bullows.Business
 {
     public class PaintBoothDesign
@@ -243,7 +238,6 @@ namespace Bullows.Business
             };
 
         }
-
         public PaintBoothclass DoorsOnBothSide(PaintBoothModel model, int k)
         {
             drawing = new();
@@ -284,9 +278,6 @@ namespace Bullows.Business
             double massofFrame = frame.GetMass(mat1, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity1);
             double Frame_Weight = Math.Round(massofFrame, 3);
 
-
-
-
             drawing.Entities.Add(frame, Color.Yellow);
             var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
 
@@ -311,10 +302,6 @@ namespace Bullows.Business
             };
 
         }
-
-
-
-
         public PaintBoothclass PanelsInPaintBoothForType5(int j, PaintBoothModel model, int k, int PlenumHeight)
         {
             drawing = new();
@@ -330,7 +317,6 @@ namespace Bullows.Business
             });
             Brep brep = rectangle1.ExtrudeAsBrep(SheetThickness);
             //calculate Weight of panels 
-            //if(Materials=="Al")
             Material mat = Material.StructuralSteel;
             mat = new Material(Materials);
             brep.Regen(0.1);
@@ -2129,8 +2115,6 @@ namespace Bullows.Business
             //SaveFilterDetails(model);
             return metalBaffleDrawings;
         }
-
-
         public PaintBoothclass FAS(/*int j,*/ PaintBoothModel model, int m)
         {
             drawing = new();
@@ -3109,25 +3093,187 @@ namespace Bullows.Business
 
             };
         }
-
-        public PaintBoothclass ComponantryEntrySideDoor(double doorWidth,double doorHeight,double xoffset)
+        public PaintBoothclass ComponantryEntrySideDoorold(DoorDimensionsModel doorModel)
         {
             drawing = new();
             drawing.Units = linearUnitsType.Millimeters;
-            #region Door Outer frame
-            LinearPath door = new LinearPath(new Point3D[]
-                {
-                    new Point3D(xoffset, PanelLengthForSideDoors, 0),
-                    new Point3D(xoffset, PanelLengthForSideDoors, doorHeight),
-                    new Point3D(doorWidth+xoffset, PanelLengthForSideDoors,doorHeight),
-                    new Point3D(doorWidth+xoffset, PanelLengthForSideDoors, 0),
-                    new Point3D(xoffset, PanelLengthForSideDoors, 0)
-                });
-            drawing.Entities.Add(door, Color.Aquamarine);
+           
             double T = 3;
             double sectionWidth = 25;
             double sectionHeight = 25;
-            double x0 = xoffset;
+
+            #region Door Outer Frame
+
+            LinearPath doorPath = new LinearPath(new Point3D[]
+            {
+                new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0),
+                new Point3D(doorModel.xOffeset, doorModel.yOffeset, doorModel.doorHeight),
+                new Point3D(doorModel.doorWidth + doorModel.xOffeset, doorModel.yOffeset, doorModel.doorHeight),
+                new Point3D(doorModel.doorWidth + doorModel.xOffeset, doorModel.yOffeset, 0),
+                new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0)
+            });
+
+            drawing.Entities.Add(doorPath, Color.Aquamarine);
+
+            var outerSection = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(doorModel.xOffeset,                0, 0),
+                new Point3D(doorModel.xOffeset + sectionWidth, 0, 0),
+                new Point3D(doorModel.xOffeset + sectionWidth, -T, 0),
+                new Point3D(doorModel.xOffeset + T,            -T, 0),
+                new Point3D(doorModel.xOffeset + T,            -sectionHeight, 0),
+                new Point3D(doorModel.xOffeset,               -sectionHeight, 0)
+            });
+
+            Solid outerFrame = outerSection.SweepAsSolid(doorPath, 0);
+            drawing.Entities.Add(outerFrame, Color.RosyBrown);
+
+            #endregion
+
+            #region Door Leaf Calculation
+
+            int doorLeafCount;
+            double innerDoorWidth;
+
+            if (doorModel.doorSubType == "Split Doors")
+            {
+                doorLeafCount = 2;
+                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 2;
+            }
+            else
+            {
+                doorLeafCount = 4;
+                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 4;
+            }
+
+            double innerDoorHeight = doorModel.doorHeight - (2 * T);
+            double innerSectionSize = 40;
+
+            #endregion
+
+            #region Inner Door Frames & Sheets
+
+            LinearPath innerDoorPath = new LinearPath(new Point3D[]
+            {
+        new Point3D(doorModel.xOffeset + T, doorModel.yOffeset, 0),
+        new Point3D(doorModel.xOffeset + T, doorModel.yOffeset, innerDoorHeight),
+        new Point3D(doorModel.xOffeset + T + innerDoorWidth, doorModel.yOffeset, innerDoorHeight),
+        new Point3D(doorModel.xOffeset + T + innerDoorWidth, doorModel.yOffeset, 0),
+        new Point3D(doorModel.xOffeset + T, doorModel.yOffeset, 0)
+            });
+
+            var innerSection = devregion.CreatePolygon(new Point3D[]
+            {
+        new Point3D(doorModel.xOffeset + T,                   0, 0),
+        new Point3D(doorModel.xOffeset + T + innerSectionSize,0, 0),
+        new Point3D(doorModel.xOffeset + T + innerSectionSize,-innerSectionSize,0),
+        new Point3D(doorModel.xOffeset + T,                  -innerSectionSize,0)
+            });
+
+            Solid baseInnerFrame = innerSection.SweepAsSolid(innerDoorPath, 0);
+            drawing.Entities.Add(baseInnerFrame, Color.AliceBlue);
+
+            var metalSheetSection = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(doorModel.xOffeset + T,                   doorModel.yOffeset, 0),
+                new Point3D(doorModel.xOffeset + T,                   doorModel.yOffeset, innerDoorHeight),
+                new Point3D(doorModel.xOffeset + T + innerDoorWidth,  doorModel.yOffeset, innerDoorHeight),
+                new Point3D(doorModel.xOffeset + T + innerDoorWidth,  doorModel.yOffeset, 0)
+            });
+
+            Brep baseSheet = metalSheetSection.ExtrudeAsBrep(-SheetThickness);
+
+            Color[] doorColors =
+            {
+        Color.CadetBlue,
+        Color.Brown,
+        Color.DarkOliveGreen,
+        Color.OrangeRed
+    };
+
+            // First door leaf
+            //drawing.Entities.Add(baseInnerFrame, doorColors[0]);
+            //drawing.Entities.Add(baseSheet, doorColors[0]);
+
+            // Remaining door leaves
+            for (int i = 1; i < doorLeafCount; i++)
+            {
+                Solid frameClone = (Solid)baseInnerFrame.Clone();
+                frameClone.Translate(innerDoorWidth * i, 0, 0);
+
+                Brep sheetClone = (Brep)baseSheet.Clone();
+                sheetClone.Translate(innerDoorWidth * i, 0, 0);
+
+                //drawing.Entities.Add(frameClone, doorColors[i % doorColors.Length]);
+               // drawing.Entities.Add(sheetClone, doorColors[i % doorColors.Length]);
+            }
+            #region Fix orientation for Left / Right side
+
+            //if (doorModel.Side == DoorSide.Right)
+            //{
+            //    drawing.Entities.Rotate(
+            //        Math.PI,                 // 180 degrees
+            //        Vector3D.AxisZ,
+            //        new Point3D(
+            //            doorModel.xOffeset + doorModel.doorWidth / 2,
+            //            doorModel.yOffeset,
+            //            0
+            //        )
+            //    );
+            //}
+
+            #endregion
+
+            #endregion
+
+            #region Save DWG
+
+            var path = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build()
+                .GetSection("FolderPathConfig")["AbsolutePath"];
+
+            string folder = Path.Combine(path, "Bullows Panel Drawing");
+            Directory.CreateDirectory(folder);
+
+            string dwgFilePath = Path.Combine(
+                folder,
+                $"ComponantryEntrySideDoor_{DateTime.Now:HH-mm}.dwg"
+            );
+
+            WriteAutodeskParams writeParams = new(drawing);
+            WriteAutodesk dwg = new(writeParams, dwgFilePath);
+            dwg.DoWork();
+
+            #endregion
+
+            return new PaintBoothclass
+            {
+                drawing = drawing,
+                lstpath = dwgFilePath
+            };
+        }
+
+        public PaintBoothclass ComponantryEntrySideDoor(DoorDimensionsModel doorModel)
+        {
+            drawing = new();
+            drawing.Units = linearUnitsType.Millimeters;
+
+            #region split door
+            #region Door Outer frame
+            LinearPath door = new LinearPath(new Point3D[]
+                {
+                    new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0),
+                    new Point3D(doorModel.xOffeset, doorModel.yOffeset, doorModel.doorHeight),
+                    new Point3D(doorModel.doorWidth+doorModel.xOffeset, doorModel.yOffeset,doorModel.doorHeight),
+                    new Point3D(doorModel.doorWidth+doorModel.xOffeset, doorModel.yOffeset, 0),
+                    new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0)
+                });
+            //drawing.Entities.Add(door, Color.Aquamarine);
+            double T = 3;
+            double sectionWidth = 25;
+            double sectionHeight = 25;
+            double x0 = doorModel.xOffeset;
             double L = sectionWidth - (2 * T);
 
             //left L Section
@@ -3143,61 +3289,89 @@ namespace Bullows.Business
             });
 
             Solid frame = section.SweepAsSolid(door, 0);
-            //frame.Translate(0, 0, SheetThickness);
+            frame.Translate(0, doorModel.yOffeset, 0);
+
             drawing.Entities.Add(frame, Color.RosyBrown);
             #endregion
-            double innerDoorWidth = (doorWidth - (2 * T)) / 2;
-            double innerDoorHeight = doorHeight - (2 * T);
+
+            double innerDoorWidth = 0;
+            int doorLeafCount = 0;
+            if (doorModel.doorSubType== "Split Doors")
+            {
+                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 2;
+                doorLeafCount = 2; // default Split Doors
+            }
+            else
+            {
+                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 4;
+                doorLeafCount = 4; // Quad Doors
+            }
+            double innerDoorHeight = doorModel.doorHeight - (2 * T);
             double innerSectionWidth = 40;
             double innerSectionHeight = 40;
+
             #region Inner Door left
             LinearPath Innerdoorleft = new LinearPath(new Point3D[]
-               {
-                    new Point3D(xoffset+T, 0, 0),
-                    new Point3D(xoffset+T, 0, innerDoorHeight),
-                    new Point3D(innerDoorWidth+xoffset+T, 0,innerDoorHeight),
-                    new Point3D(innerDoorWidth+xoffset+T, 0, 0),
-                    new Point3D(xoffset+T, 0, 0)
-               });
-            drawing.Entities.Add(Innerdoorleft, Color.Blue);
+            {
+                    new Point3D(doorModel.xOffeset+T,                   doorModel.yOffeset, 0),
+                    new Point3D(doorModel.xOffeset+T,                   doorModel.yOffeset, innerDoorHeight),
+                    new Point3D(innerDoorWidth+doorModel.xOffeset+T,    doorModel.yOffeset,innerDoorHeight),
+                    new Point3D(innerDoorWidth+doorModel.xOffeset+T,    doorModel.yOffeset, 0),
+                    new Point3D(doorModel.xOffeset+T,                   doorModel.yOffeset, 0)
+            });
             double x1 = x0 + T;
-            double innerSectionWidthWithMinusT = x1 + innerSectionWidth - (2*T);
+            double innerSectionWidthWithMinusT = x1 + innerSectionWidth - (2 * T);
             var squareSection = devregion.CreatePolygon(new Point3D[]
             {
-                 new Point3D(x1 ,                    0,                         0), 
-                 new Point3D(x1+innerSectionWidth ,  0,                         0), 
+                 new Point3D(x1 ,                    0,                         0),
+                 new Point3D(x1+innerSectionWidth ,  0,                         0),
                  new Point3D(x1+innerSectionWidth ,  -innerSectionHeight,      0),
                  new Point3D(x1+0 ,                  -innerSectionHeight,      0),
-                 //inner
-                 //new Point3D(x1+T ,                  -T,                          0),
-                 //new Point3D(innerSectionWidthWithMinusT, -T,                          0),
-                 //new Point3D(innerSectionWidthWithMinusT,  -innerSectionHeight-(2*T) ,  0),
-                 //new Point3D(x1+T,  -innerSectionHeight-(2*T) ,                              0),
-
             });
             Solid innerframe = squareSection.SweepAsSolid(Innerdoorleft, 0);
-            //frame.Translate(0, 0, SheetThickness);
-            drawing.Entities.Add(innerframe, Color.CadetBlue);
-
-            Solid cloneInnerFrame = (Solid)innerframe.Clone();
-            cloneInnerFrame.Translate(innerDoorWidth, 0, 0);
-            drawing.Entities.Add(cloneInnerFrame, Color.Brown);
-
-            var metalsheet= devregion.CreatePolygon(new Point3D[]
+            for (int i = 1; i < doorLeafCount; i++)
             {
-                    new Point3D(xoffset+T, -innerSectionWidth, 0),
-                    new Point3D(xoffset+T,-innerSectionWidth, innerDoorHeight),
-                    new Point3D(innerDoorWidth+xoffset+T,-innerSectionWidth,innerDoorHeight),
-                    new Point3D(innerDoorWidth+xoffset+T, -innerSectionWidth, 0),
-                   
+                Solid cloneInnerFrame = (Solid)innerframe.Clone();
+                cloneInnerFrame.Translate(innerDoorWidth * i, doorModel.yOffeset, 0);
+                drawing.Entities.Add(cloneInnerFrame, Color.Brown);
+            }
+            var metalsheet = devregion.CreatePolygon(new Point3D[]
+            {
+                    new Point3D(doorModel.xOffeset+T, -innerSectionWidth, 0),
+                    new Point3D(doorModel.xOffeset+T,-innerSectionWidth, innerDoorHeight),
+                    new Point3D(innerDoorWidth+doorModel.xOffeset+T,-innerSectionWidth,innerDoorHeight),
+                    new Point3D(innerDoorWidth+doorModel.xOffeset+T, -innerSectionWidth, 0),
+
             });
-            Brep brep = metalsheet.ExtrudeAsBrep(-SheetThickness);
-            Brep CloneBrep = (Brep)brep.Clone();
-            CloneBrep.Translate(innerDoorWidth, 0, 0);
+            Color[] doorColors =
+            {
+                Color.CadetBlue,   // Door 1
+                Color.Brown,       // Door 2
+                Color.DarkOliveGreen, // Door 3
+                Color.OrangeRed    // Door 4
+            };
+            Brep baseSheet = metalsheet.ExtrudeAsBrep(-SheetThickness);
+            for (int i = 0; i < doorLeafCount; i++)
+            {
+                Solid doorFrame; Brep doorSheet;
+                doorFrame = (Solid)innerframe.Clone();
+                doorFrame.Translate(innerDoorWidth * i, doorModel.yOffeset, 0);
+                doorSheet = (Brep)baseSheet.Clone();
+                doorSheet.Translate(innerDoorWidth * i, doorModel.yOffeset, 0);
 
-            drawing.Entities.Add(brep, Color.Gold);
-            drawing.Entities.Add(CloneBrep, Color.Silver);
+                drawing.Entities.Add(
+                    doorFrame,
+                    doorColors[i % doorColors.Length] 
+                );
+                drawing.Entities.Add(
+                    doorSheet,
+                 doorColors[i % doorColors.Length]
+                );
+            }
+                        
 
+
+            #endregion
             #endregion
 
             #region Writing DWG
@@ -3205,7 +3379,7 @@ namespace Bullows.Business
             if (!Directory.Exists(path + "/Bullows Panel Drawing"))
                 Directory.CreateDirectory(path + "/Bullows Panel Drawing");
 
-            string dwgFilePath = path + "/Bullows Panel Drawing/" + "ComponantryEntrySideDoor" + DateTime.Now.ToString("hh-mm") + ".dwg";
+            string dwgFilePath = path + "/Bullows Panel Drawing/" + "ComponantryEntrySideDoor"+doorModel.Side + DateTime.Now.ToString("hh-mm") + ".dwg";
 
             // Save as DWG
             WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
@@ -3220,7 +3394,145 @@ namespace Bullows.Business
 
             };
         }
+        public PaintBoothclass ComponantryEntryFrontDoor(DoorDimensionsModel doorModel)
+        {
+            drawing = new();
+            drawing.Units = linearUnitsType.Millimeters;
+            double yOffeset = doorModel.xOffesetForFrontDoor;
+        
+            #region front Door Outer frame
+            LinearPath door = new LinearPath(new Point3D[]
+            {
+                    new Point3D(0,  yOffeset,                         0),
+                    new Point3D(0,  yOffeset,                         doorModel.doorHeight),
+                    new Point3D(0,  doorModel.doorWidth+ yOffeset,     doorModel.doorHeight),
+                    new Point3D(0,  doorModel.doorWidth+ yOffeset,     0),
+                    new Point3D(0,  yOffeset,                         0)
+            });
+            //drawing.Entities.Add(door, Color.LightBlue);
+            double T = 3;
+            double sectionWidth = 25;
+            double sectionHeight = 25;
+            double L = sectionWidth - (2 * T);
+            //L section
+            var section = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(0,             yOffeset,   0),
+                new Point3D(sectionWidth,  yOffeset,   0),
+                new Point3D(sectionWidth,  yOffeset+T,  0),
+                new Point3D(T,             yOffeset+ T,  0),
+                new Point3D(T,             yOffeset+sectionHeight, 0 ),
+                new Point3D(0,             yOffeset+ sectionHeight,  0),
+            });
+            Solid frame = section.SweepAsSolid(door, 0);
+            drawing.Entities.Add(frame, Color.RosyBrown);
+            #endregion
 
+            #region Door condition values
+            double innerDoorWidth = 0;
+            int doorLeafCount = 0;
+            if (doorModel.doorSubType == "Split Doors")
+            {
+                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 2;
+                doorLeafCount = 2; // default Split Doors
+            }
+            else
+            {
+                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 4;
+                doorLeafCount = 4; // Quad Doors
+            }
+            double innerDoorHeight = doorModel.doorHeight - (2 * T);
+            double innerSectionWidth = 40;
+            double innerSectionHeight = 40; 
+            #endregion
+
+            LinearPath Innerdoor = new LinearPath(new Point3D[]
+            {
+                    new Point3D(0,   yOffeset+T,                   0),
+                    new Point3D(0,   yOffeset+T,                   innerDoorHeight),
+                    new Point3D(0,   innerDoorWidth+yOffeset+T,    innerDoorHeight),
+                    new Point3D(0,   innerDoorWidth+yOffeset+T,    0),
+                    new Point3D(0,   yOffeset+T,                   0)
+            });
+            drawing.Entities.Add(Innerdoor, Color.AliceBlue);
+
+            double y1 = yOffeset + T;
+           
+            var squareSection = devregion.CreatePolygon(new Point3D[]
+            {
+                 new Point3D(sectionWidth,                      y1 ,                        0),
+                 new Point3D(sectionWidth,                      y1+innerSectionWidth ,      0),
+                 new Point3D(sectionWidth-innerSectionHeight,    y1+innerSectionWidth ,      0),
+                 new Point3D(sectionWidth-innerSectionHeight,    y1 ,                        0),
+            });
+            Solid innerframe = squareSection.SweepAsSolid(Innerdoor, 0);
+            for (int i = 1; i < doorLeafCount; i++)
+            {
+                Solid cloneInnerFrame = (Solid)innerframe.Clone();
+                cloneInnerFrame.Translate(0, innerDoorWidth * i, 0);
+                drawing.Entities.Add(cloneInnerFrame, Color.Brown);
+            }
+
+            var metalsheet = devregion.CreatePolygon(new Point3D[]
+            {
+                    new Point3D(sectionWidth-innerSectionHeight,      yOffeset+T,                      0),
+                    new Point3D(sectionWidth-innerSectionHeight,      yOffeset+T,                    innerDoorHeight),
+                    new Point3D(sectionWidth-innerSectionHeight,     innerDoorWidth + yOffeset+T,     innerDoorHeight),
+                    new Point3D(sectionWidth-innerSectionHeight,     innerDoorWidth + yOffeset+T,     0),
+
+            });
+            Color[] doorColors =
+            {
+                Color.CadetBlue,   // Door 1
+                Color.Brown,       // Door 2
+                Color.DarkOliveGreen, // Door 3
+                Color.OrangeRed    // Door 4
+            };
+            Brep baseSheet = metalsheet.ExtrudeAsBrep(SheetThickness);
+            for (int i = 0; i < doorLeafCount; i++)
+            {
+                Solid doorFrame; Brep doorSheet;
+                doorFrame = (Solid)innerframe.Clone();
+                doorFrame.Translate(0,innerDoorWidth * i, 0);
+                doorSheet = (Brep)baseSheet.Clone();
+                doorSheet.Translate(0,innerDoorWidth * i, 0);
+
+                drawing.Entities.Add(
+                    doorFrame,
+                    doorColors[i % doorColors.Length]
+                );
+                drawing.Entities.Add(
+                    doorSheet,Color.HotPink
+                 //doorColors[i % doorColors.Length]
+                );
+            }
+
+
+
+
+
+
+
+            #region Writing DWG
+            var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
+            if (!Directory.Exists(path + "/Bullows Panel Drawing"))
+                Directory.CreateDirectory(path + "/Bullows Panel Drawing");
+
+            string dwgFilePath = path + "/Bullows Panel Drawing/" + "ComponantryEntryFrontDoor" + DateTime.Now.ToString("hh-mm") + ".dwg";
+
+            // Save as DWG
+            WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
+            WriteAutodesk dwgg1 = new WriteAutodesk(auto, dwgFilePath);
+            dwgg1.DoWork();
+            #endregion
+
+            return new PaintBoothclass
+            {
+                drawing = drawing,
+                lstpath = dwgFilePath
+
+            };
+        }
         public PaintBoothclass CreateLoftOld(PaintBoothModel model, double extractionChemberHeight)
         {
             var path = new ConfigurationBuilder()
@@ -4548,7 +4860,6 @@ namespace Bullows.Business
             };
 
         }
-
         public string devlopmentForCSection(BendSectionModel model)
         {
             double X = (double)model.Length;
@@ -4606,8 +4917,6 @@ namespace Bullows.Business
             return dwgFilePathfordevelopment;
             #endregion
         }
-
-
         public PaintBoothclass Civil(PaintBoothModel model)
         {
             drawing = new();
@@ -4652,23 +4961,16 @@ namespace Bullows.Business
             };
 
         }
-
-
-
-
         #region Export Views
         public static List<string> ExportAllViewsWithSection(DesignDocument designDoc, string outputFolder)// Y-coordinate for the XZ-plane section
         {
             var exportedFiles = new List<string>();
-
             // ---  Export Top, Front, Side Views ---
             exportedFiles.Add(ExportView(designDoc, outputFolder, viewType.Top, "Top"));
             exportedFiles.Add(ExportView(designDoc, outputFolder, viewType.Front, "Front"));
             exportedFiles.Add(ExportView(designDoc, outputFolder, viewType.Left, "Side"));
-
             return exportedFiles;
         }
-
         private static string ExportView(DesignDocument designDoc, string outputFolder, viewType vType, string suffix)
         {
             string filePath = Path.Combine($"Bullows_{suffix}_{DateTime.Now:yyyyMMdd_HHmmss}.dwg");
@@ -4686,7 +4988,6 @@ namespace Bullows.Business
 
             return filePath;
         }
-
         #endregion
 
     }

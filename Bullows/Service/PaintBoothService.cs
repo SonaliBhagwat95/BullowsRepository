@@ -249,7 +249,6 @@ namespace Bullows.Service
                 throw;
             }
         }
-
         public void D3Panels(PaintBoothModel model, PaintBoothDesign paintBooth, double ExtractionC_Height)
         {
             try
@@ -494,12 +493,20 @@ namespace Bullows.Service
                 throw;
             }
         }
-        public double FrontDoorsType(PaintBoothModel model, PaintBoothDesign paintBooth)
+        public double FrontDoorsType(PaintBoothModel model, PaintBoothDesign paintBooth,DoorDimensionsModel doorModel)
         {
             try
             {
                 List<DesignDocument> frontDoorsDrawingList = new List<DesignDocument>();
+                List<DesignDocument> ComponantEntryFrontDoor = new List<DesignDocument>();
+
                 double SameSpaceBetweenDoors = 0;
+                #region H Calculate Number of Panels In H
+                model.PanelHeight = paintBooth.PanelHeight;
+                totalPanelsforH = model.H / model.PanelHeight;
+                noOfPanelsforH = (int)Math.Floor(totalPanelsforH);
+                smallPanelWidthforH = model.H - (noOfPanelsforH * model.PanelHeight);
+                #endregion
 
                 for (int m = 0; m < 2; m++)
                 {
@@ -508,8 +515,12 @@ namespace Bullows.Service
                     frontDoorsDrawingList.Add(frontDoorPath.drawing);
                     filePaths.Add(frontDoorPath.lstpath);
                 }
-
                 designdictionary.Add("frontDoorsDrawingList", frontDoorsDrawingList);
+                doorModel.xOffesetForFrontDoor = SameSpaceBetweenDoors;
+                PaintBoothclass entryDoor = paintBooth.ComponantryEntryFrontDoor(doorModel);
+                ComponantEntryFrontDoor.Add(entryDoor.drawing);
+                filePaths.Add(entryDoor.lstpath);
+                designdictionary.Add("ComponantEntryFrontDoor", ComponantEntryFrontDoor);
                 return SameSpaceBetweenDoors;
             }
             catch (Exception ex)
@@ -521,7 +532,7 @@ namespace Bullows.Service
         }
 
 
-        public void LeftRightPanelsForSideDoor(PaintBoothModel model, PaintBoothDesign paintBooth, string SideDoorLOcation)
+        public void LeftRightPanelsForSideDoor(PaintBoothModel model, PaintBoothDesign paintBooth, DoorDimensionsModel doorModel)
         {
             try
             {
@@ -537,8 +548,8 @@ namespace Bullows.Service
                 noOfPanelsforH = (int)Math.Floor(totalPanelsforH);
                 smallPanelWidthforH = model.H - (noOfPanelsforH * model.PanelHeight);
                 #endregion
-
-                if (SideDoorLOcation != "")
+               
+                if (doorModel.sideDoorLocation != "")
                 {
                     RemainingSpanceinD = (Math.Floor((model.D - (model.Width + 500))) / 2);    //model.Width means component width
                     if (RemainingSpanceinD > model.PanelWidth)
@@ -558,11 +569,14 @@ namespace Bullows.Service
                     {
                         if (i == 0)
                         {
-                            paintBooth.PanelLengthForSideDoors = 0;
+                            doorModel.yOffeset =paintBooth.PanelLengthForSideDoors = 0;
+                            doorModel.Side = DoorSide.Right;
+
                         }
                         else
                         {
-                            paintBooth.PanelLengthForSideDoors = model.W;
+                            doorModel.yOffeset = paintBooth.PanelLengthForSideDoors = model.W;
+                            doorModel.Side = DoorSide.Left;
                         }
                         List<DesignDocument> documents = new List<DesignDocument>();
                         List<DesignDocument> SideDoorNearExtractionC = new List<DesignDocument>();
@@ -623,13 +637,20 @@ namespace Bullows.Service
                             leftSideDoorDrawings.AddRange(documents);
                             leftSideDoorNearExtractionCDrawings.AddRange(SideDoorNearExtractionC);
                         }
+                        doorModel.xOffeset = RemainingSpanceinD;
+                  
+
+                        PaintBoothclass entryDoor = paintBooth.ComponantryEntrySideDoor(doorModel);
+                        ComponantEntrySideDoor.Add(entryDoor.drawing);
+                        filePaths.Add(entryDoor.lstpath);
                     }
                     designdictionary.Add("rightSideDoorDrawings", rightSideDoorDrawings);
                     designdictionary.Add("leftSideDoorDrawings", leftSideDoorDrawings);
                     designdictionary.Add("rightSideDoorNearExtractionCDrawings", rightSideDoorNearExtractionCDrawings);
                     designdictionary.Add("leftSideDoorNearExtractionCDrawings", leftSideDoorNearExtractionCDrawings);
-                    PaintBoothclass ComponantEntryDrawingPath = paintBooth.ComponantryEntrySideDoor((double)model.HingedDoorWidth, (double)model.HingedDoorHeight, RemainingSpanceinD);
-                    ComponantEntrySideDoor.Add(ComponantEntryDrawingPath.drawing);
+                    //doorModel.xOffeset = RemainingSpanceinD;
+                    //PaintBoothclass ComponantEntryDrawingPath = paintBooth.ComponantryEntrySideDoor(doorModel);
+                    //ComponantEntrySideDoor.Add(ComponantEntryDrawingPath.drawing);
                     designdictionary.Add("ComponantEntrySideDoor", ComponantEntrySideDoor);
                 }
             }
