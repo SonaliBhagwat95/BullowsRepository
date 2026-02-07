@@ -465,6 +465,15 @@
                                 "--Select--",
                                 new { @id = "drpMotorisedOperation", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
             </div>
+            <div class="col-md-2" id="TypeOfHingesDiv" style="display:none;">
+                <label class="smaller-font">Type Of Hinges</label>
+                @Html.DropDownListFor(c => c.TypeOfHinges, new List<SelectListItem>{
+                                new SelectListItem { Text = "Ball Bearing Hinges", Value = "Ball Bearing Hinges" },
+                                new SelectListItem { Text = "Fabricated Hinge", Value = "Fabricated Hinge" },
+                                },
+                                "--Select--",
+                                new { @id = "drpTypeOfHinges", @class = "form-control smaller-font smaller-height", style = "width: 130px;" })
+            </div>
 
             <div class="col-md-3" id="divDoorSideLocation">
                 <label class="smaller-font">Side Location</label>
@@ -658,24 +667,6 @@
                     updateState();
                 });
 
-
-
-
-            // function ShowComponetEntry() {
-            //     const selectedValue = $('#drpComponentEntry').val();
-            //     const $subTypeDropdown = $('#drpComponentEntrySubType');
-
-            //      const currentSubTypeValue = $subTypeDropdown.val(); // get existing value
-            //      console.log("currentSubTypeValue",currentSubTypeValue);
-            //     $subTypeDropdown.empty(); // Clear existing options
-            //     $subTypeDropdown.append($('<option>', { value: "", text: "---Select---" })); // Default option
-
-            //     if (selectedValue === "Side") {
-            //         // Add only Slide
-            //         $subTypeDropdown.append($('<option>', { value: "Slide", text: "Slide" }));
-            //         $("#divDoorSideLocation").show(); // Show Side Location dropdown
-            //     }
-            // }
             //Category drp change event
             $("#Category").change(function () {
                 var selectedValue = $(this).val();
@@ -1011,12 +1002,12 @@
                     if (selected === "Hinged")
                    {
                         $("#HingedDoorDiv").show();
-                       
+                        $("#TypeOfHingesDiv").show();
                    }
                     else
                     {
                         $("#HingedDoorDiv").hide();
-
+                        $("#TypeOfHingesDiv").hide();
                     }
 
             }

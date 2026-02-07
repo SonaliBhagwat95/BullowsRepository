@@ -78,6 +78,7 @@ namespace Bullows.Model
         public string TypeOfHingedDoor { get; set; }
         public decimal SplitDoorWidth { get; set; }
         public decimal SplitDoorHeight { get; set; }
+        public string TypeOfHinges { get; set; }
 
     }
 }

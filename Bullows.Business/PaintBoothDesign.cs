@@ -1,4 +1,5 @@
 ﻿using Bullows.Database;
+using Bullows.Database.Migrations;
 using Bullows.Model;
 using devDept.Eyeshot;
 using devDept.Eyeshot.Control;
@@ -8,6 +9,7 @@ using devDept.Geometry;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Drawing;
+using System.IO;
 using static ODA.Kernel.TD_RootIntegrated.OdGiLinetypeDash;
 using devregion = devDept.Eyeshot.Entities.Region;
 namespace Bullows.Business
@@ -16,10 +18,12 @@ namespace Bullows.Business
     {
         private readonly BullowsDbContext _DbContext;
         private readonly IConfiguration _configuration;
+        //private readonly ISession Session;
         public PaintBoothDesign(BullowsDbContext dbContext, IConfiguration configuration)
         {
             _DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _configuration = configuration;
+            // Session = httpContextAccessor.HttpContext.Session;
         }
         #region Variables
         public DesignDocument drawing { get; set; }
@@ -80,7 +84,7 @@ namespace Bullows.Business
         public string SlotDimention { get; set; }
 
         public string Section { get; set; }
-        public ISession Session { get; }
+      
         public static double RightPanels_Weight = 0;
         public static double LeftPanels_Weight = 0;
         public static double D3Panels_weight = 0;
@@ -167,7 +171,7 @@ namespace Bullows.Business
                 if (existingRecord == null || existingRecord.NoOfPanels == 0)
                 {
                     RightPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "RightSide", k, RightPanels_Weight);
+                    SavePanelDetails(model, "RightSide", k, RightPanels_Weight,0);
                 }
                 else
                 {
@@ -194,7 +198,7 @@ namespace Bullows.Business
                 if (existingRecord == null || existingRecord.NoOfPanels == 0)
                 {
                     LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "LeftSide", k, LeftPanels_Weight);
+                    SavePanelDetails(model, "LeftSide", k, LeftPanels_Weight,0);
                 }
                 else
                 {
@@ -238,11 +242,11 @@ namespace Bullows.Business
             };
 
         }
-        public PaintBoothclass DoorsOnBothSide(PaintBoothModel model, int k)
+        public PaintBoothclass DoorsOnBothSide(PaintBoothModel model, int k,int totalNoOfPanels)
         {
             drawing = new();
-            //double z = model.PanelHeight;
             drawing.Units = linearUnitsType.Millimeters;
+
             var rectangle1 = devregion.CreatePolygon(new Point3D[]
             {
                     new Point3D(0, PanelLengthForSideDoors, 0),
@@ -258,6 +262,7 @@ namespace Bullows.Business
             double massofRectangle = brep.GetMass(mat, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity);
             double Rectangle_Weight = Math.Round(massofRectangle, 3);
             drawing.Entities.Add(brep, Color.Green);
+
             LinearPath rail = new LinearPath(new Point3D[]
             {
                     new Point3D(0, PanelLengthForSideDoors, 0),
@@ -279,6 +284,58 @@ namespace Bullows.Business
             double Frame_Weight = Math.Round(massofFrame, 3);
 
             drawing.Entities.Add(frame, Color.Yellow);
+
+            if (k == 0)
+            {
+                var existingRecord = _DbContext.PanelDetails
+                   .FirstOrDefault(p =>
+                       p.EnquiryId == EnquiryID &&
+                       p.PanelPosition == "RightPanelDoors" &&
+                       p.StandardPanelDepth == PanelWidth &&
+                       p.StandardPanelHeight == PanelHeight);
+
+                // If the record does not exist, save it
+                if (existingRecord == null || existingRecord.NoOfPanels == 0)
+                {
+                    RightPanels_Weight = Rectangle_Weight + Frame_Weight;
+                    SavePanelDetails(model, "RightPanelDoors", k, RightPanels_Weight, totalNoOfPanels);
+                }
+                else
+                {
+                    // Increment NoOfPanels
+                    existingRecord.NoOfPanels += 1;
+                    _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
+                }
+
+            }
+            else
+            {
+
+                // Check if a record with the same details already exists
+                var existingRecord = _DbContext.PanelDetails
+                    .FirstOrDefault(p =>
+                        p.EnquiryId == EnquiryID &&
+                        p.PanelPosition == "LeftSide" &&
+                        p.StandardPanelDepth == PanelWidth &&
+                        p.StandardPanelHeight == PanelHeight);
+
+                // If the record does not exist, save it
+                if (existingRecord == null || existingRecord.NoOfPanels == 0)
+                {
+                    LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
+                    SavePanelDetails(model, "LeftPanelDoors", k, LeftPanels_Weight, totalNoOfPanels);
+                }
+                else
+                {
+                    // Increment NoOfPanels
+                    existingRecord.NoOfPanels += 1;
+
+                    // Save the changes for the updated Quantity
+                    _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
+                }
+            }
+
+            #region Write file 
             var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
 
             if (!Directory.Exists(path + "/PaintBooth drawing"))
@@ -294,7 +351,8 @@ namespace Bullows.Business
             }
             WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
             WriteAutodesk dwgg1 = new WriteAutodesk(auto, dwgFilePath);
-            dwgg1.DoWork();
+            dwgg1.DoWork(); 
+            #endregion
             return new PaintBoothclass
             {
                 drawing = drawing,
@@ -356,7 +414,7 @@ namespace Bullows.Business
                 if (existingRecord == null || existingRecord.NoOfPanels == 0)
                 {
                     RightPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "RightSideforFAS", k, RightPanels_Weight);
+                    SavePanelDetails(model, "RightSideforFAS", k, RightPanels_Weight, 0);
                 }
                 else
                 {
@@ -383,7 +441,7 @@ namespace Bullows.Business
                 if (existingRecord == null || existingRecord.NoOfPanels == 0)
                 {
                     LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "LeftSideForFAS", k, LeftPanels_Weight);
+                    SavePanelDetails(model, "LeftSideForFAS", k, LeftPanels_Weight, 0);
                 }
                 else
                 {
@@ -420,7 +478,86 @@ namespace Bullows.Business
             };
 
         }
+        public PaintBoothclass PanelsAboveEntryDoor(int k,DoorDimensionsModel DoorModel)
+        {
+            
+            drawing = new();
+            double z = DoorModel.doorHeight;
+            double panelHeight = DoorModel.panelHeightforAboveCompEntryPanels;
+            double panelWidth = DoorModel.panelWidthforAboveCompEntryPanels;
+            drawing.Units = linearUnitsType.Millimeters;
+            var rectangle1 = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(DoorModel.xOffeset, PanelLengthForSideDoors, z),
+                new Point3D(DoorModel.xOffeset, PanelLengthForSideDoors, panelHeight+z),
+                new Point3D(DoorModel.xOffeset+panelWidth, PanelLengthForSideDoors, panelHeight+z),
+                new Point3D(DoorModel.xOffeset+panelWidth, PanelLengthForSideDoors, z)
+            });
+            Brep brep = rectangle1.ExtrudeAsBrep(SheetThickness);
+
+            Material mat = Material.StructuralSteel;
+            mat = new Material(Materials);
+            brep.Regen(0.1);
+            double massofRectangle = brep.GetMass(mat, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity);
+            double Rectangle_Weight = Math.Round(massofRectangle, 3);
+            drawing.Entities.Add(brep, Color.Green);
+            LinearPath rail = new LinearPath(new Point3D[]
+            {
+                new Point3D(0, PanelLengthForSideDoors, 0),
+                new Point3D(0, PanelLengthForSideDoors, panelHeight),
+                new Point3D(panelWidth, PanelLengthForSideDoors,panelHeight),
+                new Point3D(panelWidth, PanelLengthForSideDoors, 0),
+                new Point3D(0, PanelLengthForSideDoors, 0)
+
+                //new Point3D(DoorModel.xOffeset, PanelLengthForSideDoors, z),
+                //new Point3D(DoorModel.xOffeset, PanelLengthForSideDoors, panelHeight+z),
+                //new Point3D(DoorModel.xOffeset+panelWidth, PanelLengthForSideDoors, panelHeight+z),
+                //new Point3D(DoorModel.xOffeset+panelWidth, PanelLengthForSideDoors, z),
+                //new Point3D(DoorModel.xOffeset, PanelLengthForSideDoors, z)
+            });
+            double sectionY = (k == 0) ? 0 : PanelLengthForSideDoors;
+            //double sectionZ = DoorModel.doorHeight;
+            devregion section = CreatePolygon(k);
+            Solid frame = section.SweepAsSolid(rail, 0);
+            //frame.Translate(0, PanelLengthForSideDoors, SheetThickness);
+            frame.Translate(DoorModel.xOffeset, PanelLengthForSideDoors, SheetThickness+z);
+            // Generate holes on YZ and XY planes
+            frame = GenerateHoles(frame);
+            Material mat1 = Material.StructuralSteel;
+            mat1 = new Material(Materials);
+
+            frame.Regen(0.1);
+            double massofFrame = frame.GetMass(mat1, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity1);
+            double Frame_Weight = Math.Round(massofFrame, 3);
+            drawing.Entities.Add(frame, Color.Yellow);
+
+            #region Write file 
+            var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
+
+            if (!Directory.Exists(path + "/PaintBooth drawing"))
+                Directory.CreateDirectory(path + "/PaintBooth drawing");
+            string dwgFilePath = "";
+            if (k == 0)
+            {
+                dwgFilePath = $"{path}/PaintBooth drawing/RightPanelsAboveEntryDoor {k} {DateTime.Now:hh - mm}.dwg";
+            }
+            else
+            {
+                dwgFilePath = $"{path}/PaintBooth drawing/LeftPanelPanelsAboveEntryDoor {k} {DateTime.Now:hh - mm}.dwg";
+            }
+            WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
+            WriteAutodesk dwgg1 = new WriteAutodesk(auto, dwgFilePath);
+            dwgg1.DoWork();
+            #endregion
+            return new PaintBoothclass
+            {
+                drawing = drawing,
+                lstpath = dwgFilePath,
+            };
+
+        }
         #endregion
+
         #region 3D D3 Panels Drawings
         public PaintBoothclass D3Panels(int i, PaintBoothModel model, double ExtractionChemberHeight)
         {
@@ -473,11 +610,11 @@ namespace Bullows.Business
             drawing.Entities.Add(frame, Color.Yellow);
             if (i == 0)
             {
-                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight);
+                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight, 0);
             }
             else
             {
-                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight);
+                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight, 0);
             }
 
             //Added serviceDoor code here 
@@ -720,7 +857,6 @@ namespace Bullows.Business
             };
 
         }
-
         public PaintBoothclass D3PanelsBeforeD(int k, int i, string Doorlocation, PaintBoothModel model)
         {
             string panelPosition;
@@ -769,11 +905,11 @@ namespace Bullows.Business
             drawing.Entities.Add(frame, Color.Yellow);
             if (i == 0)
             {
-                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight);
+                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight, 0);
             }
             else
             {
-                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight);
+                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight, 0);
             }
 
             //Added serviceDoor code here 
@@ -860,8 +996,8 @@ namespace Bullows.Business
                 lstpath = dwgFilePath,
             };
         }
-
         #endregion
+
         #region 3D top panels Drawings
         public PaintBoothclass TopSidePanels(int j, PaintBoothModel model, int m/*,string DraftSubType*/)
         {
@@ -994,7 +1130,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "TopPanels", k, TopPanel_Weight);
+                SavePanelDetails(model, "TopPanels", k, TopPanel_Weight, 0);
             }
             else
             {
@@ -1128,7 +1264,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "TopPanelForFAS", k, TopPanel_Weight);
+                SavePanelDetails(model, "TopPanelForFAS", k, TopPanel_Weight, 0);
             }
             else
             {
@@ -1146,6 +1282,7 @@ namespace Bullows.Business
             };
         }
         #endregion
+
         #region 3D Back panels 
         public PaintBoothclass BackPanelsAfterExtractionChamber(PaintBoothModel model/*,string DraftSubType*/, double EXtractionChemberHeight)
         {
@@ -1227,7 +1364,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight);
+                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight, 0);
             }
             else
             {
@@ -1326,7 +1463,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight);
+                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight, 0);
             }
             else
             {
@@ -1423,7 +1560,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight);
+                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight, 0);
             }
             else
             {
@@ -1437,7 +1574,6 @@ namespace Bullows.Business
                 lstpath = dwgFilePath,
             };
         }
-
         public PaintBoothclass FrontPanels(PaintBoothModel model)
         {
             model.D = model.D;
@@ -1734,7 +1870,7 @@ namespace Bullows.Business
             double massofFrame = frame.GetMass(mt, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity1);
             double Frame_Weight = Math.Round(massofFrame, 3);
             TopStructureFrame_Weight = Frame_Weight;
-            SavePanelDetails(model, "TopStructureFrame", k, TopStructureFrame_Weight);
+            SavePanelDetails(model, "TopStructureFrame", k, TopStructureFrame_Weight, 0);
 
             drawing.Entities.Add(frame, Color.Yellow);
             model.CChannelHeight = SettingH;
@@ -1754,7 +1890,6 @@ namespace Bullows.Business
                 lstpath = dwgFilePath
             };
         }
-
         public PaintBoothclass BaseStructure(PaintBoothModel model/*,string DraftSubType*/)
         {
             drawing = new();
@@ -1825,7 +1960,7 @@ namespace Bullows.Business
             double MassofBaseFrame = frame.GetMass(mt, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity);
             BaseFrame_Weight = Math.Round(MassofBaseFrame, 3);
             #endregion
-            SavePanelDetails(model, "BaseStructureFrame", k, BaseFrame_Weight);
+            SavePanelDetails(model, "BaseStructureFrame", k, BaseFrame_Weight, 0);
 
             GenerateHoles(frame);
             drawing.Entities.Add(frame, Color.Yellow);
@@ -2203,7 +2338,7 @@ namespace Bullows.Business
             _DbContext.SaveChanges();
             return 1;
         }
-        public int SavePanelDetails(PaintBoothModel model, string panelPosition, int k, double PanelWeight)
+        public int SavePanelDetails(PaintBoothModel model, string panelPosition, int k, double PanelWeight,int totalNoOfPanels)
         {
             PanelDetails tblobj = new PanelDetails();
             tblobj.IsDeleted = false;
@@ -2211,130 +2346,92 @@ namespace Bullows.Business
             tblobj.SalesNo = model.SalesNO;
             tblobj.SlotDimention = SlotDimention;
             tblobj.PanelPosition = panelPosition;
-
-            //tblobj.EqualPanelDepth = 0;
-            //tblobj.EqualPanelHeight = 0;
-            //tblobj.EqualPanelWidth = 0;
             tblobj.NoOfPanels = 0;
 
-            if (model.PanelTypes == "1" || model.PanelTypesforW == "1" || model.PanelTypesforH == "1")
-            {
-                tblobj.StandardPanelWidth = model.PanelHeightforW;
-                tblobj.StandardPanelDepth = PanelWidth;
-                tblobj.StandardPanelHeight = model.PanelHeightforH;
-            }
-            else
-            {
-                tblobj.StandardPanelWidth = PanelHeight;
-                tblobj.StandardPanelDepth = PanelWidth;
-                tblobj.StandardPanelHeight = PanelHeight;
+            tblobj.StandardPanelWidth = PanelHeight;
+            tblobj.StandardPanelDepth = PanelWidth;
+            tblobj.StandardPanelHeight = PanelHeight;
 
-                //if (model.PanelTypes != "1")
-                //    tblobj.EqualPanelDepth = model.RemainingPanels;
-
-                //if (model.PanelTypesforW != "1")
-                //    tblobj.EqualPanelWidth = model.RemainingPanelsByW;
-
-                //if (model.PanelTypesforH != "1")
-                //    tblobj.EqualPanelHeight = model.RemainingPanelsByH;
-            }
             if (panelPosition == "RightSide")
             {
                 tblobj.NoOfPanels = 1;
                 tblobj.PanelWeight = PanelWeight;
 
             }
-            if (panelPosition == "LeftSide")
+            else if (panelPosition == "LeftSide")
             {
                 tblobj.NoOfPanels = 1;
                 tblobj.PanelWeight = PanelWeight;
             }
-            if (panelPosition == "BackPanels")
+            else if (panelPosition == "RightPanelDoors")
+            {
+                tblobj.NoOfPanels = totalNoOfPanels;
+                tblobj.PanelWeight = PanelWeight;
+                tblobj.StandardPanelWidth = PanelWidthForSideDoors;
+                tblobj.StandardPanelDepth = PanelWidthForSideDoors;
+                tblobj.StandardPanelHeight = PanelHeightForSideDoors;
+            }
+            else if (panelPosition == "BackPanels")
             {
                 tblobj.NoOfPanels = 1;
                 tblobj.PanelWeight = PanelWeight;
             }
-
-            if (panelPosition == "BaseStructureFrame")
+            else if (panelPosition == "BaseStructureFrame")
             {
                 tblobj.PanelWeight = PanelWeight;
                 tblobj.FrameHeight = model.W;
                 tblobj.FrameWidth = model.D + D3;
                 tblobj.NoOfPanels = 0;
             }
-            if (panelPosition == "D3Panels Right side")
+            else if (panelPosition == "D3Panels Right side")
             {
                 tblobj.PanelWeight = PanelWeight;
                 tblobj.StandardPanelWidth = PanelHeight;
                 tblobj.StandardPanelDepth = D3;
                 tblobj.StandardPanelHeight = PanelHeight;
                 tblobj.NoOfPanels = 1;
-                if (model.PanelTypes == "1" || model.PanelTypesforW == "1" || model.PanelTypesforH == "1")
-                {
-                    //tblobj.EqualPanelDepth = 0;
-                    //tblobj.EqualPanelHeight = 0;
-                }
-                else
-                {
-                    tblobj.StandardPanelWidth = PanelHeight;
-                    tblobj.StandardPanelHeight = PanelHeight;
-                }
+                
+                tblobj.StandardPanelWidth = PanelHeight;
+                tblobj.StandardPanelHeight = PanelHeight;
+                
             }
-            if (panelPosition == "D3Panels Left Side")
+            else if (panelPosition == "D3Panels Left Side")
             {
                 tblobj.PanelWeight = PanelWeight;
                 tblobj.StandardPanelWidth = PanelHeight;
                 tblobj.StandardPanelDepth = D3;
                 tblobj.StandardPanelHeight = PanelHeight;
-                tblobj.NoOfPanels = 1;
-                if (model.PanelTypes == "1" || model.PanelTypesforW == "1" || model.PanelTypesforH == "1")
-                {
-                    //tblobj.EqualPanelDepth = 0;
-                    //tblobj.EqualPanelHeight = 0;
-                }
-                else
-                {
-                    tblobj.StandardPanelWidth = PanelHeight;
-                    tblobj.StandardPanelHeight = PanelHeight;
-                }
+                tblobj.NoOfPanels = totalNoOfPanels;
             }
-            if (panelPosition == "TopPanels")
+            else if (panelPosition == "TopPanels")
             {
 
                 tblobj.PanelWeight = PanelWeight;
                 tblobj.NoOfPanels = 1;
-                if (model.PanelTypes == "2" || model.PanelTypesforW == "2" || model.PanelTypesforH == "2")
-                {
-                    tblobj.StandardPanelWidth = PanelLength;
-                    tblobj.StandardPanelHeight = PanelHeight;
-                    tblobj.StandardPanelDepth = PanelWidth;
-                }
-                else
-                {
-                    tblobj.StandardPanelWidth = model.PanelHeightforW;
-                }
+                tblobj.StandardPanelWidth = PanelLength;
+                tblobj.StandardPanelHeight = PanelHeight;
+                tblobj.StandardPanelDepth = PanelWidth;
+               
             }
-
-            if (panelPosition == "TopStructureFrame")
+            else if (panelPosition == "TopStructureFrame")
             {
                 tblobj.PanelWeight = PanelWeight;
                 tblobj.FrameHeight = model.W;
                 tblobj.FrameWidth = model.D + D3;
                 tblobj.NoOfPanels = 0;
             }
-
             tblobj.StandardBend1 = (decimal)SettingStandardBend1;
             tblobj.StandardBend2 = (decimal)SettingStandardBend2;
             tblobj.SheetThickness = (decimal)SheetThickness;
             tblobj.PitchDistance = (decimal)PitchDistance;
             tblobj.CostingStatus = true;
             tblobj.CreatedDate = DateTime.Now;
+            //tblobj.CreatedBy = 
             tblobj.ModifiedBy = 0;
             _DbContext.PanelDetails.Add(tblobj);
             _DbContext.SaveChanges();
             return 1;
         }
-
         public PaintBoothclass detailsdrawing(DesignDocument model, PaintBoothModel pmodel)
         {
 
@@ -3093,313 +3190,585 @@ namespace Bullows.Business
 
             };
         }
-        public PaintBoothclass ComponantryEntrySideDoorold(DoorDimensionsModel doorModel)
-        {
-            drawing = new();
-            drawing.Units = linearUnitsType.Millimeters;
-           
-            double T = 3;
-            double sectionWidth = 25;
-            double sectionHeight = 25;
-
-            #region Door Outer Frame
-
-            LinearPath doorPath = new LinearPath(new Point3D[]
-            {
-                new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0),
-                new Point3D(doorModel.xOffeset, doorModel.yOffeset, doorModel.doorHeight),
-                new Point3D(doorModel.doorWidth + doorModel.xOffeset, doorModel.yOffeset, doorModel.doorHeight),
-                new Point3D(doorModel.doorWidth + doorModel.xOffeset, doorModel.yOffeset, 0),
-                new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0)
-            });
-
-            drawing.Entities.Add(doorPath, Color.Aquamarine);
-
-            var outerSection = devregion.CreatePolygon(new Point3D[]
-            {
-                new Point3D(doorModel.xOffeset,                0, 0),
-                new Point3D(doorModel.xOffeset + sectionWidth, 0, 0),
-                new Point3D(doorModel.xOffeset + sectionWidth, -T, 0),
-                new Point3D(doorModel.xOffeset + T,            -T, 0),
-                new Point3D(doorModel.xOffeset + T,            -sectionHeight, 0),
-                new Point3D(doorModel.xOffeset,               -sectionHeight, 0)
-            });
-
-            Solid outerFrame = outerSection.SweepAsSolid(doorPath, 0);
-            drawing.Entities.Add(outerFrame, Color.RosyBrown);
-
-            #endregion
-
-            #region Door Leaf Calculation
-
-            int doorLeafCount;
-            double innerDoorWidth;
-
-            if (doorModel.doorSubType == "Split Doors")
-            {
-                doorLeafCount = 2;
-                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 2;
-            }
-            else
-            {
-                doorLeafCount = 4;
-                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 4;
-            }
-
-            double innerDoorHeight = doorModel.doorHeight - (2 * T);
-            double innerSectionSize = 40;
-
-            #endregion
-
-            #region Inner Door Frames & Sheets
-
-            LinearPath innerDoorPath = new LinearPath(new Point3D[]
-            {
-        new Point3D(doorModel.xOffeset + T, doorModel.yOffeset, 0),
-        new Point3D(doorModel.xOffeset + T, doorModel.yOffeset, innerDoorHeight),
-        new Point3D(doorModel.xOffeset + T + innerDoorWidth, doorModel.yOffeset, innerDoorHeight),
-        new Point3D(doorModel.xOffeset + T + innerDoorWidth, doorModel.yOffeset, 0),
-        new Point3D(doorModel.xOffeset + T, doorModel.yOffeset, 0)
-            });
-
-            var innerSection = devregion.CreatePolygon(new Point3D[]
-            {
-        new Point3D(doorModel.xOffeset + T,                   0, 0),
-        new Point3D(doorModel.xOffeset + T + innerSectionSize,0, 0),
-        new Point3D(doorModel.xOffeset + T + innerSectionSize,-innerSectionSize,0),
-        new Point3D(doorModel.xOffeset + T,                  -innerSectionSize,0)
-            });
-
-            Solid baseInnerFrame = innerSection.SweepAsSolid(innerDoorPath, 0);
-            drawing.Entities.Add(baseInnerFrame, Color.AliceBlue);
-
-            var metalSheetSection = devregion.CreatePolygon(new Point3D[]
-            {
-                new Point3D(doorModel.xOffeset + T,                   doorModel.yOffeset, 0),
-                new Point3D(doorModel.xOffeset + T,                   doorModel.yOffeset, innerDoorHeight),
-                new Point3D(doorModel.xOffeset + T + innerDoorWidth,  doorModel.yOffeset, innerDoorHeight),
-                new Point3D(doorModel.xOffeset + T + innerDoorWidth,  doorModel.yOffeset, 0)
-            });
-
-            Brep baseSheet = metalSheetSection.ExtrudeAsBrep(-SheetThickness);
-
-            Color[] doorColors =
-            {
-        Color.CadetBlue,
-        Color.Brown,
-        Color.DarkOliveGreen,
-        Color.OrangeRed
-    };
-
-            // First door leaf
-            //drawing.Entities.Add(baseInnerFrame, doorColors[0]);
-            //drawing.Entities.Add(baseSheet, doorColors[0]);
-
-            // Remaining door leaves
-            for (int i = 1; i < doorLeafCount; i++)
-            {
-                Solid frameClone = (Solid)baseInnerFrame.Clone();
-                frameClone.Translate(innerDoorWidth * i, 0, 0);
-
-                Brep sheetClone = (Brep)baseSheet.Clone();
-                sheetClone.Translate(innerDoorWidth * i, 0, 0);
-
-                //drawing.Entities.Add(frameClone, doorColors[i % doorColors.Length]);
-               // drawing.Entities.Add(sheetClone, doorColors[i % doorColors.Length]);
-            }
-            #region Fix orientation for Left / Right side
-
-            //if (doorModel.Side == DoorSide.Right)
-            //{
-            //    drawing.Entities.Rotate(
-            //        Math.PI,                 // 180 degrees
-            //        Vector3D.AxisZ,
-            //        new Point3D(
-            //            doorModel.xOffeset + doorModel.doorWidth / 2,
-            //            doorModel.yOffeset,
-            //            0
-            //        )
-            //    );
-            //}
-
-            #endregion
-
-            #endregion
-
-            #region Save DWG
-
-            var path = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build()
-                .GetSection("FolderPathConfig")["AbsolutePath"];
-
-            string folder = Path.Combine(path, "Bullows Panel Drawing");
-            Directory.CreateDirectory(folder);
-
-            string dwgFilePath = Path.Combine(
-                folder,
-                $"ComponantryEntrySideDoor_{DateTime.Now:HH-mm}.dwg"
-            );
-
-            WriteAutodeskParams writeParams = new(drawing);
-            WriteAutodesk dwg = new(writeParams, dwgFilePath);
-            dwg.DoWork();
-
-            #endregion
-
-            return new PaintBoothclass
-            {
-                drawing = drawing,
-                lstpath = dwgFilePath
-            };
-        }
-
+       
+        #region Componant entry doors
         public PaintBoothclass ComponantryEntrySideDoor(DoorDimensionsModel doorModel)
         {
             drawing = new();
             drawing.Units = linearUnitsType.Millimeters;
 
-            #region split door
-            #region Door Outer frame
-            LinearPath door = new LinearPath(new Point3D[]
-                {
-                    new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0),
-                    new Point3D(doorModel.xOffeset, doorModel.yOffeset, doorModel.doorHeight),
-                    new Point3D(doorModel.doorWidth+doorModel.xOffeset, doorModel.yOffeset,doorModel.doorHeight),
-                    new Point3D(doorModel.doorWidth+doorModel.xOffeset, doorModel.yOffeset, 0),
-                    new Point3D(doorModel.xOffeset, doorModel.yOffeset, 0)
-                });
-            //drawing.Entities.Add(door, Color.Aquamarine);
-            double T = 3;
-            double sectionWidth = 25;
-            double sectionHeight = 25;
-            double x0 = doorModel.xOffeset;
-            double L = sectionWidth - (2 * T);
-
-            //left L Section
-            var section = devregion.CreatePolygon(new Point3D[]
-            {
-
-                         new Point3D(x0+0 ,               0,      0),
-                         new Point3D(x0+sectionWidth ,    0,      0),
-                         new Point3D(x0+sectionWidth ,    -T,      0),
-                         new Point3D(x0+T,                -T,      0),
-                         new Point3D(x0+T,                -sectionHeight,      0),
-                         new Point3D(x0+0,               - sectionHeight,      0),
-            });
-
-            Solid frame = section.SweepAsSolid(door, 0);
-            frame.Translate(0, doorModel.yOffeset, 0);
-
-            drawing.Entities.Add(frame, Color.RosyBrown);
+            #region Layers
+            drawing.Layers.Add(new Layer("DoorFrame", Color.BurlyWood));
+            drawing.Layers.Add(new Layer("MetalSheet", Color.FloralWhite));
+            drawing.Layers.Add(new Layer("MainDoorFrame", Color.DarkMagenta));
             #endregion
 
-            double innerDoorWidth = 0;
-            int doorLeafCount = 0;
-            if (doorModel.doorSubType== "Split Doors")
+            #region Hinges and handles blocks
+            var path = new ConfigurationBuilder()
+                   .AddJsonFile("appsettings.json")
+                   .Build()
+                   .GetSection("FolderPathConfig")["AbsolutePath"];
+
+            string hingeStepPath =
+                doorModel.TypeOfHinges == "Ball Bearing Hinges"
+                    ? Path.Combine(path, "Ball_Bearing_Door_Hinge.step")
+                    : Path.Combine(path, "Fabricated_Hing-1.step");
+
+            string handleStepPath = Path.Combine(path, "Handel.step");
+
+            List<string> hingeBlocks = AddStepBlocksToDrawing(drawing, hingeStepPath);
+            List<string> handleBlocks = AddStepBlocksToDrawing(drawing, handleStepPath);
+
+            string hingeBlockName;
+
+            if (doorModel.TypeOfHinges == "Ball Bearing Hinges")
             {
-                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 2;
-                doorLeafCount = 2; // default Split Doors
+                hingeBlockName = drawing.Blocks.Select(b => b.Name).FirstOrDefault(n =>
+                    n.Contains("Hinge", StringComparison.OrdinalIgnoreCase) &&
+                  !n.Contains("Pin", StringComparison.OrdinalIgnoreCase));
             }
             else
             {
-                innerDoorWidth = (doorModel.doorWidth - (2 * T)) / 4;
-                doorLeafCount = 4; // Quad Doors
+                hingeBlockName = hingeBlocks.FirstOrDefault(b =>
+                    b.Contains("Fabricated", StringComparison.OrdinalIgnoreCase));
             }
+
+            if (string.IsNullOrWhiteSpace(hingeBlockName))
+                throw new Exception("Valid hinge block not found in STEP file");
+
+            string handleBlockName =
+                handleBlocks.FirstOrDefault(b =>
+                    b.Contains("Handel", StringComparison.OrdinalIgnoreCase) &&
+                    !b.Contains("Plate", StringComparison.OrdinalIgnoreCase) &&
+                    !b.Contains("Washer", StringComparison.OrdinalIgnoreCase) &&
+                    !b.Contains("M5", StringComparison.OrdinalIgnoreCase)
+                ); 
+            #endregion
+
+            double T = 3;
+            double gap = 10;
+            double x0 = doorModel.xOffeset;
+
+            #region Door Calculations
+            int doorLeafCount = doorModel.doorSubType == "Split Doors" ? 2 : 4;
+
+            double innerDoorWidth =
+                (doorModel.doorWidth - (2 * T) - ((doorLeafCount + 1) * gap)) / doorLeafCount;
+
             double innerDoorHeight = doorModel.doorHeight - (2 * T);
-            double innerSectionWidth = 40;
-            double innerSectionHeight = 40;
+            double frameThickness = 40;
+            #endregion
 
-            #region Inner Door left
-            LinearPath Innerdoorleft = new LinearPath(new Point3D[]
-            {
-                    new Point3D(doorModel.xOffeset+T,                   doorModel.yOffeset, 0),
-                    new Point3D(doorModel.xOffeset+T,                   doorModel.yOffeset, innerDoorHeight),
-                    new Point3D(innerDoorWidth+doorModel.xOffeset+T,    doorModel.yOffeset,innerDoorHeight),
-                    new Point3D(innerDoorWidth+doorModel.xOffeset+T,    doorModel.yOffeset, 0),
-                    new Point3D(doorModel.xOffeset+T,                   doorModel.yOffeset, 0)
-            });
-            double x1 = x0 + T;
-            double innerSectionWidthWithMinusT = x1 + innerSectionWidth - (2 * T);
-            var squareSection = devregion.CreatePolygon(new Point3D[]
-            {
-                 new Point3D(x1 ,                    0,                         0),
-                 new Point3D(x1+innerSectionWidth ,  0,                         0),
-                 new Point3D(x1+innerSectionWidth ,  -innerSectionHeight,      0),
-                 new Point3D(x1+0 ,                  -innerSectionHeight,      0),
-            });
-            Solid innerframe = squareSection.SweepAsSolid(Innerdoorleft, 0);
-            for (int i = 1; i < doorLeafCount; i++)
-            {
-                Solid cloneInnerFrame = (Solid)innerframe.Clone();
-                cloneInnerFrame.Translate(innerDoorWidth * i, doorModel.yOffeset, 0);
-                drawing.Entities.Add(cloneInnerFrame, Color.Brown);
-            }
-            var metalsheet = devregion.CreatePolygon(new Point3D[]
-            {
-                    new Point3D(doorModel.xOffeset+T, -innerSectionWidth, 0),
-                    new Point3D(doorModel.xOffeset+T,-innerSectionWidth, innerDoorHeight),
-                    new Point3D(innerDoorWidth+doorModel.xOffeset+T,-innerSectionWidth,innerDoorHeight),
-                    new Point3D(innerDoorWidth+doorModel.xOffeset+T, -innerSectionWidth, 0),
+            #region Base Frame
+            double startX = x0 + T + gap;
 
-            });
-            Color[] doorColors =
+            LinearPath leafPath = new LinearPath(new Point3D[]
             {
-                Color.CadetBlue,   // Door 1
-                Color.Brown,       // Door 2
-                Color.DarkOliveGreen, // Door 3
-                Color.OrangeRed    // Door 4
-            };
-            Brep baseSheet = metalsheet.ExtrudeAsBrep(-SheetThickness);
+                new(startX,                     doorModel.yOffeset, 0),
+                new(startX,                     doorModel.yOffeset, innerDoorHeight),
+                new(startX + innerDoorWidth,    doorModel.yOffeset, innerDoorHeight),
+                new(startX + innerDoorWidth,    doorModel.yOffeset, 0),
+                new(startX,                     doorModel.yOffeset, 0)
+            });
+
+            var frameSection = devregion.CreatePolygon(new Point3D[]
+            {
+                new(startX, 0, 0),
+                new(startX + frameThickness, 0, 0),
+                new(startX + frameThickness, -frameThickness, 0),
+                new(startX, -frameThickness, 0),
+            });
+
+            Solid baseFrame = frameSection.SweepAsSolid(leafPath, 0);
+            #endregion
+
+            #region Sheet
+            double sheetInset = frameThickness;
+            double sheetWidth = innerDoorWidth - (2 * sheetInset);
+            double sheetStartX = startX + sheetInset;
+
+            var sheetProfile = devregion.CreatePolygon(new Point3D[]
+            {
+                new(sheetStartX, -frameThickness, 0),
+                new(sheetStartX, -frameThickness, innerDoorHeight),
+                new(sheetStartX + sheetWidth, -frameThickness, innerDoorHeight),
+                new(sheetStartX + sheetWidth, -frameThickness, 0),
+            });
+
+            Brep baseSheet = sheetProfile.ExtrudeAsBrep(-SheetThickness);
+            #endregion
+
+            #region Hinges Z positions
+            int hingeCount = GetHingeCount(innerDoorHeight);
+            double topClearance = 113;
+            double bottomClearance = 300;
+            double usableHeight = innerDoorHeight - (topClearance + bottomClearance);
+
+            List<double> hingeZs = Enumerable.Range(0, hingeCount)
+                .Select(i => innerDoorHeight - topClearance - (usableHeight * i / (hingeCount - 1)))
+                .ToList();
+            #endregion
+
+            #region Place Doors + Hardware
+            //for (int i = 0; i < doorLeafCount; i++)
+            //{
+            //    bool isLeftDoor = (i % 2 == 0);
+            //    double xShift = i * (innerDoorWidth + gap);
+
+            //    Solid frame = (Solid)baseFrame.Clone();
+            //    Brep sheet = (Brep)baseSheet.Clone();
+
+            //    frame.Translate(xShift, doorModel.yOffeset, 0);
+            //    sheet.Translate(xShift, doorModel.yOffeset, 0);
+
+            //    drawing.Entities.Add(frame, "DoorFrame");
+            //    drawing.Entities.Add(sheet, "MetalSheet");
+
+            //    double hingeX = isLeftDoor
+            //        ? startX + xShift
+            //        : startX + xShift + innerDoorWidth;
+
+            //    double hingeY = doorModel.yOffeset - 40 - (2 * SheetThickness) - 3;
+            //    double handleOffsetFromBottom = 1000;
+
+            //    double handleZ = Math.Min(
+            //        handleOffsetFromBottom,
+            //        innerDoorHeight - 100   // safety margin from top
+            //    );
+            //    //double handleZ = innerDoorHeight / 2;          // center height
+            //    double handleY = doorModel.yOffeset -40 - (2 * SheetThickness) - 3;      // outside face
+
+
+            //    foreach (double hz in hingeZs)
+            //                {
+            //         InsertDoorHardware(
+            //             drawing,
+            //             hingeBlockName,
+            //             hingeX,
+            //             hingeY,
+            //             hz,
+            //             mirrorX: !isLeftDoor,
+            //             applyRotationFix: doorModel.TypeOfHinges == "Ball Bearing Hinges",
+            //             rotationAngleRad: Math.PI / 2
+            //         );
+            //    }
+
+            //    // HANDLE (one per leaf)
+            //    double handleX = isLeftDoor
+            //        ? startX + xShift + innerDoorWidth - 80
+            //        : startX + xShift + 80;
+
+            //    InsertDoorHardware(
+            //        drawing,
+            //        handleBlockName,
+            //        handleX,
+            //        handleY,
+            //        handleZ,
+            //        mirrorX: isLeftDoor,      // mirror for opposite door
+            //        applyRotationFix: true,  // change to true if STEP needs it
+            //        rotationAngleRad: Math.PI / 2
+            //    );
+            //}
+            #endregion
+            #region Place Doors + Hardware
+            double xShift = 0;
             for (int i = 0; i < doorLeafCount; i++)
             {
-                Solid doorFrame; Brep doorSheet;
-                doorFrame = (Solid)innerframe.Clone();
-                doorFrame.Translate(innerDoorWidth * i, doorModel.yOffeset, 0);
-                doorSheet = (Brep)baseSheet.Clone();
-                doorSheet.Translate(innerDoorWidth * i, doorModel.yOffeset, 0);
+                xShift = i * (innerDoorWidth + gap);
 
-                drawing.Entities.Add(
-                    doorFrame,
-                    doorColors[i % doorColors.Length] 
-                );
-                drawing.Entities.Add(
-                    doorSheet,
-                 doorColors[i % doorColors.Length]
-                );
+                Solid frame = (Solid)baseFrame.Clone();
+                Brep sheet = (Brep)baseSheet.Clone();
+
+                frame.Translate(xShift, doorModel.yOffeset, 0);
+                sheet.Translate(xShift, doorModel.yOffeset, 0);
+
+                drawing.Entities.Add(frame, "DoorFrame");
+                drawing.Entities.Add(sheet, "MetalSheet");
+
+                // =========================
+                // HINGE LOGIC
+                // =========================
+                bool placeHinge = false;
+                bool hingeOnLeftSide = false;
+
+                if (doorLeafCount == 2)
+                {
+                    // Split doors → both leaves
+                    placeHinge = true;
+                    hingeOnLeftSide = (i == 0);
+                }
+                else
+                {
+                    // Fold doors → only outer leaves
+                    if (i == 0)
+                    {
+                        placeHinge = true;
+                        hingeOnLeftSide = true;
+                    }
+                    else if (i == doorLeafCount - 1)
+                    {
+                        placeHinge = true;
+                        hingeOnLeftSide = false;
+                    }
+                }
+
+                double hingeY = doorModel.yOffeset - 40 - (2 * SheetThickness) - 3;
+
+                if (placeHinge)
+                {
+                    double hingeX = hingeOnLeftSide
+                        ? startX + xShift
+                        : startX + xShift + innerDoorWidth;
+
+                    foreach (double hz in hingeZs)
+                    {
+                        InsertDoorHardware(
+                            drawing,
+                            hingeBlockName,
+                            hingeX,
+                            hingeY,
+                            hz,
+                            mirrorX: !hingeOnLeftSide,
+                            applyRotationFix: doorModel.TypeOfHinges == "Ball Bearing Hinges",
+                            rotationAngleRad: Math.PI / 2
+                        );
+                    }
+                }
+
+                // =========================
+                // HANDLE LOGIC
+                // =========================
+                bool placeHandle;
+
+                if (doorLeafCount == 2)
+                {
+                    placeHandle = true;
+                }
+                else
+                {
+                    int leftMiddle = (doorLeafCount / 2) - 1;
+                    int rightMiddle = (doorLeafCount / 2);
+
+                    placeHandle = (i == leftMiddle || i == rightMiddle);
+                }
+
+                if (placeHandle)
+                {
+                    double handleOffsetFromBottom = 1000;
+
+                    double handleZ = Math.Min(
+                        handleOffsetFromBottom,
+                        innerDoorHeight - 100
+                    );
+
+                    //double handleY = doorModel.yOffeset - 40 - (2 * SheetThickness) - 3;
+                    double handleY = doorModel.yOffeset - 40 -  SheetThickness;
+
+                    // Handles always near meeting edges
+                    bool isLeftLeaf = (i < doorLeafCount / 2);
+
+                    double handleX = isLeftLeaf
+                        ? startX + xShift + innerDoorWidth - 80
+                        : startX + xShift + 80;
+
+                    InsertDoorHardware(
+                        drawing,
+                        handleBlockName,
+                        handleX,
+                        handleY,
+                        handleZ,
+                        mirrorX: !isLeftLeaf,
+                        applyRotationFix: true,
+                        rotationAngleRad: Math.PI / 2
+                    );
+                }
             }
-                        
-
-
-            #endregion
             #endregion
 
-            #region Writing DWG
-            var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
-            if (!Directory.Exists(path + "/Bullows Panel Drawing"))
-                Directory.CreateDirectory(path + "/Bullows Panel Drawing");
+            // =========================
+            // BACK PLATE
+            // =========================
+            Brep backPlate = CreateBackPlate(doorModel);
 
-            string dwgFilePath = path + "/Bullows Panel Drawing/" + "ComponantryEntrySideDoor"+doorModel.Side + DateTime.Now.ToString("hh-mm") + ".dwg";
+            // Position it behind the hinges (same Y logic you already use)
+            double backPlateX = xShift + doorModel.xOffeset+ gap;
+            double backPlateY = doorModel.yOffeset - 40 -  SheetThickness; // behind hinge
+            double backPlateZ = 0;
 
-            // Save as DWG
-            WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
-            WriteAutodesk dwgg1 = new WriteAutodesk(auto, dwgFilePath);
-            dwgg1.DoWork();
+            backPlate.Translate(backPlateX, backPlateY, backPlateZ);
+
+            drawing.Entities.Add(backPlate, Color.LightBlue);
+
+            #region Write DWG
+            Directory.CreateDirectory(path + "/Bullows Panel Drawing");
+
+            string dwgFilePath =
+                path + "/Bullows Panel Drawing/ComponantryEntrySideDoor_" +
+                doorModel.Side + "_" + DateTime.Now.ToString("HH-mm") + ".dwg";
+
+            new WriteAutodesk(new WriteAutodeskParams(drawing), dwgFilePath).DoWork();
             #endregion
 
             return new PaintBoothclass
             {
                 drawing = drawing,
                 lstpath = dwgFilePath
-
             };
         }
+
+        //public PaintBoothclass ComponantryEntrySideDoor(DoorDimensionsModel doorModel)
+        //{
+        //    drawing = new();
+        //    drawing.Units = linearUnitsType.Millimeters;
+
+        //    #region Layers
+        //    const string DoorFrameLayer = "DoorFrame";
+        //    drawing.Layers.Add(new Layer(DoorFrameLayer, Color.BurlyWood));
+        //    const string MetalSheetLayer = "MetalSheet";
+        //    drawing.Layers.Add(new Layer(MetalSheetLayer, Color.FloralWhite));
+        //    const string MainDoorFrameLayer = "MainDoorFrame";
+        //    drawing.Layers.Add(new Layer(MainDoorFrameLayer, Color.DarkMagenta)); 
+        //    #endregion
+
+        //    var path = new ConfigurationBuilder()
+        //        .AddJsonFile("appsettings.json")
+        //        .Build()
+        //        .GetSection("FolderPathConfig")["AbsolutePath"];
+
+        //    string hingeStepPath =
+        //        doorModel.TypeOfHinges == "Ball Bearing Hinges"
+        //            ? Path.Combine(path, "Ball_Bearing_Door_Hinge.step")
+        //            : Path.Combine(path, "Fabricated_Hing-1.step");
+
+        //    string HandlePath = Path.Combine(path, "Handel.step");
+
+        //    List<string> hingeBlocks = AddStepBlocksToDrawing(drawing, hingeStepPath);
+        //    List<string> HandleBlocks = AddStepBlocksToDrawing(drawing, HandlePath);
+
+        //    double T = 3;
+        //    double gap = 10;
+        //    double x0 = doorModel.xOffeset;
+
+        //    #region Outer Door Frame
+        //    LinearPath doorPath = new LinearPath(new Point3D[]
+        //    {
+        //        new Point3D(x0, doorModel.yOffeset, 0),
+        //        new Point3D(x0, doorModel.yOffeset, doorModel.doorHeight),
+        //        new Point3D(x0 + doorModel.doorWidth, doorModel.yOffeset, doorModel.doorHeight),
+        //        new Point3D(x0 + doorModel.doorWidth, doorModel.yOffeset, 0),
+        //        new Point3D(x0, doorModel.yOffeset, 0)
+        //    });
+
+        //    var outerSection = devregion.CreatePolygon(new Point3D[]
+        //    {
+        //        new Point3D(x0, 0, 0),
+        //        new Point3D(x0 + 25, 0, 0),
+        //        new Point3D(x0 + 25, -T, 0),
+        //        new Point3D(x0 + T, -T, 0),
+        //        new Point3D(x0 + T, -25, 0),
+        //        new Point3D(x0, -25, 0),
+        //    });
+
+        //    Solid outerFrame = outerSection.SweepAsSolid(doorPath, 0);
+        //    outerFrame.Translate(0, doorModel.yOffeset, 0);
+        //    drawing.Entities.Add(outerFrame, MainDoorFrameLayer);
+        //    #endregion
+
+        //    #region Door Calculation
+        //    int doorLeafCount = doorModel.doorSubType == "Split Doors" ? 2 : 4;
+
+        //    double innerDoorWidth =
+        //        (doorModel.doorWidth - (2 * T) - ((doorLeafCount + 1) * gap))
+        //        / doorLeafCount;
+
+        //    double innerDoorHeight = doorModel.doorHeight - (2 * T);
+        //    double frameThickness = 40;
+        //    #endregion
+
+        //    #region Base Door Frame
+        //    double startX = x0 + T + gap;
+
+        //    LinearPath doorLeafPath = new LinearPath(new Point3D[]
+        //    {
+        //        new Point3D(startX, doorModel.yOffeset, 0),
+        //        new Point3D(startX, doorModel.yOffeset, innerDoorHeight),
+        //        new Point3D(startX + innerDoorWidth, doorModel.yOffeset, innerDoorHeight),
+        //        new Point3D(startX + innerDoorWidth, doorModel.yOffeset, 0),
+        //        new Point3D(startX, doorModel.yOffeset, 0)
+        //    });
+
+        //    var frameSection = devregion.CreatePolygon(new Point3D[]
+        //    {
+        //        new Point3D(startX, 0, 0),
+        //        new Point3D(startX + frameThickness, 0, 0),
+        //        new Point3D(startX + frameThickness, -frameThickness, 0),
+        //        new Point3D(startX, -frameThickness, 0),
+        //    });
+
+        //    Solid baseFrame = frameSection.SweepAsSolid(doorLeafPath, 0);
+        //    #endregion
+
+        //    #region Metal Sheet
+        //    double sheetInset = frameThickness;
+        //    double sheetWidth = innerDoorWidth - (2 * sheetInset);
+        //    double sheetStartX = startX + sheetInset;
+
+        //    var sheetProfile = devregion.CreatePolygon(new Point3D[]
+        //    {
+        //        new Point3D(sheetStartX, -frameThickness, 0),
+        //        new Point3D(sheetStartX, -frameThickness, innerDoorHeight),
+        //        new Point3D(sheetStartX + sheetWidth, -frameThickness, innerDoorHeight),
+        //        new Point3D(sheetStartX + sheetWidth, -frameThickness, 0),
+        //    });
+
+        //    Brep baseSheet = sheetProfile.ExtrudeAsBrep(-SheetThickness);
+        //    #endregion
+
+        //    #region Place All Doors
+        //    int hingeCount = GetHingeCount(doorModel.doorHeight);
+
+        //    double topClearance = 113;
+        //    double bottomClearance = 300;
+        //    double usableHeight = innerDoorHeight - (topClearance + bottomClearance);
+        //    // double hingeSpacing = usableHeight / (hingeCount - 1);
+
+
+        //    // PRE-CALCULATE hinge Z positions (biased)
+        //    List<double> hingeZPositions = new();
+
+        //    for (int h = 0; h < hingeCount; h++)
+        //    {
+        //        double ratio = hingeCount switch
+        //        {
+        //            4 => new[] { 0.0, 0.25, 0.65, 1.0 }[h],
+        //            5 => new[] { 0.0, 0.18, 0.42, 0.68, 1.0 }[h],
+        //            6 => new[] { 0.0, 0.15, 0.32, 0.55, 0.78, 1.0 }[h],
+        //            _ => (double)h / (hingeCount - 1)
+        //        };
+
+        //        double hingeZ =
+        //            innerDoorHeight
+        //            - topClearance
+        //            - (ratio * usableHeight);
+
+        //        hingeZPositions.Add(hingeZ);
+        //    }
+        //    string hingeBlockName;
+        //    //string hingeBlockName =
+        //    //    doorModel.TypeOfHinges == "Ball Bearing Hinges"
+        //    //        ? hingeBlocks.FirstOrDefault(b => b.Contains("Ball", StringComparison.OrdinalIgnoreCase))
+        //    //        : hingeBlocks.FirstOrDefault(b => b.Contains("Fabricated", StringComparison.OrdinalIgnoreCase));
+        //    if (doorModel.TypeOfHinges == "Ball Bearing Hinges")
+        //    {
+        //        hingeBlockName = drawing.Blocks.Select(b => b.Name).FirstOrDefault(n =>
+        //    n.Contains("Hinge", StringComparison.OrdinalIgnoreCase) &&
+        //  !n.Contains("Pin", StringComparison.OrdinalIgnoreCase));
+        //    }
+        //    else
+        //    {
+        //        hingeBlockName = hingeBlocks.FirstOrDefault(b =>
+        //            b.Contains("Fabricated", StringComparison.OrdinalIgnoreCase));
+        //    }
+
+        //    if (string.IsNullOrWhiteSpace(hingeBlockName))
+        //        throw new Exception("Valid hinge block not found in STEP file");
+
+        //    string handleBlockName =
+        //HandleBlocks.FirstOrDefault(b =>
+        //    b.Contains("Handle", StringComparison.OrdinalIgnoreCase) &&
+        //    !b.Contains("Plate", StringComparison.OrdinalIgnoreCase) &&
+        //    !b.Contains("Washer", StringComparison.OrdinalIgnoreCase) &&
+        //    !b.Contains("M5", StringComparison.OrdinalIgnoreCase)
+        //);
+
+        //    if (string.IsNullOrWhiteSpace(handleBlockName))
+        //        throw new Exception("Handle block not found in STEP file");
+
+        //    for (int i = 0; i < doorLeafCount; i++)
+        //    {
+        //        double xShift = i * (innerDoorWidth + gap);
+
+        //        Solid frameClone = (Solid)baseFrame.Clone();
+        //        Brep sheetClone = (Brep)baseSheet.Clone();
+
+        //        frameClone.Translate(xShift, doorModel.yOffeset, 0);
+        //        sheetClone.Translate(xShift, doorModel.yOffeset, 0);
+
+        //        drawing.Entities.Add(frameClone, DoorFrameLayer);
+        //        drawing.Entities.Add(sheetClone, MetalSheetLayer);
+
+        //       // double hingeX = startX + (xShift*2);
+        //        double hingeY = doorModel.yOffeset - 40 - (2 * SheetThickness) - 3;
+
+        //        bool isLeftDoor = (i == 0);
+
+        //        double hingeX;
+        //        double hingeRotation;
+        //        bool mirrorX;
+
+        //        if (isLeftDoor)
+        //        {
+        //            // LEFT SIDE
+        //            hingeX = startX + xShift;
+        //            hingeRotation = 0;
+        //        }
+        //        else
+        //        {
+        //            // RIGHT SIDE (mirrored)
+        //            hingeX = startX + xShift + innerDoorWidth;
+        //            hingeRotation = 180;
+        //        }
+
+        //        foreach (double hingeZ in hingeZPositions)
+        //        {
+        //            bool mirrorHandle = isLeftDoor;
+
+        //            InsertDoorHardware(
+        //                drawing,
+        //                handleBlockName,
+        //                handleX,
+        //                handleY,
+        //                handleZ,
+        //                mirrorHandle,
+        //                false,        // no rotation
+        //                0
+        //            );
+        //            //InsertHinge(
+        //            //    drawing,
+        //            //    hingeBlockName,
+        //            //    hingeX,
+        //            //    hingeY,
+        //            //    hingeZ,
+        //            //    mirrorX: !isLeftDoor,
+        //            //    //hingeRotation,
+        //            //    doorModel.TypeOfHinges
+        //            //);
+        //        }
+        //    }
+        //    #endregion
+        //    #region Write DWG
+        //    Directory.CreateDirectory(path + "/Bullows Panel Drawing");
+
+        //    string dwgFilePath =
+        //        path + "/Bullows Panel Drawing/ComponantryEntrySideDoor" +
+        //        doorModel.Side + DateTime.Now.ToString("HH-mm") + ".dwg";
+
+        //    WriteAutodesk dwg = new WriteAutodesk(new WriteAutodeskParams(drawing), dwgFilePath);
+        //    dwg.DoWork();
+        //    #endregion
+
+        //    return new PaintBoothclass
+        //    {
+        //        drawing = drawing,
+        //        lstpath = dwgFilePath
+        //    };
+        //}
         public PaintBoothclass ComponantryEntryFrontDoor(DoorDimensionsModel doorModel)
         {
             drawing = new();
             drawing.Units = linearUnitsType.Millimeters;
             double yOffeset = doorModel.xOffesetForFrontDoor;
-        
+
             #region front Door Outer frame
             LinearPath door = new LinearPath(new Point3D[]
             {
@@ -3443,7 +3812,7 @@ namespace Bullows.Business
             }
             double innerDoorHeight = doorModel.doorHeight - (2 * T);
             double innerSectionWidth = 40;
-            double innerSectionHeight = 40; 
+            double innerSectionHeight = 40;
             #endregion
 
             LinearPath Innerdoor = new LinearPath(new Point3D[]
@@ -3457,7 +3826,7 @@ namespace Bullows.Business
             drawing.Entities.Add(Innerdoor, Color.AliceBlue);
 
             double y1 = yOffeset + T;
-           
+
             var squareSection = devregion.CreatePolygon(new Point3D[]
             {
                  new Point3D(sectionWidth,                      y1 ,                        0),
@@ -3493,25 +3862,19 @@ namespace Bullows.Business
             {
                 Solid doorFrame; Brep doorSheet;
                 doorFrame = (Solid)innerframe.Clone();
-                doorFrame.Translate(0,innerDoorWidth * i, 0);
+                doorFrame.Translate(0, innerDoorWidth * i, 0);
                 doorSheet = (Brep)baseSheet.Clone();
-                doorSheet.Translate(0,innerDoorWidth * i, 0);
+                doorSheet.Translate(0, innerDoorWidth * i, 0);
 
                 drawing.Entities.Add(
                     doorFrame,
                     doorColors[i % doorColors.Length]
                 );
                 drawing.Entities.Add(
-                    doorSheet,Color.HotPink
-                 //doorColors[i % doorColors.Length]
+                    doorSheet, Color.HotPink
+                //doorColors[i % doorColors.Length]
                 );
             }
-
-
-
-
-
-
 
             #region Writing DWG
             var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
@@ -3532,7 +3895,25 @@ namespace Bullows.Business
                 lstpath = dwgFilePath
 
             };
+        } 
+        public Brep CreateBackPlate(DoorDimensionsModel doorModel)
+        {
+            
+            double plateWidth = 50;
+            double plateHeight = doorModel.doorHeight;
+            double thickNess = 5;
+            var backPlate = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(0, 0, 0),
+                new Point3D(plateWidth, 0, 0),
+                new Point3D(plateWidth,0, plateHeight),
+                new Point3D(0,0, plateHeight),
+            });
+            Brep backPlateBrep = backPlate.ExtrudeAsBrep(thickNess);
+            backPlateBrep.Regen(0.1);
+            return backPlateBrep;
         }
+        #endregion
         public PaintBoothclass CreateLoftOld(PaintBoothModel model, double extractionChemberHeight)
         {
             var path = new ConfigurationBuilder()
@@ -3638,7 +4019,6 @@ namespace Bullows.Business
                 lstpath = dwgFilePathforLoft
             };
         }
-
         public PaintBoothclass CreateLoft(PaintBoothModel model, double extractionChemberHeight)
         {
             var path = new ConfigurationBuilder()
@@ -3727,7 +4107,6 @@ namespace Bullows.Business
                 lstpath = dwgFilePathforLoft
             };
         }
-
         public PaintBoothclass CreateLoftForPaintboothType5(PaintBoothModel model, string DraftSubType)
         {
             var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
@@ -3933,7 +4312,6 @@ namespace Bullows.Business
                 lstpath = dwgFilePathforLoft
             };
         }
-
         public PaintBoothclass TubelightCutout(int j, PaintBoothModel model)
         {
             drawing = new();
@@ -4990,8 +5368,198 @@ namespace Bullows.Business
         }
         #endregion
 
-    }
 
+        //public BlockReference LoadHingeBlock(
+        //    DesignDocument drawing,
+        //    string basePath,
+        //    double x,
+        //    double y,
+        //    double z)
+        //{
+        //    string hingePath = Path.Combine(
+        //        basePath,
+        //        "Ball_Bearing_Door_Hinge.step"
+        //    );
+
+        //    ReadSTEP reader = new ReadSTEP(hingePath);
+        //    reader.DoWork();
+
+        //    // STEP usually contains only ONE real block for hinge
+        //    Block stepBlock = reader.Blocks[0];
+
+        //    // Create a SAFE block name
+        //    string safeBlockName = "HINGE_BLOCK";
+
+        //    // Avoid duplicate block names
+        //    if (!drawing.Blocks.Contains(safeBlockName))
+        //    {
+        //        Block cleanBlock = new Block(safeBlockName);
+
+        //        foreach (Entity ent in stepBlock.Entities)
+        //        {
+        //            cleanBlock.Entities.Add((Entity)ent.Clone());
+        //        }
+
+        //        drawing.Blocks.Add(cleanBlock);
+        //    }
+
+        //    // Translation transform
+        //    Transformation tr = new Translation(x, y, z);
+
+        //    BlockReference hingeRef =
+        //        new BlockReference(tr, safeBlockName);
+
+        //    drawing.Entities.Add(hingeRef, Color.DarkGray);
+
+        //    return hingeRef;
+        //}
+
+        #region Hinges
+        public List<string> AddStepBlocksToDrawing(DesignDocument drawing, string stepPath)
+        {
+            ReadSTEP reader = new ReadSTEP(stepPath);
+            reader.DoWork();
+
+            List<string> blockNames = new();
+
+            foreach (Block stepBlock in reader.Blocks)
+            {
+                if (!drawing.Blocks.Contains(stepBlock.Name))
+                {
+                    drawing.Blocks.Add(stepBlock);
+                }
+
+                blockNames.Add(stepBlock.Name);
+            }
+
+            return blockNames;
+        }
+
+  
+        //public void InsertHingeOld(DesignDocument drawing, string blockName, double x, double y, double z, double rotationDeg, string TypeOfHinges)
+        //{
+        //    // Translate hinge to door position FIRST
+        //    Transformation move = new Translation(x, y, z);
+
+
+        //    // Rotate hinge around ITS OWN POSITION (not origin)
+        //    Transformation rotate = new Rotation(Math.PI / 2, Vector3D.AxisX);//, new Point3D(x, y, z));
+
+        //    Transformation finalTr = new();
+        //    if (TypeOfHinges== "Ball Bearing Hinges")
+        //    {
+        //        // Apply move first, then rotate
+        //        finalTr = move * rotate;
+        //    }
+        //    else
+        //    {
+        //        // Apply move first, then rotate
+        //        finalTr = move /** rotate*/;
+        //    }
+        //    BlockReference br = new BlockReference(finalTr, blockName);
+        //    drawing.Entities.Add(br, Color.DarkGray);
+        //}
+ 
+        public void InsertHingeOld(DesignDocument drawing, string blockName, double x, double y, double z, double rotationDeg, string TypeOfHinges)
+        {
+            // 1️⃣ Move hinge to its location
+            Transformation move = new Translation(x, y, z);
+
+            // 2️⃣ Rotate around hinge itself (local pivot)
+            double rad = rotationDeg * Math.PI / 180;
+            Transformation rotate = new Rotation(
+                rad,
+                Vector3D.AxisZ,
+                new Point3D(x, y, z)
+            );
+
+            Transformation finalTr;
+
+            if (TypeOfHinges == "Ball Bearing Hinges")
+            {
+                // move → rotate
+                finalTr = rotate * move;
+            }
+            else
+            {
+                finalTr = rotate * move;
+            }
+
+            BlockReference br = new BlockReference(finalTr, blockName);
+            drawing.Entities.Add(br, Color.DarkGray);
+        }
+        public void InsertHinge(DesignDocument drawing, string blockName, double x, double y, double z, bool mirrorX, string TypeOfHinges)
+        {
+            Transformation tr = new Translation(x, y, z);
+
+            if (mirrorX)
+            {
+                // Mirror around local YZ plane
+                Transformation mirror =
+                    new Mirror(new Plane(new Point3D(x, y, z), Vector3D.AxisX));
+
+                tr = mirror * tr;
+            }
+            if (TypeOfHinges == "Ball Bearing Hinges")
+            {
+                // Ball bearing STEP needs extra 90° correction
+                Transformation rotateFix =
+                    new Rotation(Math.PI / 2, Vector3D.AxisX, new Point3D(x, y, z));
+
+                tr = rotateFix * tr;
+            }
+            BlockReference br = new BlockReference(tr, blockName);
+            drawing.Entities.Add(br, Color.DarkGray);
+        }
+        public void InsertDoorHardware(
+         DesignDocument drawing,
+         string blockName,
+         double x,
+         double y,
+         double z,
+         bool mirrorX,
+         bool applyRotationFix,
+         double rotationAngleRad = 0
+     )
+        {
+            // Base translation
+            Transformation tr = new Translation(x, y, z);
+
+            // Mirror for left / right door
+            if (mirrorX)
+            {
+                Transformation mirror =
+                    new Mirror(new Plane(new Point3D(x, y, z), Vector3D.AxisX));
+
+                tr = mirror * tr;
+            }
+
+            // Optional STEP orientation correction
+            if (applyRotationFix && rotationAngleRad != 0)
+            {
+                Transformation rotate =
+                    new Rotation(rotationAngleRad, Vector3D.AxisX, new Point3D(x, y, z));
+
+                tr = rotate * tr;
+            }
+
+            BlockReference br = new BlockReference(tr, blockName);
+            drawing.Entities.Add(br, Color.DarkGray);
+        }
+
+
+        private int GetHingeCount(double doorHeight)
+        {
+            if (doorHeight <= 1200) return 2;
+            if (doorHeight <= 2000) return 3;
+            if (doorHeight <= 2600) return 4;
+            if (doorHeight <= 3200) return 5;
+            return 6; // very tall / heavy doors
+        }
+
+        #endregion
+
+    }
     public class PaintBoothclass
     {
         public DesignDocument drawing { get; set; }

@@ -224,6 +224,7 @@ namespace Bullows.Repositories.Repositories
                     tblobj.SideDoorLOcation = model.SideDoorLOcation == null ? "" : model.SideDoorLOcation;
                     tblobj.TypeOfPaint = model.TypeOfPaint == null ? "" : model.TypeOfPaint;
                     tblobj.TypeOfPowder = model.TypeOfPowder == null ? "" : model.TypeOfPowder;
+                    tblobj.TypeOfHinges = model.TypeOfHinges == null ? "" : model.TypeOfHinges;
                     _DbContext.Entry(tblobj).State=Microsoft.EntityFrameworkCore.EntityState.Modified;
                 }
                 else
@@ -334,6 +335,7 @@ namespace Bullows.Repositories.Repositories
                     tblobj.SideDoorLOcation = model.SideDoorLOcation == null ? "" : model.SideDoorLOcation;
                     tblobj.DoorWidth = model.SplitDoorWidth == null ? 0 : model.SplitDoorWidth;
                     tblobj.DoorHeight = model.SplitDoorHeight == null ? 0 : model.SplitDoorHeight;
+                    tblobj.TypeOfHinges = model.TypeOfHinges == null ? "" : model.TypeOfHinges;
                     _DbContext.ComponentTables.Add(tblobj);
 
                 }
@@ -434,6 +436,7 @@ namespace Bullows.Repositories.Repositories
                             HeightOfPlenum=e.PlenumHeight ?? string.Empty,
                             SideDoorLOcation=comp.SideDoorLOcation ?? string.Empty,
                             TypeOfHingedDoor=comp.TypeOfHingedDoor ?? string.Empty,
+                            TypeOfHinges=comp.TypeOfHinges??string.Empty,
                         
                         }).FirstOrDefault();
             return data;

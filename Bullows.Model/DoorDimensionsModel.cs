@@ -23,6 +23,9 @@ namespace Bullows.Model
         public double yOffeset { get; set; }
         //public string Side { get; set; }
         public DoorSide Side { get; set; }
+        public string TypeOfHinges { get; set; }
+        public double panelHeightforAboveCompEntryPanels { get; set; }
+        public double panelWidthforAboveCompEntryPanels { get; set; }
 
     }
 }

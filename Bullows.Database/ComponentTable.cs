@@ -70,6 +70,7 @@ namespace Bullows.Database
         public string TypeOfHingedDoor { get; set; }
         public decimal DoorWidth { get; set; }
         public decimal DoorHeight { get; set; }
+        public string TypeOfHinges { get; set; }
 
     }
 }

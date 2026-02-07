@@ -54,6 +54,7 @@ namespace Bullows.Controllers
             ViewBag.ActivePage = "PaintBooth";
             return View(new PaintBoothModel());
         }
+        #region Search Mathods
         public IActionResult Search(string enquiryCode)
         {
             var enquiryDetails = _uow.PaintBoothRepository.GetEnquiryDetailsByCode(enquiryCode);
@@ -94,15 +95,15 @@ namespace Bullows.Controllers
             }
             return Json(new { success = true, results });
             // return Json(new { success = true, results = results.Select(r => r.enquiryCode) });
-        }
-
+        } 
+        #endregion
         [HttpGet]
         public IActionResult GetSettingDetailsByCode(string enquiryCode)
         {
             var paintBoothModel = _uow.PaintBoothRepository.GetSettingDetailsByCode(enquiryCode);
             return Json(new { settings = paintBoothModel.Settings });
         }
-
+        #region Variables declarations
         public static Dictionary<string, List<DesignDocument>> designdictionary = new();
         public static List<string> AllFilesPath = new List<string>();
         public static List<string> developmentpath = new List<string>();
@@ -111,204 +112,8 @@ namespace Bullows.Controllers
         static int noofFiltersInW = 0; static int noofFiltersInD = 0; static int XdistanceInW = 0;
         List<string> filePaths = new List<string>();
         List<DesignDocument> standardFrameDrawing = new List<DesignDocument>();
-        double yOffset = 0;
-
-        //public IActionResult SavePaintBoothDetails(PaintBoothModel model, PanelInputModel pmodel, int flag, EnquiryModel enquiry, int motorCatalogID)
-        //{
-        //    try
-        //    {
-        //        HttpContext.Session.SetString("SalesNo", enquiry.SalesNO);
-        //        string EnquiryNo = HttpContext.Session.GetString("SalesNo");
-        //        HttpContext.Session.SetInt32("PaintboothDepth", (int)(double)model.D);
-        //        HttpContext.Session.SetInt32("PaintboothHeight", (int)(double)model.H);
-        //        HttpContext.Session.SetInt32("PaintboothWidth", (int)(double)model.W);
-        //        HttpContext.Session.SetInt32("D3Panel", (int)(double)model.D3);
-        //        int PlenumHeight = 0;
-        //        string SubTypeofDraft = _uow.PaintBoothRepository.FetchSubTypeOfDraft(EnquiryNo);
-        //        if (SubTypeofDraft == "3")
-        //        {
-        //            PlenumHeight = int.Parse(_uow.PaintBoothRepository.FetchPlenumHeight(EnquiryNo));
-        //            HttpContext.Session.SetInt32("PlenumHeight", PlenumHeight);
-        //        }
-        //        if (model.MotorCatalogID.HasValue)
-        //        {
-        //            int selectedMotorId = model.MotorCatalogID.Value;
-        //        }
-        //        int? enquiryId = HttpContext.Session.GetInt32("EnquiryID");
-        //        if (enquiryId.HasValue)
-        //        {
-        //            enquiry.EnquiryId = enquiryId.Value;
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("EnquiryID not found in session.");
-        //        }
-        //        _uow.PaintBoothRepository.SaveMotorDeatils((int)enquiryId, motorCatalogID);
-        //        var PaintBoothTypefromEnquiry = _uow.PaintBoothRepository.FetchPaintBoothType(model.SalesNO);
-        //        decimal RatedOutputHP = _uow.PaintBoothRepository.FetchRatedOutputHP((int)model.MotorCatalogID);
-        //        string MotorTypes = _uow.PaintBoothRepository.GetMotorTypes((int)model.MotorCatalogID);
-        //        model.RatedOutputHP = RatedOutputHP;
-        //        model.MotorTypes = MotorTypes;
-        //        HttpContext.Session.SetString("DraftSubType", PaintBoothTypefromEnquiry);
-
-        //        var paintBoothModel = _uow.PaintBoothRepository.GetSettingDetailsByCode(EnquiryNo);
-        //        if (paintBoothModel.Settings.Count == 0)
-        //        {
-        //            return NotFound("No settings found for the given SalesNo.");
-        //        }
-
-        //        // Assuming you want the first setting for the PaintBoothDesign
-        //        var setting = paintBoothModel.Settings.First();
-
-        //        // Create and populate the PaintBoothDesign object
-        //        PaintBoothDesign panel = new PaintBoothDesign(_context, _configuration)
-        //        {
-        //            SheetThickness = setting.SheetThickness, // Use setting values
-        //            SettingStandardBend1 = setting.StandardBend1,
-        //            SettingStandardBend2 = setting.StandardBend2,
-        //            PitchDistance = setting.PitchDistance,
-        //            PanelWidth = setting.PanelWidth,
-        //            PanelHeight = setting.PanelHeight,
-        //            SlotDimention = setting.SlotDimention,
-        //            SettingH = setting.H,
-        //            SettingW = setting.W,
-        //            SettingT = setting.T,
-        //            Materials = setting.Materials,
-        //            Section = setting.Section,
-        //            D3 = model.D3,
-        //            EnquiryID = enquiry.EnquiryId,
-        //            LightTypes = setting.LightTypes,
-        //            LuxLevel = setting.LuxLevel,
-        //            Lumens = setting.Lumens,
-        //        };
-        //        model.PitchDistance = (decimal)setting.PitchDistance;
-
-        //        HttpContext.Session.SetInt32("settingPanelWidth", (int)setting.PanelWidth);
-        //        HttpContext.Session.SetInt32("settingPanelHeight", (int)setting.PanelHeight);
-
-        //        string selectedLocation = model.ServiceDoorLocation;
-
-        //        // Check if the record already exists
-        //        if (!_uow.PaintBoothRepository.Exists(enquiry.EnquiryId))
-        //        {
-        //            PaintID = _uow.PaintBoothRepository.SavePaintBooth(model, pmodel, flag, enquiry);
-        //        }
-        //        int componentID = _uow.PaintBoothRepository.FetchComponentId((int)enquiryId);
-        //        double ExtractionC_Height = int.Parse(_uow.PaintBoothRepository.FetchExtractionHeight(componentID));
-
-        //        string SideDoorLOcation = "";
-        //        ComponentTable DoorType = _uow.PaintBoothRepository.FetchDoorType(componentID);
-        //        SideDoorLOcation = _uow.PaintBoothRepository.FetchSideDoorLocation(componentID);
-
-        //        #region All Panels methods
-        //        PaintBoothService service = new PaintBoothService(_uow, _httpContextAccessor, _context, _configuration);
-
-        //        service.TopPanels(model, panel);
-        //        service.D3Panels(model, panel, ExtractionC_Height);
-
-        //        service.CreateLoft(model, panel, ExtractionC_Height);
-        //        service.backPanels(model, panel, ExtractionC_Height);
-        //        if (PaintBoothTypefromEnquiry == "3")
-        //        {
-        //            service.FASPanelsFrontAndBack(model, panel, PlenumHeight);
-        //            service.FASPanelsRightAndLeft(model, panel, PlenumHeight);
-        //            service.FASPanelsForTop(model, panel, PlenumHeight);
-        //        }
-        //        service.FiltersAndBaffles(model, panel, ExtractionC_Height);
-
-        //        service.TopStructureFrame(model, panel);
-        //        service.BaseStructureFrame(model, panel);
-        //        double SameSpaceBetweenDoors = 0;
-        //        //if (DoorType.ComponentEntry == "Front")
-        //        //{
-        //        //    service.LeftRightPanels(model, panel);
-        //        //    if (DoorType.DoorSubType == "Hinged" && DoorType.TypeOfHingedDoor == "Split Doors")
-        //        //    {
-        //        //        SameSpaceBetweenDoors = service.FrontDoorsType(model, panel);
-        //        //    }
-
-        //        //}
-        //        //else
-        //        //{
-        //        //    model.PanelWidth = setting.PanelWidth;
-        //        //    model.PanelHeight = setting.PanelHeight;
-        //        //    service.LeftRightPanelsForSideDoor(model, panel, SideDoorLOcation);
-        //        //}
-
-        //        //if (PaintBoothTypefromEnquiry != "1")
-        //        //{
-        //        //    if (DoorType.ComponentEntry == "Side")
-        //        //    {
-        //        //        service.FrontPanels(model, panel);
-        //        //    }
-        //        //    else
-        //        //    {
-        //        //        SameSpaceBetweenDoors = service.FrontDoorsType(model, panel);
-        //        //    }
-        //        //}
-        //        #endregion
-        //        #region WriteFile
-        //        string BaseFilePath = "C:/Bullows/Paintbooth_Drawing";
-        //        if (!Directory.Exists(BaseFilePath))
-        //        {
-        //            Directory.CreateDirectory(BaseFilePath);
-        //        }
-
-        //        DesignDocument combinedDrawing = CombineAssemblies2(service.designdictionary, setting.PanelHeight, setting.PanelWidth, PaintBoothTypefromEnquiry, ExtractionC_Height, SameSpaceBetweenDoors);
-
-        //        string combinedDwgFilePath = BaseFilePath + "/GA3D.dwg";
-        //        WriteAutodeskParams autoCombined = new WriteAutodeskParams(combinedDrawing);
-        //        WriteAutodesk dwgWriterCombined = new WriteAutodesk(autoCombined, combinedDwgFilePath);
-        //        dwgWriterCombined.DoWork();
-
-        //        //making pdf file format 
-        //        string pdfFilePath = BaseFilePath + "/GA3D.pdf";
-        //        Write3DPdfParams pdf = new Write3DPdfParams(combinedDrawing);
-        //        Write3DPDF pdf1 = new Write3DPDF(pdf, pdfFilePath);
-        //        pdf1.DoWork();
-
-        //        //STEP file format
-        //        string StepFilePath = BaseFilePath + "/GA3D_STEP.step";
-
-        //        WriteSTEP wastep = new WriteSTEP(combinedDrawing, StepFilePath);
-        //        wastep.DoWork();
-        //        #endregion
-        //        #region Views
-        //        //Added Views here
-        //        DesignDocument designDocument = combinedDrawing;
-
-        //        PaintBoothclass paintBoothClass = panel.detailsdrawing(designDocument, model);
-
-        //        PaintBoothclass standardframe = panel.StandardFrameWithoutDrawing(2, EnquiryNo);
-
-        //        string filepathforstandardframe = standardframe.lstpath;
-        //        DesignDocument standardframedrawing = new DesignDocument();
-        //        standardframedrawing = standardframe.drawing;
-        //        WriteAutodeskParams framedw = new WriteAutodeskParams(standardframedrawing);
-        //        WriteAutodesk dwgWriterframe = new WriteAutodesk(framedw, filepathforstandardframe);
-        //        dwgWriterframe.DoWork();
-        //        standardFrameDrawing.Add(standardframedrawing);
-        //        #endregion
-
-        //        AllFilesPath = new List<string>(filePaths)
-        //        {
-        //            combinedDwgFilePath,
-        //            pdfFilePath,
-        //           //filepathforLoft,
-        //           //filepathforstandardframe,
-        //        };
-        //        AllFilesPath.Add(paintBoothClass.lstpath);
-
-
-        //        return RedirectToAction("FilterFrameCalculations", model);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _uow.exceptionHandlerRepository.SaveException("PaintBoothController", "SavePaintBoothDetails", ex.Message);
-        //        return Json(new { success = false, message = ex.Message });
-        //    }
-        //}
+        double yOffset = 0; 
+        #endregion
         public IActionResult SavePaintBoothDetails(PaintBoothModel model, PanelInputModel pmodel, int flag, EnquiryModel enquiry, int motorCatalogID)
         {
             try
@@ -396,14 +201,17 @@ namespace Bullows.Controllers
 
                 ComponentTable DoorType = null;
                 DoorType = _uow.PaintBoothRepository.FetchDoorType(componentID);
-                //SideDoorLOcation = _uow.PaintBoothRepository.FetchSideDoorLocation(componentID);
+
+
+                #region DoorModel Values Assigning
                 DoorDimensionsModel doorModel = new();
                 doorModel.doorType = DoorType.DoorSubType;
                 doorModel.doorSubType = DoorType.TypeOfHingedDoor;
                 doorModel.sideDoorLocation = DoorType.SideDoorLOcation;
                 doorModel.doorWidth = (double)model.HingedDoorWidth;
                 doorModel.doorHeight = (double)model.HingedDoorHeight;
-
+                doorModel.TypeOfHinges = DoorType.TypeOfHinges; 
+                #endregion
 
                 #region All Panels methods
                 PaintBoothService service = new PaintBoothService(_uow, _httpContextAccessor, _context, _configuration);
@@ -452,8 +260,9 @@ namespace Bullows.Controllers
                 {
                     Directory.CreateDirectory(BaseFilePath);
                 }
-                DesignDocument combinedDrawing = CombineAssemblies2(service.designdictionary, setting.PanelHeight, setting.PanelWidth, PaintBoothTypefromEnquiry, ExtractionC_Height, SameSpaceBetweenDoors);
+                DesignDocument combinedDrawing = CombineAssemblies2(service.designdictionary, setting.PanelHeight, setting.PanelWidth, PaintBoothTypefromEnquiry, ExtractionC_Height, SameSpaceBetweenDoors, doorModel);
 
+           
                 string combinedDwgFilePath = BaseFilePath + "/GA3D.dwg";
                 WriteAutodeskParams autoCombined = new WriteAutodeskParams(combinedDrawing);
                 WriteAutodesk dwgWriterCombined = new WriteAutodesk(autoCombined, combinedDwgFilePath);
@@ -469,8 +278,10 @@ namespace Bullows.Controllers
                 string StepFilePath = BaseFilePath + "/GA3D_STEP.step";
 
                 WriteSTEP wastep = new WriteSTEP(combinedDrawing, StepFilePath);
-                wastep.DoWork();
+                wastep.DoWork(); 
+               
                 #endregion
+
                 #region Views
                 //Added Views here
                 DesignDocument designDocument = combinedDrawing;
@@ -505,7 +316,7 @@ namespace Bullows.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-        private DesignDocument CombineAssemblies2(Dictionary<string, List<DesignDocument>> designDocument, double panelheight, double panelWidth, string DraftSubType, double extractionCHeight, double SameSpaceBetweenDoors)
+        private DesignDocument CombineAssemblies2(Dictionary<string, List<DesignDocument>> designDocument, double panelheight, double panelWidth, string DraftSubType, double extractionCHeight, double SameSpaceBetweenDoors,DoorDimensionsModel doorModel)
         {
             try
             {
@@ -523,10 +334,16 @@ namespace Bullows.Controllers
                 Layer mylayer = new Layer("bendlayer");
                 Layer OuterDoorFrame = new Layer("OuterDoorFrame", Color.Gray);
                 Layer OuterRectangleLayer = new Layer("OuterRectangleLayer", Color.BlueViolet);
+                Layer DoorFrameLayer = new Layer("DoorFrame", Color.BurlyWood);
+                Layer MetalSheetLayer = new Layer("MetalSheet", Color.FloralWhite);
+                Layer MainDoorFrameLayer = new Layer("MainDoorFrame", Color.DarkMagenta);
                 mylayer.Color = Color.FromArgb(165, 82, 165);
                 combinedDrawing.Layers.Add(mylayer);
                 combinedDrawing.Layers.Add(OuterDoorFrame);
                 combinedDrawing.Layers.Add(OuterRectangleLayer);
+                combinedDrawing.Layers.Add(DoorFrameLayer);
+                combinedDrawing.Layers.Add(MetalSheetLayer);
+                combinedDrawing.Layers.Add(MainDoorFrameLayer);
 
                 combinedDrawing.Units = linearUnitsType.Millimeters;
 
@@ -721,6 +538,27 @@ namespace Bullows.Controllers
                             yOffset = 0,
                             Zoffset = 0,
                             paintboothSide = "ComponantEntrySideDoor"
+                        };
+                        AddDrawingsToAssembly(assembly, 0);
+                    }
+                    else if (kvp.Key == "panelsAboveEntryDoors")
+                    {
+                        int panelcount = (int)PaintBoothService.noOfPanelsAboveCompEntryDoor;
+
+                        double zOffeset = doorModel.doorHeight;
+                        if (Math.Ceiling(PaintBoothService.totalPanelsforD) == PaintBoothService.noOfPanelsforD + 1)
+                        {
+                                panelcount++;
+                        }
+                        AssemblyValueModel assembly = new()
+                        {
+                            combinedDrawing = combinedDrawing,
+                            drawings = kvp.Value,
+                            panelcount = 0,
+                            xoffset = 0,
+                            yOffset = 0,
+                            Zoffset = 0,
+                            paintboothSide = "panelsAboveEntryDoors"
                         };
                         AddDrawingsToAssembly(assembly, 0);
                     }
@@ -972,10 +810,26 @@ namespace Bullows.Controllers
                 throw;
             }
         }
+        #region Assembly calculations
         private void AddDrawingsToAssembly(AssemblyValueModel model, double DoorWidthForHinge)
         {
             try
             {
+                // 🔹 Make sure hinge blocks exist in combined drawing
+                if (!model.combinedDrawing.Blocks.Any(b => b.Name.Contains("Hinge")))
+                {
+                    foreach (var d in model.drawings)
+                    {
+                        foreach (var blk in d.Blocks)
+                        {
+                            if (!model.combinedDrawing.Blocks.Contains(blk.Name))
+                            {
+                                model.combinedDrawing.Blocks.Add(blk);
+                            }
+                        }
+                    }
+                }
+
                 double currentXOffset = 0;
                 int i = 0, j = 1;
                 double z = 0;
@@ -1001,14 +855,8 @@ namespace Bullows.Controllers
                     else if (model.paintboothSide == "D3BothSidePanels")//Right left panel for type 5
                     {
                         currentXOffset = model.xoffset;
-                        //z = model.Zoffset;
-                    }
-                    //else if (model.paintboothSide == "TopRightLeftPanelsforType5" && i == 0)//Right left panel for type 5
-                    //{
-                    //    currentXOffset = model.xoffset;
-                    //    z = model.Zoffset;
-                    //}
 
+                    }
                     else if (model.paintboothSide == "frontDoorsDrawingList")//For Hinge door 
                     {
                         if (i == 0)
@@ -1021,7 +869,6 @@ namespace Bullows.Controllers
                             y = (double)PaintboothWidth - DoorWidthForHinge;
 
                     }
-
                     else if (model.paintboothSide == "rightSideDoorDrawings")//For Side door 
                     {
                         if (i == 0)
@@ -1043,26 +890,18 @@ namespace Bullows.Controllers
                     {
                         if (i == 0)
                         {
-                            //model.xoffset = (double)PaintBoothDepth;
                             currentXOffset = model.xoffset;
-                            //currentXOffset = model.xoffset - 550;
                         }
                         else
-                            //currentXOffset = (double)PaintBoothDepth - (DoorWidthForHinge + PaintBoothService.smallPanelsWidthDoors);
                             currentXOffset = model.xoffset;
                         if (i == model.panelcount * j)
                         {
-                            //currentXOffset = 0;
                             currentXOffset = model.xoffset;
                             z = 2390 * j;
                             model.panelcount++;
                         }
                         y = model.yOffset;
                     }
-
-
-
-
                     else if (model.paintboothSide == "TopAssembly") //Top Panel
                     {
                         if (i == 0)
@@ -1134,12 +973,18 @@ namespace Bullows.Controllers
                         currentXOffset = 0;
                     }
 
-                    else if(model.paintboothSide== "ComponantEntrySideDoor")
+                    else if (model.paintboothSide == "ComponantEntrySideDoor")
                     {
-                        currentXOffset =  y = z = 0;
-                        
+                        currentXOffset = y = z = 0;
+
                     }
-                        Block blk = new Block(uniqueBlockName);
+                    else if (model.paintboothSide == "panelsAboveEntryDoors")
+                    {
+
+                        currentXOffset = y = z = 0;
+
+                    }
+                    Block blk = new Block(uniqueBlockName);
                     blk.Entities.AddRange(drawing.Entities);
                     model.combinedDrawing.Blocks.Add(blk);
 
@@ -1247,7 +1092,8 @@ namespace Bullows.Controllers
             }
 
             return maxX - minX;
-        }
+        } 
+        #endregion
         public IActionResult FilterFrameCalculations(double FilterArea, double w, double h, double d, int lights)
         {
             var model = new PaintBoothModel
@@ -1312,7 +1158,6 @@ namespace Bullows.Controllers
             return File(zipBytes, "application/zip", zipFileName);
 
         }
-
         [HttpGet]
         public JsonResult GetMotorDetails(PaintBoothModel model)
         {
@@ -1438,9 +1283,6 @@ namespace Bullows.Controllers
             return Json(new { pressureDropDetails = model }); // Return the data as JSON
         }
     }
-
-
-
 }
 public class AssemblyValueModel
 {
