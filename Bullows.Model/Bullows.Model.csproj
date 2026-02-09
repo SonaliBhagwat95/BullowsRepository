@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="devDept.Eyeshot" Version="2025.3.437" />
+    <PackageReference Include="devDept.Eyeshot.Control.Win" Version="2025.3.437" />
+    <PackageReference Include="devDept.Eyeshot.x64" Version="2025.3.437" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
   </ItemGroup>
 

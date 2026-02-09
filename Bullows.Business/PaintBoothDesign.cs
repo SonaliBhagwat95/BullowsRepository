@@ -117,7 +117,8 @@ namespace Bullows.Business
         #endregion
 
         # region Right and Panels drawing
-        public PaintBoothclass PanelsInPaintBooth(int j, PaintBoothModel model, int k)
+        //public PaintBoothclass PanelsInPaintBooth(int j, PaintBoothModel model, int k,int totalNoOfPanels)
+        public PanelDrawResult PanelsInPaintBooth(int j, PaintBoothModel model, int k)
         {
             drawing = new();
             drawing.Units = linearUnitsType.Millimeters;
@@ -157,66 +158,14 @@ namespace Bullows.Business
             frame.Regen(0.1);
             double massofFrame = frame.GetMass(mat1, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity1);
             double Frame_Weight = Math.Round(massofFrame, 3);
-
-            if (k == 0)
-            {
-                var existingRecord = _DbContext.PanelDetails
-                   .FirstOrDefault(p =>
-                       p.EnquiryId == EnquiryID &&
-                       p.PanelPosition == "RightSide" &&
-                       p.StandardPanelDepth == PanelWidth &&
-                       p.StandardPanelHeight == PanelHeight);
-
-                // If the record does not exist, save it
-                if (existingRecord == null || existingRecord.NoOfPanels == 0)
-                {
-                    RightPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "RightSide", k, RightPanels_Weight,0);
-                }
-                else
-                {
-                    // Increment NoOfPanels
-                    existingRecord.NoOfPanels += 1;
-
-                    // Save the changes for the updated Quantity
-                    _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
-                }
-
-            }
-            else
-            {
-
-                // Check if a record with the same details already exists
-                var existingRecord = _DbContext.PanelDetails
-                    .FirstOrDefault(p =>
-                        p.EnquiryId == EnquiryID &&
-                        p.PanelPosition == "LeftSide" &&
-                        p.StandardPanelDepth == PanelWidth &&
-                        p.StandardPanelHeight == PanelHeight);
-
-                // If the record does not exist, save it
-                if (existingRecord == null || existingRecord.NoOfPanels == 0)
-                {
-                    LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "LeftSide", k, LeftPanels_Weight,0);
-                }
-                else
-                {
-                    // Increment NoOfPanels
-                    existingRecord.NoOfPanels += 1;
-
-                    // Save the changes for the updated Quantity
-                    _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
-                }
-            }
-
-
             drawing.Entities.Add(frame, Color.Yellow);
+
             var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
 
             if (!Directory.Exists(path + "/PaintBooth drawing"))
                 Directory.CreateDirectory(path + "/PaintBooth drawing");
             string dwgFilePath = "";
+
             if (k == 0)
             {
                 dwgFilePath = $"{path}/PaintBooth drawing/RightPanel {j} {DateTime.Now:hh - mm}.dwg";
@@ -235,14 +184,15 @@ namespace Bullows.Business
             Write3DPdfParams pdf = new Write3DPdfParams(drawing);
             Write3DPDF pdf1 = new Write3DPDF(pdf, pdfFilePath);
             pdf1.DoWork();
-            return new PaintBoothclass
+            return new PanelDrawResult
             {
                 drawing = drawing,
+                Weight = Math.Round(Rectangle_Weight + Frame_Weight, 3),
+                //IsSmallPanel = (PanelWidth != model.PanelWidth || PanelHeight != model.PanelHeight),
                 lstpath = dwgFilePath,
             };
-
         }
-        public PaintBoothclass DoorsOnBothSide(PaintBoothModel model, int k,int totalNoOfPanels)
+        public PanelDrawResult DoorsOnBothSide(PaintBoothModel model, int k)
         {
             drawing = new();
             drawing.Units = linearUnitsType.Millimeters;
@@ -285,55 +235,55 @@ namespace Bullows.Business
 
             drawing.Entities.Add(frame, Color.Yellow);
 
-            if (k == 0)
-            {
-                var existingRecord = _DbContext.PanelDetails
-                   .FirstOrDefault(p =>
-                       p.EnquiryId == EnquiryID &&
-                       p.PanelPosition == "RightPanelDoors" &&
-                       p.StandardPanelDepth == PanelWidth &&
-                       p.StandardPanelHeight == PanelHeight);
+            //if (k == 0)
+            //{
+            //    var existingRecord = _DbContext.PanelDetails
+            //       .FirstOrDefault(p =>
+            //           p.EnquiryId == EnquiryID &&
+            //           p.PanelPosition == "RightPanelDoors" &&
+            //           p.StandardPanelDepth == PanelWidth &&
+            //           p.StandardPanelHeight == PanelHeight);
 
-                // If the record does not exist, save it
-                if (existingRecord == null || existingRecord.NoOfPanels == 0)
-                {
-                    RightPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "RightPanelDoors", k, RightPanels_Weight, totalNoOfPanels);
-                }
-                else
-                {
-                    // Increment NoOfPanels
-                    existingRecord.NoOfPanels += 1;
-                    _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
-                }
+            //    // If the record does not exist, save it
+            //    if (existingRecord == null || existingRecord.NoOfPanels == 0)
+            //    {
+            //        RightPanels_Weight = Rectangle_Weight + Frame_Weight;
+            //        SavePanelDetails(model, "RightPanelDoors", k, RightPanels_Weight);
+            //    }
+            //    else
+            //    {
+            //        // Increment NoOfPanels
+            //        existingRecord.NoOfPanels += 1;
+            //        _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
+            //    }
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
 
-                // Check if a record with the same details already exists
-                var existingRecord = _DbContext.PanelDetails
-                    .FirstOrDefault(p =>
-                        p.EnquiryId == EnquiryID &&
-                        p.PanelPosition == "LeftSide" &&
-                        p.StandardPanelDepth == PanelWidth &&
-                        p.StandardPanelHeight == PanelHeight);
+            //    // Check if a record with the same details already exists
+            //    var existingRecord = _DbContext.PanelDetails
+            //        .FirstOrDefault(p =>
+            //            p.EnquiryId == EnquiryID &&
+            //            p.PanelPosition == "LeftPanelDoors" &&
+            //            p.StandardPanelDepth == PanelWidth &&
+            //            p.StandardPanelHeight == PanelHeight);
 
-                // If the record does not exist, save it
-                if (existingRecord == null || existingRecord.NoOfPanels == 0)
-                {
-                    LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "LeftPanelDoors", k, LeftPanels_Weight, totalNoOfPanels);
-                }
-                else
-                {
-                    // Increment NoOfPanels
-                    existingRecord.NoOfPanels += 1;
+            //    // If the record does not exist, save it
+            //    if (existingRecord == null || existingRecord.NoOfPanels == 0)
+            //    {
+            //        LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
+            //        SavePanelDetails(model, "LeftPanelDoors", k, LeftPanels_Weight);
+            //    }
+            //    else
+            //    {
+            //        // Increment NoOfPanels
+            //        existingRecord.NoOfPanels += 1;
 
-                    // Save the changes for the updated Quantity
-                    _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
-                }
-            }
+            //        // Save the changes for the updated Quantity
+            //        _DbContext.SaveChanges(); // Only the NoOfPanels column will be updated
+            //    }
+            //}
 
             #region Write file 
             var path = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FolderPathConfig")["AbsolutePath"].ToString();
@@ -343,19 +293,20 @@ namespace Bullows.Business
             string dwgFilePath = "";
             if (k == 0)
             {
-                dwgFilePath = $"{path}/PaintBooth drawing/RightPanelDoors {k} {DateTime.Now:hh - mm}.dwg";
+                dwgFilePath = $"{path}/PaintBooth drawing/RightSidePanelDoors {k} {DateTime.Now:hh - mm}.dwg";
             }
             else
             {
-                dwgFilePath = $"{path}/PaintBooth drawing/LeftPanelDoors {k} {DateTime.Now:hh - mm}.dwg";
+                dwgFilePath = $"{path}/PaintBooth drawing/LeftSidePanelDoors {k} {DateTime.Now:hh - mm}.dwg";
             }
             WriteAutodeskParams auto = new WriteAutodeskParams(drawing);
             WriteAutodesk dwgg1 = new WriteAutodesk(auto, dwgFilePath);
             dwgg1.DoWork(); 
             #endregion
-            return new PaintBoothclass
+            return new PanelDrawResult
             {
                 drawing = drawing,
+                Weight = Math.Round(Rectangle_Weight + Frame_Weight, 3),
                 lstpath = dwgFilePath,
             };
 
@@ -414,7 +365,7 @@ namespace Bullows.Business
                 if (existingRecord == null || existingRecord.NoOfPanels == 0)
                 {
                     RightPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "RightSideforFAS", k, RightPanels_Weight, 0);
+                    SavePanelDetails(model, "RightSideforFAS", k, RightPanels_Weight);
                 }
                 else
                 {
@@ -441,7 +392,7 @@ namespace Bullows.Business
                 if (existingRecord == null || existingRecord.NoOfPanels == 0)
                 {
                     LeftPanels_Weight = Rectangle_Weight + Frame_Weight;
-                    SavePanelDetails(model, "LeftSideForFAS", k, LeftPanels_Weight, 0);
+                    SavePanelDetails(model, "LeftSideForFAS", k, LeftPanels_Weight);
                 }
                 else
                 {
@@ -610,11 +561,11 @@ namespace Bullows.Business
             drawing.Entities.Add(frame, Color.Yellow);
             if (i == 0)
             {
-                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight, 0);
+                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight);
             }
             else
             {
-                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight, 0);
+                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight);
             }
 
             //Added serviceDoor code here 
@@ -905,11 +856,11 @@ namespace Bullows.Business
             drawing.Entities.Add(frame, Color.Yellow);
             if (i == 0)
             {
-                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight, 0);
+                SavePanelDetails(model, "D3Panels Right side", i, D3Panels_weight);
             }
             else
             {
-                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight, 0);
+                SavePanelDetails(model, "D3Panels Left Side", i, D3Panels_weight);
             }
 
             //Added serviceDoor code here 
@@ -1130,7 +1081,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "TopPanels", k, TopPanel_Weight, 0);
+                SavePanelDetails(model, "TopPanels", k, TopPanel_Weight);
             }
             else
             {
@@ -1264,7 +1215,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "TopPanelForFAS", k, TopPanel_Weight, 0);
+                SavePanelDetails(model, "TopPanelForFAS", k, TopPanel_Weight);
             }
             else
             {
@@ -1364,7 +1315,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight, 0);
+                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight);
             }
             else
             {
@@ -1463,7 +1414,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight, 0);
+                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight);
             }
             else
             {
@@ -1560,7 +1511,7 @@ namespace Bullows.Business
             // If the record does not exist, save it
             if (existingRecord == null || existingRecord.NoOfPanels == 0)
             {
-                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight, 0);
+                SavePanelDetails(model, "BackPanels", k, BackPanel_Weight);
             }
             else
             {
@@ -1870,7 +1821,7 @@ namespace Bullows.Business
             double massofFrame = frame.GetMass(mt, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity1);
             double Frame_Weight = Math.Round(massofFrame, 3);
             TopStructureFrame_Weight = Frame_Weight;
-            SavePanelDetails(model, "TopStructureFrame", k, TopStructureFrame_Weight, 0);
+            SavePanelDetails(model, "TopStructureFrame", k, TopStructureFrame_Weight);
 
             drawing.Entities.Add(frame, Color.Yellow);
             model.CChannelHeight = SettingH;
@@ -1960,7 +1911,7 @@ namespace Bullows.Business
             double MassofBaseFrame = frame.GetMass(mt, linearUnitsType.Millimeters, massUnitsType.Kilograms, out double convertedDensity);
             BaseFrame_Weight = Math.Round(MassofBaseFrame, 3);
             #endregion
-            SavePanelDetails(model, "BaseStructureFrame", k, BaseFrame_Weight, 0);
+            SavePanelDetails(model, "BaseStructureFrame", k, BaseFrame_Weight);
 
             GenerateHoles(frame);
             drawing.Entities.Add(frame, Color.Yellow);
@@ -2338,8 +2289,9 @@ namespace Bullows.Business
             _DbContext.SaveChanges();
             return 1;
         }
-        public int SavePanelDetails(PaintBoothModel model, string panelPosition, int k, double PanelWeight,int totalNoOfPanels)
+        public int SavePanelDetails(PaintBoothModel model, string panelPosition, int noOfPanel, double PanelWeight)
         {
+            
             PanelDetails tblobj = new PanelDetails();
             tblobj.IsDeleted = false;
             tblobj.EnquiryId = EnquiryID;
@@ -2354,18 +2306,24 @@ namespace Bullows.Business
 
             if (panelPosition == "RightSide")
             {
-                tblobj.NoOfPanels = 1;
+                tblobj.NoOfPanels = noOfPanel;
                 tblobj.PanelWeight = PanelWeight;
+                tblobj.StandardPanelWidth = PanelHeight;
+                tblobj.StandardPanelDepth = PanelWidth;
+                tblobj.StandardPanelHeight = PanelHeight;
 
             }
             else if (panelPosition == "LeftSide")
             {
-                tblobj.NoOfPanels = 1;
+                tblobj.NoOfPanels = noOfPanel;
                 tblobj.PanelWeight = PanelWeight;
+                tblobj.StandardPanelWidth = PanelHeight;
+                tblobj.StandardPanelDepth = PanelWidth;
+                tblobj.StandardPanelHeight = PanelHeight;
             }
             else if (panelPosition == "RightPanelDoors")
             {
-                tblobj.NoOfPanels = totalNoOfPanels;
+                tblobj.NoOfPanels = noOfPanel;
                 tblobj.PanelWeight = PanelWeight;
                 tblobj.StandardPanelWidth = PanelWidthForSideDoors;
                 tblobj.StandardPanelDepth = PanelWidthForSideDoors;
@@ -2373,7 +2331,7 @@ namespace Bullows.Business
             }
             else if (panelPosition == "BackPanels")
             {
-                tblobj.NoOfPanels = 1;
+                tblobj.NoOfPanels = noOfPanel;
                 tblobj.PanelWeight = PanelWeight;
             }
             else if (panelPosition == "BaseStructureFrame")
@@ -2389,7 +2347,7 @@ namespace Bullows.Business
                 tblobj.StandardPanelWidth = PanelHeight;
                 tblobj.StandardPanelDepth = D3;
                 tblobj.StandardPanelHeight = PanelHeight;
-                tblobj.NoOfPanels = 1;
+                tblobj.NoOfPanels = noOfPanel;
                 
                 tblobj.StandardPanelWidth = PanelHeight;
                 tblobj.StandardPanelHeight = PanelHeight;
@@ -2401,13 +2359,13 @@ namespace Bullows.Business
                 tblobj.StandardPanelWidth = PanelHeight;
                 tblobj.StandardPanelDepth = D3;
                 tblobj.StandardPanelHeight = PanelHeight;
-                tblobj.NoOfPanels = totalNoOfPanels;
+                tblobj.NoOfPanels = noOfPanel;
             }
             else if (panelPosition == "TopPanels")
             {
 
                 tblobj.PanelWeight = PanelWeight;
-                tblobj.NoOfPanels = 1;
+                tblobj.NoOfPanels = noOfPanel;
                 tblobj.StandardPanelWidth = PanelLength;
                 tblobj.StandardPanelHeight = PanelHeight;
                 tblobj.StandardPanelDepth = PanelWidth;
@@ -3201,6 +3159,7 @@ namespace Bullows.Business
             drawing.Layers.Add(new Layer("DoorFrame", Color.BurlyWood));
             drawing.Layers.Add(new Layer("MetalSheet", Color.FloralWhite));
             drawing.Layers.Add(new Layer("MainDoorFrame", Color.DarkMagenta));
+            drawing.Layers.Add(new Layer("HingeBackPlate", Color.Bisque));
             #endregion
 
             #region Hinges and handles blocks
@@ -3300,75 +3259,48 @@ namespace Bullows.Business
 
             #region Hinges Z positions
             int hingeCount = GetHingeCount(innerDoorHeight);
+            //double topClearance = 113;
+            //double bottomClearance = 300;
+            //double usableHeight = innerDoorHeight - (topClearance + bottomClearance);
+
+            //List<double> hingeZs = Enumerable.Range(0, hingeCount)
+            //    .Select(i => innerDoorHeight - topClearance - (usableHeight * i / (hingeCount - 1)))
+            //    .ToList();
+
             double topClearance = 113;
             double bottomClearance = 300;
-            double usableHeight = innerDoorHeight - (topClearance + bottomClearance);
+            //double topHingeGap = 275;
+            double topHingeGap = doorModel.TypeOfHinges == "Ball Bearing Hinges" ? 275 : 600;
+            List<double> hingeZs = new();
 
-            List<double> hingeZs = Enumerable.Range(0, hingeCount)
-                .Select(i => innerDoorHeight - topClearance - (usableHeight * i / (hingeCount - 1)))
-                .ToList();
-            #endregion
+            // 1️⃣ Top hinge
+            double topHingeZ = innerDoorHeight - topClearance;
+            hingeZs.Add(topHingeZ);
 
-            #region Place Doors + Hardware
-            //for (int i = 0; i < doorLeafCount; i++)
-            //{
-            //    bool isLeftDoor = (i % 2 == 0);
-            //    double xShift = i * (innerDoorWidth + gap);
+            // 2️⃣ Second hinge (150 mm below top)
+            if (hingeCount > 1)
+            {
+                hingeZs.Add(topHingeZ - topHingeGap);
+            }
 
-            //    Solid frame = (Solid)baseFrame.Clone();
-            //    Brep sheet = (Brep)baseSheet.Clone();
+            // 3️⃣ Remaining hinges → evenly spaced
+            if (hingeCount > 2)
+            {
+                double remainingHeight =
+                    innerDoorHeight
+                    - topClearance
+                    - topHingeGap
+                    - bottomClearance;
 
-            //    frame.Translate(xShift, doorModel.yOffeset, 0);
-            //    sheet.Translate(xShift, doorModel.yOffeset, 0);
+                int remainingHinges = hingeCount - 2;
 
-            //    drawing.Entities.Add(frame, "DoorFrame");
-            //    drawing.Entities.Add(sheet, "MetalSheet");
+                double spacing = remainingHeight / remainingHinges;
 
-            //    double hingeX = isLeftDoor
-            //        ? startX + xShift
-            //        : startX + xShift + innerDoorWidth;
-
-            //    double hingeY = doorModel.yOffeset - 40 - (2 * SheetThickness) - 3;
-            //    double handleOffsetFromBottom = 1000;
-
-            //    double handleZ = Math.Min(
-            //        handleOffsetFromBottom,
-            //        innerDoorHeight - 100   // safety margin from top
-            //    );
-            //    //double handleZ = innerDoorHeight / 2;          // center height
-            //    double handleY = doorModel.yOffeset -40 - (2 * SheetThickness) - 3;      // outside face
-
-
-            //    foreach (double hz in hingeZs)
-            //                {
-            //         InsertDoorHardware(
-            //             drawing,
-            //             hingeBlockName,
-            //             hingeX,
-            //             hingeY,
-            //             hz,
-            //             mirrorX: !isLeftDoor,
-            //             applyRotationFix: doorModel.TypeOfHinges == "Ball Bearing Hinges",
-            //             rotationAngleRad: Math.PI / 2
-            //         );
-            //    }
-
-            //    // HANDLE (one per leaf)
-            //    double handleX = isLeftDoor
-            //        ? startX + xShift + innerDoorWidth - 80
-            //        : startX + xShift + 80;
-
-            //    InsertDoorHardware(
-            //        drawing,
-            //        handleBlockName,
-            //        handleX,
-            //        handleY,
-            //        handleZ,
-            //        mirrorX: isLeftDoor,      // mirror for opposite door
-            //        applyRotationFix: true,  // change to true if STEP needs it
-            //        rotationAngleRad: Math.PI / 2
-            //    );
-            //}
+                for (int i = 1; i <= remainingHinges; i++)
+                {
+                    hingeZs.Add(topHingeZ - topHingeGap - (spacing * i));
+                }
+            }
             #endregion
             #region Place Doors + Hardware
             double xShift = 0;
@@ -3413,7 +3345,7 @@ namespace Bullows.Business
                 }
 
                 double hingeY = doorModel.yOffeset - 40 - (2 * SheetThickness) - 3;
-
+                Brep backPlateProto = CreateHingeBackPlateWithHoles();
                 if (placeHinge)
                 {
                     double hingeX = hingeOnLeftSide
@@ -3431,6 +3363,16 @@ namespace Bullows.Business
                             mirrorX: !hingeOnLeftSide,
                             applyRotationFix: doorModel.TypeOfHinges == "Ball Bearing Hinges",
                             rotationAngleRad: Math.PI / 2
+                        );
+                        if(doorModel.TypeOfHinges!= "Ball Bearing Hinges")
+                        // BACK PLATE (follows hinge)
+                        InsertHingeBackPlate(
+                            drawing,
+                            backPlateProto,
+                            hingeX+50,
+                            hingeY,
+                            hz-93.5,
+                            mirrorX: !hingeOnLeftSide
                         );
                     }
                 }
@@ -3484,20 +3426,18 @@ namespace Bullows.Business
                 }
             }
             #endregion
-
-            // =========================
-            // BACK PLATE
-            // =========================
+            #region back plate
             Brep backPlate = CreateBackPlate(doorModel);
 
             // Position it behind the hinges (same Y logic you already use)
-            double backPlateX = xShift + doorModel.xOffeset+ gap;
-            double backPlateY = doorModel.yOffeset - 40 -  SheetThickness; // behind hinge
+            double backPlateX = xShift + doorModel.xOffeset + gap;
+            double backPlateY = doorModel.yOffeset - 40 - SheetThickness; // behind hinge
             double backPlateZ = 0;
 
             backPlate.Translate(backPlateX, backPlateY, backPlateZ);
 
-            drawing.Entities.Add(backPlate, Color.LightBlue);
+            drawing.Entities.Add(backPlate, Color.LightBlue); 
+            #endregion
 
             #region Write DWG
             Directory.CreateDirectory(path + "/Bullows Panel Drawing");
@@ -3913,6 +3853,74 @@ namespace Bullows.Business
             backPlateBrep.Regen(0.1);
             return backPlateBrep;
         }
+        public Brep CreateHingesBackPlate()
+        {
+
+            double plateWidth = 100;
+            double plateHeight = 100;
+
+            double thickNess = 16;
+            var backPlate = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(0, 0, 0),
+                new Point3D(plateWidth, 0, 0),
+                new Point3D(plateWidth,0, plateHeight),
+                new Point3D(0,0, plateHeight),
+            });
+            Brep backPlateBrep = backPlate.ExtrudeAsBrep(-thickNess);
+            backPlateBrep.Regen(0.1);
+            
+
+            return backPlateBrep;
+        }
+        public Brep CreateHingeBackPlateWithHoles()
+        {
+            double plateWidth = 100;
+            double plateHeight = 100;
+            double thickness = 16;
+
+            // 1️⃣ Create plate as SOLID
+            var plateRegion = devregion.CreatePolygon(new Point3D[]
+            {
+                new Point3D(0, 0, 0),
+                new Point3D(plateWidth, 0, 0),
+                new Point3D(plateWidth, 0, plateHeight),
+                new Point3D(0, 0, plateHeight),
+            });
+
+            Brep backPlate = plateRegion.ExtrudeAsBrep(-thickness);
+            backPlate.Regen(0.1);
+
+            // 2️⃣ Hole parameters (M10 THRU)
+            double holeRadius = 5;               // M10
+            double holeDepth = thickness + 2;    // thru cut
+
+            // Hole center positions from drawing
+            double[] holeX = { 20, 65 };
+            double[] holeZ = { 20, 80 };
+
+            // 3️⃣ Create & remove holes
+            foreach (double x in holeX)
+            {
+                foreach (double z in holeZ)
+                {
+                    // Circle on YZ plane
+                    devregion holeRegion = devregion.CreateCircle(
+                        Plane.YZ,
+                        new Point3D(x, 0, z),
+                        holeRadius
+                    );
+
+                    // Remove material
+                    backPlate.ExtrudeRemove(holeRegion, holeDepth, 0);
+                    drawing.Entities.Add(backPlate);
+                }
+            }
+
+            backPlate.Regen(0.1);
+            return backPlate;
+        }
+
         #endregion
         public PaintBoothclass CreateLoftOld(PaintBoothModel model, double extractionChemberHeight)
         {
@@ -5369,51 +5377,6 @@ namespace Bullows.Business
         #endregion
 
 
-        //public BlockReference LoadHingeBlock(
-        //    DesignDocument drawing,
-        //    string basePath,
-        //    double x,
-        //    double y,
-        //    double z)
-        //{
-        //    string hingePath = Path.Combine(
-        //        basePath,
-        //        "Ball_Bearing_Door_Hinge.step"
-        //    );
-
-        //    ReadSTEP reader = new ReadSTEP(hingePath);
-        //    reader.DoWork();
-
-        //    // STEP usually contains only ONE real block for hinge
-        //    Block stepBlock = reader.Blocks[0];
-
-        //    // Create a SAFE block name
-        //    string safeBlockName = "HINGE_BLOCK";
-
-        //    // Avoid duplicate block names
-        //    if (!drawing.Blocks.Contains(safeBlockName))
-        //    {
-        //        Block cleanBlock = new Block(safeBlockName);
-
-        //        foreach (Entity ent in stepBlock.Entities)
-        //        {
-        //            cleanBlock.Entities.Add((Entity)ent.Clone());
-        //        }
-
-        //        drawing.Blocks.Add(cleanBlock);
-        //    }
-
-        //    // Translation transform
-        //    Transformation tr = new Translation(x, y, z);
-
-        //    BlockReference hingeRef =
-        //        new BlockReference(tr, safeBlockName);
-
-        //    drawing.Entities.Add(hingeRef, Color.DarkGray);
-
-        //    return hingeRef;
-        //}
-
         #region Hinges
         public List<string> AddStepBlocksToDrawing(DesignDocument drawing, string stepPath)
         {
@@ -5435,31 +5398,6 @@ namespace Bullows.Business
             return blockNames;
         }
 
-  
-        //public void InsertHingeOld(DesignDocument drawing, string blockName, double x, double y, double z, double rotationDeg, string TypeOfHinges)
-        //{
-        //    // Translate hinge to door position FIRST
-        //    Transformation move = new Translation(x, y, z);
-
-
-        //    // Rotate hinge around ITS OWN POSITION (not origin)
-        //    Transformation rotate = new Rotation(Math.PI / 2, Vector3D.AxisX);//, new Point3D(x, y, z));
-
-        //    Transformation finalTr = new();
-        //    if (TypeOfHinges== "Ball Bearing Hinges")
-        //    {
-        //        // Apply move first, then rotate
-        //        finalTr = move * rotate;
-        //    }
-        //    else
-        //    {
-        //        // Apply move first, then rotate
-        //        finalTr = move /** rotate*/;
-        //    }
-        //    BlockReference br = new BlockReference(finalTr, blockName);
-        //    drawing.Entities.Add(br, Color.DarkGray);
-        //}
- 
         public void InsertHingeOld(DesignDocument drawing, string blockName, double x, double y, double z, double rotationDeg, string TypeOfHinges)
         {
             // 1️⃣ Move hinge to its location
@@ -5511,16 +5449,7 @@ namespace Bullows.Business
             BlockReference br = new BlockReference(tr, blockName);
             drawing.Entities.Add(br, Color.DarkGray);
         }
-        public void InsertDoorHardware(
-         DesignDocument drawing,
-         string blockName,
-         double x,
-         double y,
-         double z,
-         bool mirrorX,
-         bool applyRotationFix,
-         double rotationAngleRad = 0
-     )
+        public void InsertDoorHardware(DesignDocument drawing, string blockName, double x, double y, double z, bool mirrorX, bool applyRotationFix, double rotationAngleRad = 0)
         {
             // Base translation
             Transformation tr = new Translation(x, y, z);
@@ -5544,7 +5473,7 @@ namespace Bullows.Business
             }
 
             BlockReference br = new BlockReference(tr, blockName);
-            drawing.Entities.Add(br, Color.DarkGray);
+            drawing.Entities.Add(br, Color.DimGray);
         }
 
 
@@ -5555,6 +5484,41 @@ namespace Bullows.Business
             if (doorHeight <= 2600) return 4;
             if (doorHeight <= 3200) return 5;
             return 6; // very tall / heavy doors
+        }
+
+        //public double CalculatePanelWeight()
+        //{
+        //    double area = PanelWidth * PanelHeight;
+        //    double sheetWeight = area * SheetThickness * SheetDensity;
+        //    double frameWeight = CalculateFrameWeight();
+
+        //    return Math.Round(sheetWeight + frameWeight, 3);
+        //}
+        public void InsertHingeBackPlate(DesignDocument drawing, Brep backPlateProto, double hingeX, double hingeY, double hingeZ, bool mirrorX)
+        {
+            Brep plate = (Brep)backPlateProto.Clone();
+
+            // 🔹 Position plate behind hinge
+            double backPlateOffsetY = 16 + 3; // thickness + small gap
+            plate.Translate(
+                hingeX,
+                hingeY - backPlateOffsetY,
+                hingeZ - 50  // center plate vertically (100 / 2)
+            );
+
+            // 🔹 Mirror for right-side doors
+            if (mirrorX)
+            {
+                Transformation mirror =
+                    new Mirror(new Plane(
+                        new Point3D(hingeX, hingeY, hingeZ),
+                        Vector3D.AxisX
+                    ));
+
+                plate.TransformBy(mirror);
+            }
+
+            drawing.Entities.Add(plate, Color.LightPink);
         }
 
         #endregion

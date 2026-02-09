@@ -344,6 +344,7 @@ namespace Bullows.Controllers
                 combinedDrawing.Layers.Add(DoorFrameLayer);
                 combinedDrawing.Layers.Add(MetalSheetLayer);
                 combinedDrawing.Layers.Add(MainDoorFrameLayer);
+                combinedDrawing.Layers.Add("HingeBackPlate", Color.BurlyWood);
 
                 combinedDrawing.Units = linearUnitsType.Millimeters;
 

@@ -73,30 +73,45 @@ namespace Bullows.Service
                 noOfPanelsforH = (int)Math.Floor(totalPanelsforH);
                 smallPanelWidthforH = model.H - (noOfPanelsforH * model.PanelHeight);
                 #endregion
-                double totalNoOfPanels = Math.Ceiling(totalPanelsforD) + Math.Ceiling(totalPanelsforH);
+          
                 #region D * H left right
                 int i = 0;
 
                 for (i = 0; i < 2; i++)
                 {
                     paintBooth.PanelLength = (i == 0) ? 0 : model.W;
+
                     List<DesignDocument> documents = new List<DesignDocument>();
 
                     for (int k = 0; k < noOfPanelsforH; k++)
                     {
                         for (int j = 0; j < noOfPanelsforD; j++)
                         {
-                            PaintBoothclass panelDrawingPath = paintBooth.PanelsInPaintBooth(j + 1, model, i);
+
+                            PanelDrawResult panelDrawingPath = paintBooth.PanelsInPaintBooth(j + 1, model, i);
                             documents.Add(panelDrawingPath.drawing);
                             filePaths.Add(panelDrawingPath.lstpath);
+                            paintBooth.SavePanelDetails(
+                                   model,
+                                   i == 0 ? "RightSide" : "LeftSide",
+                                   1,
+                                   panelDrawingPath.Weight
+                            );
                         }
                         if (smallPanelWidthforD > 0)
                         {
                             paintBooth.PanelWidth = smallPanelWidthforD;
 
-                            PaintBoothclass smallPanelDrawingPath = paintBooth.PanelsInPaintBooth(noOfPanelsforD + 1, model, i);
+                            PanelDrawResult smallPanelDrawingPath = paintBooth.PanelsInPaintBooth(noOfPanelsforD + 1, model, i);
                             documents.Add(smallPanelDrawingPath.drawing);
                             filePaths.Add(smallPanelDrawingPath.lstpath);
+                            paintBooth.SavePanelDetails(
+                            model,
+                            i == 0 ? "RightSide" : "LeftSide",
+                            1,                     
+                             smallPanelDrawingPath.Weight
+                            );
+
                             paintBooth.PanelWidth = model.PanelWidth;
                         }
 
@@ -107,17 +122,29 @@ namespace Bullows.Service
 
                         for (int j = 0; j < noOfPanelsforD; j++)
                         {
-                            PaintBoothclass panelDrawingPath = paintBooth.PanelsInPaintBooth(j + 1, model, i);
+                            PanelDrawResult panelDrawingPath = paintBooth.PanelsInPaintBooth(j + 1, model, i);
                             documents.Add(panelDrawingPath.drawing);
                             filePaths.Add(panelDrawingPath.lstpath);
+                            paintBooth.SavePanelDetails(
+                            model,
+                            i == 0 ? "RightSide" : "LeftSide",
+                            1,
+                             panelDrawingPath.Weight
+                            );
                         }
                         if (smallPanelWidthforD > 0)
                         {
                             paintBooth.PanelWidth = smallPanelWidthforD;
 
-                            PaintBoothclass smallPanelDrawingPath = paintBooth.PanelsInPaintBooth(noOfPanelsforD + 1, model, i);
+                            PanelDrawResult smallPanelDrawingPath = paintBooth.PanelsInPaintBooth(noOfPanelsforD + 1, model, i);
                             documents.Add(smallPanelDrawingPath.drawing);
                             filePaths.Add(smallPanelDrawingPath.lstpath);
+                            paintBooth.SavePanelDetails(
+                            model,
+                            i == 0 ? "RightSide" : "LeftSide",
+                            1,
+                             smallPanelDrawingPath.Weight
+                            );
                             paintBooth.PanelWidth = model.PanelWidth;
 
                         }
@@ -230,19 +257,32 @@ namespace Bullows.Service
                             {
 
                                 paintBooth.PanelHeightForSideDoors = model.PanelHeight;
-                                PaintBoothclass DoorPath = paintBooth.DoorsOnBothSide(model, i, totalNoOfPanels);
+                                PanelDrawResult DoorPath = paintBooth.DoorsOnBothSide(model, i);
                                 documents.Add(DoorPath.drawing);
                                 filePaths.Add(DoorPath.lstpath);
                                 SideDoorNearExtractionC.Add(DoorPath.drawing);
+
+                                paintBooth.SavePanelDetails(
+                                   model,
+                                   i == 0 ? "RightSidePanelDoors" : "LeftSidePanelDoors",
+                                   1,
+                                   DoorPath.Weight
+                                );
                             }
                             if (smallPanelsWidthDoors > 0)
                             {
                                 paintBooth.PanelWidthForSideDoors = smallPanelsWidthDoors;
 
-                                PaintBoothclass smallDoorPanelDrawingPath = paintBooth.DoorsOnBothSide(model, i, totalNoOfPanels);
+                                PanelDrawResult smallDoorPanelDrawingPath = paintBooth.DoorsOnBothSide(model, i);
                                 documents.Add(smallDoorPanelDrawingPath.drawing);
                                 filePaths.Add(smallDoorPanelDrawingPath.lstpath);
                                 SideDoorNearExtractionC.Add(smallDoorPanelDrawingPath.drawing);
+                                paintBooth.SavePanelDetails(
+                                   model,
+                                   i == 0 ? "RightSidePanelDoors" : "LeftSidePanelDoors",
+                                   1,
+                                   smallDoorPanelDrawingPath.Weight
+                                );
                                 paintBooth.PanelWidthForSideDoors = model.PanelWidth;
                             }
                         }
@@ -252,19 +292,31 @@ namespace Bullows.Service
 
                             for (int p = 0; p < noOfPanelsInSideDoor; p++)
                             {
-                                PaintBoothclass DoorPath = paintBooth.DoorsOnBothSide(model, i, totalNoOfPanels);
+                                PanelDrawResult DoorPath = paintBooth.DoorsOnBothSide(model, i);
                                 documents.Add(DoorPath.drawing);
                                 filePaths.Add(DoorPath.lstpath);
                                 SideDoorNearExtractionC.Add(DoorPath.drawing);
+                                paintBooth.SavePanelDetails(
+                                  model,
+                                  i == 0 ? "RightSidePanelDoors" : "LeftSidePanelDoors",
+                                  1,
+                                  DoorPath.Weight
+                               );
                             }
                             if (smallPanelsWidthDoors > 0)
                             {
                                 paintBooth.PanelWidthForSideDoors = smallPanelsWidthDoors;
 
-                                PaintBoothclass smallDoorPanelDrawingPath = paintBooth.DoorsOnBothSide(model, i, totalNoOfPanels);
+                                PanelDrawResult smallDoorPanelDrawingPath = paintBooth.DoorsOnBothSide(model, i);
                                 documents.Add(smallDoorPanelDrawingPath.drawing);
                                 filePaths.Add(smallDoorPanelDrawingPath.lstpath);
                                 SideDoorNearExtractionC.Add(smallDoorPanelDrawingPath.drawing);
+                                paintBooth.SavePanelDetails(
+                                  model,
+                                  i == 0 ? "RightSidePanelDoors" : "LeftSidePanelDoors",
+                                  1,
+                                  smallDoorPanelDrawingPath.Weight
+                               );
                                 paintBooth.PanelWidthForSideDoors = model.PanelWidth;
                             }
 
@@ -357,15 +409,16 @@ namespace Bullows.Service
                     for (int k = 0; k < noOfPanelsforD; k++)
                     {
                         paintBooth.PanelLengthForTopPanels = model.PanelHeight;
-                        PaintBoothclass Topside = paintBooth.TopSidePanels(k + 1, model, i/*, PaintBoothTypefromEnquiry*/);
+                        PaintBoothclass Topside = paintBooth.TopSidePanels(k + 1, model, i);
                         docdrawing.Add(Topside.drawing);
                         Topsidepath.Add(Topside.lstpath);
+
 
                     }
                     if (smallPanelWidthforD > 0)
                     {
                         paintBooth.PanelWidth = smallPanelWidthforD;
-                        PaintBoothclass Topside = paintBooth.TopSidePanels(noOfPanelsforW + 1, model, i/*, PaintBoothTypefromEnquiry*/);
+                        PaintBoothclass Topside = paintBooth.TopSidePanels(noOfPanelsforW + 1, model, i);
                         docdrawing.Add(Topside.drawing);
                         Topsidepath.Add(Topside.lstpath);
                         paintBooth.PanelWidth = model.PanelWidth;
@@ -377,7 +430,7 @@ namespace Bullows.Service
                     paintBooth.PanelLengthForTopPanels = smallPanelWidthforW;
                     for (int k = 0; k < noOfPanelsforD; k++)
                     {
-                        PaintBoothclass Topside = paintBooth.TopSidePanels(k + 1, model, k /*PaintBoothTypefromEnquiry*/);
+                        PaintBoothclass Topside = paintBooth.TopSidePanels(k + 1, model, k);
                         docdrawing.Add(Topside.drawing);
                         Topsidepath.Add(Topside.lstpath);
                     }
@@ -1105,5 +1158,7 @@ namespace Bullows.Service
         }
 
         #endregion
+
+
     }
 }
